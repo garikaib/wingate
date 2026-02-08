@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+    --font-cinzel: "Cinzel", serif;
+    --font-montserrat: "Montserrat", sans-serif;
+    --font-merriweather: "Merriweather", serif;
+    --font-opensans: "Open Sans", sans-serif;
+
+    --color-golf-green: #1a472a;
+    --color-golf-gold: #c5a059;
+    --color-golf-brown: #4a3728;
+}
+
+@layer base {
+    body {
+        @apply font-opensans;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-cinzel;
+    }
+}
