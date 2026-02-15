@@ -25,13 +25,13 @@ const Hero = () => {
                 <h2 className="text-white font-cinzel text-3xl md:text-5xl lg:text-6xl tracking-widest mb-6 drop-shadow-lg">
                     GOLF CLUB
                 </h2>
-                <div className="w-24 h-1 bg-[#c5a059] mb-8"></div>
+                <div className="w-24 h-1 bg-brand-yellow mb-8"></div>
 
                 <p className="text-white font-montserrat text-sm md:text-lg tracking-[0.2em] mb-10 max-w-2xl">
                     A PRESTIGIOUS 18-HOLE CHAMPIONSHIP COURSE
                 </p>
 
-                <button className="bg-[#c5a059] text-white font-montserrat font-bold text-sm md:text-base py-4 px-10 rounded-sm hover:bg-[#4a3728] transition-all duration-300 tracking-[0.15em] border border-[#c5a059] hover:border-[#4a3728] shadow-lg transform hover:-translate-y-1">
+                <button className="bg-brand-yellow text-brand-blue font-montserrat font-bold text-sm md:text-base py-4 px-10 rounded-sm hover:bg-brand-blue hover:text-brand-yellow transition-all duration-300 tracking-[0.15em] border border-brand-yellow hover:border-brand-blue shadow-lg transform hover:-translate-y-1">
                     BOOK A TEE TIME
                 </button>
             </div>

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Facebook, Instagram, ArrowUp } from 'lucide-react';
+import { getContactDetails, toExternalLinkProps, toPhoneHref } from '../config/contactDetails';
 
 const Footer = () => {
     const [showScroll, setShowScroll] = useState(false);
+    const contactDetails = getContactDetails();
 
     useEffect(() => {
         const checkScrollTop = () => {
@@ -22,15 +24,15 @@ const Footer = () => {
     };
 
     return (
-        <footer className="w-full bg-[#1e1e1e] text-gray-300 pt-16 pb-8 border-t border-[#c5a059]/20 relative">
+        <footer className="w-full bg-brand-blue text-gray-300 pt-16 pb-8 border-t border-brand-yellow/20 relative">
             <div className="container mx-auto px-6 lg:px-10">
 
                 {/* Top Section: Logo */}
                 <div className="flex justify-center mb-12">
                     <img
-                        src="https://sandcreekgolfclub.com/wp-content/uploads/sites/151/2024/09/sand_creek_station.png"
-                        alt="Sand Creek Station"
-                        className="h-20 w-auto brightness-0 invert opacity-90"
+                        src="https://new-wingate.ddev.site/wp-content/uploads/2026/02/wingate_logo-1.webp"
+                        alt="Wingate Golf Club"
+                        className="h-28 w-auto opacity-90 filter drop-shadow-lg" // Increased size and adjusted filters
                     />
                 </div>
 
@@ -44,25 +46,24 @@ const Footer = () => {
                     <div className="flex flex-col items-center">
                         <h3 className="font-cinzel text-xl text-white mb-4 relative inline-block">
                             Wingate Golf Club
-                            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-white/30"></span>
+                            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-brand-yellow/50"></span>
                         </h3>
                         <div className="font-montserrat text-sm leading-relaxed space-y-1">
-                            <p>123 Golf Course Road</p>
-                            <p>Wingate, KS 67206</p>
-                            <a href="tel:3162846161" className="hover:text-golf-gold transition-colors block mt-2 underline">(316) 284-6161</a>
+                            <p>73JG+RJ2, Alpes Rd, Harare, Zimbabwe</p>
+                            <a href={toPhoneHref(contactDetails.phone)} className="hover:text-brand-yellow transition-colors block mt-2 underline">{contactDetails.phone}</a>
                         </div>
                     </div>
 
-                    {/* Column 2: Secondary Location (Placeholder) */}
+                    {/* Column 2: Secondary Location (Placeholder) - or maybe Club House hours? Keeping structure but updating colors */}
                     <div className="flex flex-col items-center">
                         <h3 className="font-cinzel text-xl text-white mb-4 relative inline-block">
-                            The Pro Shop
-                            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-white/30"></span>
+                            Club House
+                            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-brand-yellow/50"></span>
                         </h3>
                         <div className="font-montserrat text-sm leading-relaxed space-y-1">
                             <p>Open Daily</p>
                             <p>7:00 AM - 7:00 PM</p>
-                            <a href="tel:3162846161" className="hover:text-golf-gold transition-colors block mt-2 underline">(316) 284-6161</a>
+                            <a href={toPhoneHref(contactDetails.phone)} className="hover:text-brand-yellow transition-colors block mt-2 underline">{contactDetails.phone}</a>
                         </div>
                     </div>
 
@@ -70,13 +71,13 @@ const Footer = () => {
                     <div className="flex flex-col items-center">
                         <h3 className="font-cinzel text-xl text-white mb-4 relative inline-block">
                             Social Media
-                            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-white/30"></span>
+                            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-brand-yellow/50"></span>
                         </h3>
                         <div className="flex space-x-4 mt-2">
-                            <a href="#" className="flex justify-center items-center w-10 h-10 bg-white text-[#1e1e1e] hover:bg-golf-gold hover:text-white transition-all duration-300 rounded-sm">
+                            <a href={contactDetails.facebook} {...toExternalLinkProps(contactDetails.facebook)} className="flex justify-center items-center w-10 h-10 bg-white/10 text-white hover:bg-brand-yellow hover:text-brand-blue transition-all duration-300 rounded-sm">
                                 <Facebook size={20} fill="currentColor" strokeWidth={0} />
                             </a>
-                            <a href="#" className="flex justify-center items-center w-10 h-10 bg-white text-[#1e1e1e] hover:bg-golf-gold hover:text-white transition-all duration-300 rounded-sm">
+                            <a href={contactDetails.instagram} {...toExternalLinkProps(contactDetails.instagram)} className="flex justify-center items-center w-10 h-10 bg-white/10 text-white hover:bg-brand-yellow hover:text-brand-blue transition-all duration-300 rounded-sm">
                                 <Instagram size={20} strokeWidth={2.5} />
                             </a>
                         </div>
@@ -87,8 +88,8 @@ const Footer = () => {
                 <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-xs font-montserrat text-gray-500">
                     <p>&copy; {new Date().getFullYear()} Wingate Golf Club. All Rights Reserved.</p>
                     <div className="mt-4 md:mt-0 space-x-6">
-                        <a href="#" className="hover:text-white transition-colors">Join Our E-Club</a>
-                        <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+                        <a href="#" className="hover:text-brand-yellow transition-colors">Join Our E-Club</a>
+                        <a href="#" className="hover:text-brand-yellow transition-colors">Privacy Policy</a>
                     </div>
                 </div>
 
@@ -96,7 +97,7 @@ const Footer = () => {
 
             {/* Scroll to Top Button */}
             <button
-                className={`fixed bottom-8 right-8 bg-[#4a3728] text-white p-3 shadow-lg hover:bg-golf-gold transition-all duration-300 z-50 ${showScroll ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
+                className={`fixed bottom-8 right-8 bg-brand-yellow text-brand-blue p-3 shadow-lg hover:bg-white hover:text-brand-blue transition-all duration-300 z-50 ${showScroll ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
                 onClick={scrollToTop}
                 aria-label="Scroll to top"
             >

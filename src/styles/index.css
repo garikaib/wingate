@@ -6,14 +6,21 @@
     --font-merriweather: "Merriweather", serif;
     --font-opensans: "Open Sans", sans-serif;
 
+    --color-brand-blue: #0e1b3d;
+    --color-brand-yellow: #ffcc00;
+    --color-brand-gray: #f5f5f5;
+    --color-text-main: #1a1a1a;
+    --color-text-muted: #666666;
+
     --color-golf-green: #1a472a;
     --color-golf-gold: #c5a059;
     --color-golf-brown: #4a3728;
+    --color-golf-dark: #121914;
 }
 
 @layer base {
     body {
-        @apply font-opensans;
+        @apply font-opensans bg-white text-text-main;
     }
 
     h1,
@@ -22,6 +29,28 @@
     h4,
     h5,
     h6 {
-        @apply font-cinzel;
+        @apply font-cinzel text-brand-blue;
+    }
+
+    /* Force-remove inherited link underlines in header menu states */
+    #header-root nav a,
+    #header-root nav a:hover,
+    #header-root nav a:focus,
+    #header-root nav a:active,
+    #header-root nav a:visited {
+        text-decoration: none !important;
+    }
+
+    /* Submenu highlight only around text */
+    #header-root .wingate-submenu-text {
+        display: inline-block;
+        padding: 2px 4px;
+        border-radius: 2px;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    #header-root .wingate-submenu-link:hover .wingate-submenu-text {
+        background-color: rgb(14 27 61 / 88%);
+        color: var(--color-brand-yellow) !important;
     }
 }

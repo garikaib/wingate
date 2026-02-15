@@ -1,0 +1,280 @@
+:root {
+    --wingate-blue: #0e1b3d;
+    --wingate-yellow: #ffcc00;
+    --wingate-cream: #f8f5ec;
+    --wingate-slate: #34405f;
+}
+
+body.toplevel_page_wingate-settings {
+    background:
+        radial-gradient(1200px 600px at 15% -20%, rgba(255, 204, 0, 0.2), transparent 65%),
+        radial-gradient(900px 500px at 100% 10%, rgba(14, 27, 61, 0.15), transparent 60%),
+        linear-gradient(180deg, #f7f6f1 0%, #eef1f8 100%);
+}
+
+.wingate-admin-wrap {
+    margin: 22px 22px 0 2px;
+}
+
+.wingate-admin-wrap .notice,
+.wingate-admin-wrap .updated,
+.wingate-admin-wrap .error {
+    border-left-color: var(--wingate-yellow);
+    box-shadow: 0 12px 24px rgba(14, 27, 61, 0.08);
+}
+
+.wingate-admin-shell {
+    max-width: 1100px;
+    font-family: 'Montserrat', sans-serif;
+    color: var(--wingate-blue);
+}
+
+.wingate-admin-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    background: linear-gradient(130deg, rgba(14, 27, 61, 0.96) 0%, rgba(31, 58, 120, 0.94) 70%);
+    color: #fff;
+    box-shadow: 0 20px 36px rgba(14, 27, 61, 0.24);
+}
+
+.wingate-admin-hero::after {
+    content: '';
+    position: absolute;
+    inset: auto -5% -80px auto;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, rgba(255, 204, 0, 0.35), rgba(255, 204, 0, 0));
+    animation: wingatePulse 4.8s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.wingate-admin-kicker {
+    margin: 0 0 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.wingate-admin-hero h1 {
+    margin: 0;
+    font-family: 'Cinzel', serif;
+    font-size: clamp(30px, 4vw, 44px);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.wingate-admin-hero p {
+    margin: 12px 0 0;
+    max-width: 700px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.wingate-admin-grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.95fr);
+}
+
+.wingate-admin-card {
+    border-radius: 16px;
+    padding: 26px 24px;
+    border: 1px solid rgba(14, 27, 61, 0.09);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(247, 248, 252, 0.92) 100%);
+    box-shadow: 0 18px 30px rgba(14, 27, 61, 0.08);
+}
+
+.wingate-admin-card h2 {
+    margin: 0 0 16px;
+    font-family: 'Cinzel', serif;
+    font-size: 24px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--wingate-blue);
+}
+
+.wingate-admin-fields {
+    display: grid;
+    gap: 14px;
+}
+
+.wingate-admin-field {
+    display: block;
+}
+
+.wingate-admin-field-label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--wingate-slate);
+}
+
+.wingate-admin-input {
+    width: 100%;
+    margin: 0;
+    border-radius: 10px;
+    border: 1px solid rgba(14, 27, 61, 0.2);
+    background: #fff;
+    color: var(--wingate-blue);
+    padding: 12px 14px;
+    min-height: 46px;
+    font-size: 14px;
+    transition: border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease;
+}
+
+.wingate-admin-input::placeholder {
+    color: rgba(52, 64, 95, 0.52);
+}
+
+.wingate-admin-input:hover {
+    border-color: rgba(14, 27, 61, 0.34);
+}
+
+.wingate-admin-input:focus {
+    border-color: var(--wingate-yellow);
+    box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.2);
+    transform: translateY(-1px);
+    outline: none;
+}
+
+.wingate-admin-field-help {
+    display: block;
+    margin-top: 8px;
+    color: rgba(52, 64, 95, 0.78);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.wingate-admin-actions {
+    margin-top: 18px;
+}
+
+.wingate-admin-save.button-primary {
+    position: relative;
+    overflow: hidden;
+    height: auto;
+    min-height: 46px;
+    border: 0;
+    border-radius: 11px;
+    padding: 11px 18px;
+    background: linear-gradient(120deg, var(--wingate-blue) 0%, #1b3576 100%);
+    box-shadow: 0 12px 20px rgba(14, 27, 61, 0.3);
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.wingate-admin-save.button-primary::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 90px;
+    height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.42), transparent);
+    transform: skewX(-20deg);
+    animation: wingateShimmer 3.1s linear infinite;
+}
+
+.wingate-admin-save.button-primary:hover,
+.wingate-admin-save.button-primary:focus {
+    background: linear-gradient(120deg, #132754 0%, #253f88 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 24px rgba(14, 27, 61, 0.34);
+}
+
+.wingate-admin-preview ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.wingate-admin-preview li {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 13px 0;
+    border-bottom: 1px dashed rgba(14, 27, 61, 0.2);
+}
+
+.wingate-admin-preview li:last-child {
+    border-bottom: 0;
+}
+
+.wingate-admin-preview span {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(52, 64, 95, 0.78);
+}
+
+.wingate-admin-preview strong {
+    display: block;
+    color: var(--wingate-blue);
+    font-size: 14px;
+    line-height: 1.55;
+    word-break: break-word;
+}
+
+.wingate-anim-enter {
+    opacity: 0;
+    transform: translateY(16px) scale(0.99);
+    transition: opacity 0.62s ease, transform 0.62s ease;
+}
+
+.wingate-anim-enter.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+@keyframes wingatePulse {
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0) scale(0.98);
+        opacity: 0.75;
+    }
+    50% {
+        transform: translate3d(-10px, -6px, 0) scale(1.06);
+        opacity: 1;
+    }
+}
+
+@keyframes wingateShimmer {
+    0% {
+        left: -140%;
+    }
+    100% {
+        left: 155%;
+    }
+}
+
+@media (max-width: 960px) {
+    .wingate-admin-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .wingate-admin-hero {
+        padding: 24px 22px;
+    }
+
+    .wingate-admin-card {
+        padding: 22px 18px;
+    }
+}
