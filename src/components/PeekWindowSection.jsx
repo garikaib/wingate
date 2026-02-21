@@ -1,6 +1,6 @@
 import React from 'react';
 
-const defaultWindowImage = 'https://new-wingate.ddev.site/wp-content/uploads/2026/02/20251127_102423-scaled.jpg';
+const defaultWindowImage = '/wp-content/uploads/2026/02/20251127_102423-scaled.jpg';
 
 const PeekWindowSection = ({ imageUrl = defaultWindowImage }) => {
     return (

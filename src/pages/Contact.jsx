@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PeekWindowSection from '../components/PeekWindowSection';
 import ContactInfoStrip from '../components/ContactInfoStrip';
 import {
@@ -7,8 +7,12 @@ import {
     toExternalLinkProps,
     toPhoneHref,
 } from '../config/contactDetails';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-const heroImage = 'https://new-wingate.ddev.site/wp-content/uploads/2026/01/605410094_1291221263032055_7504380241267586286_n-scaled.jpg';
+gsap.registerPlugin(ScrollTrigger);
+
+const heroImage = '/wp-content/uploads/2026/01/605410094_1291221263032055_7504380241267586286_n-scaled.jpg';
 const contactTeam = [
     {
         name: 'Daryl Catterall',
@@ -34,6 +38,13 @@ const contactTeam = [
 ];
 
 const iconClassName = 'mx-auto mb-4 h-14 w-14 transition-colors duration-300 group-hover:text-brand-yellow';
+
+// ... Icons (HouseSolidIcon, etc.) kept same but omitted for brevity in thinking, 
+// strictly speaking I must include them or risk deleting them if I replace whole file.
+// The replace_file_content tool requires me to NOT omit existing code if I'm replacing the whole file or a range.
+// I will use StartLine/EndLine or replace the whole file carefully.
+// Since I want to wrap everything in `containerRef` and add `useEffect`, replacing the whole component function is best.
+// I will keep the icons outside.
 
 const HouseSolidIcon = ({ className = '' }) => (
     <svg viewBox="0 0 576 512" aria-hidden="true" className={className} fill="currentColor">
@@ -61,15 +72,58 @@ const FacebookSolidIcon = ({ className = '' }) => (
 
 const InstagramSolidIcon = ({ className = '' }) => (
     <svg viewBox="0 0 448 512" aria-hidden="true" className={className} fill="currentColor">
-        <path d="M224.1 141c-63.6 0-115 51.4-115 115s51.4 115 115 115 115-51.4 115-115-51.5-115-115-115zm0 189.6c-41.2 0-74.6-33.4-74.6-74.6s33.4-74.6 74.6-74.6 74.6 33.4 74.6 74.6-33.4 74.6-74.6 74.6zm146.4-194.3c0 14.9-12 26.9-26.9 26.9-14.9 0-26.9-12-26.9-26.9 0-14.9 12-26.9 26.9-26.9 14.9 0 26.9 12 26.9 26.9zm76.1 27.2c-1.7-35.3-9.7-66.7-35.5-92.5-25.8-25.8-57.2-33.8-92.5-35.5-36.5-2.1-145.9-2.1-182.4 0-35.3 1.7-66.7 9.7-92.5 35.5-25.8 25.8-33.8 57.2-35.5 92.5-2.1 36.5-2.1 145.9 0 182.4 1.7 35.3 9.7 66.7 35.5 92.5 25.8 25.8 57.2 33.8 92.5 35.5 36.5 2.1 145.9 2.1 182.4 0 35.3-1.7 66.7-9.7 92.5-35.5 25.8-25.8 33.8-57.2 35.5-92.5 2.1-36.5 2.1-145.8 0-182.4zm-48 221.8c-7.7 19.3-22.6 34.2-41.9 41.9-29 11.5-97.8 8.8-132.6 8.8s-103.7 2.7-132.6-8.8c-19.3-7.7-34.2-22.6-41.9-41.9-11.5-29-8.8-97.8-8.8-132.6s-2.7-103.7 8.8-132.6c7.7-19.3 22.6-34.2 41.9-41.9 29-11.5 97.8-8.8 132.6-8.8s103.7-2.7 132.6 8.8c19.3 7.7 34.2 22.6 41.9 41.9 11.5 29 8.8 97.8 8.8 132.6s2.8 103.7-8.8 132.6z" />
+        <path d="M224.1 141c-63.6 0-115 51.4-115 115s51.4 115 115 115 115-51.4 115-115-51.5-115-115-115zm0 189.6c-41.2 0-74.6-33.4-74.6-74.6s33.4-74.6 74.6-74.6 74.6 33.4 74.6 74.6-33.4 74.6-74.6 74.6zm146.4-194.3c0 14.9-12 26.9-26.9 26.9-14.9 0-26.9-12-26.9-26.9 0-14.9 12-26.9 26.9-26.9 14.9 0 26.9 12 26.9 26.9zm76.1 27.2c-1.7-35.3-9.7-66.7-35.5-92.5-25.8-25.8-57.2-33.8-92.5-35.5-36.5-2.1-145.9-2.1-182.4 0-35.3 1.7-66.7 9.7-92.5 35.5-25.8 25.8-33.8 57.2-35.5 92.5-2.1 36.5-2.1 145.9 0 182.4 1.7 35.3 9.7 66.7 35.5 92.5 25.8 25.8 57.2 33.8 92.5 35.5-36.5 2.1-145.9 2.1 182.4 0 35.3-1.7 66.7-9.7 92.5-35.5 25.8-25.8 33.8-57.2 35.5-92.5 2.1-36.5 2.1-145.8 0-182.4zm-48 221.8c-7.7 19.3-22.6 34.2-41.9 41.9-29 11.5-97.8 8.8-132.6 8.8s-103.7 2.7-132.6-8.8c-19.3-7.7-34.2-22.6-41.9-41.9-11.5-29-8.8-97.8-8.8-132.6s-2.7-103.7 8.8-132.6c7.7-19.3 22.6-34.2 41.9-41.9 29-11.5 97.8-8.8 132.6-8.8s103.7-2.7 132.6 8.8c19.3 7.7 34.2 22.6 41.9 41.9 11.5 29 8.8 97.8 8.8 132.6s2.8 103.7-8.8 132.6z" />
     </svg>
 );
 
 const Contact = () => {
     const contactDetails = getContactDetails();
+    const containerRef = useRef(null);
+
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            // Hero Title
+            gsap.from(".anim-hero-title", {
+                y: 50, opacity: 0, duration: 1.2, ease: "power3.out"
+            });
+
+            // Contact Cards
+            gsap.from(".anim-contact-card", {
+                scrollTrigger: { trigger: ".cards-container", start: "top 80%" },
+                y: 60, opacity: 0, duration: 1, stagger: 0.2, ease: "power2.out"
+            });
+
+            // Map
+            gsap.from(".anim-map", {
+                scrollTrigger: { trigger: ".anim-map-container", start: "top 75%" },
+                scale: 0.95, opacity: 0, duration: 1.2, ease: "power2.out"
+            });
+
+            // Team: avoid pre-hiding cards before trigger activates
+            gsap.fromTo(
+                ".anim-team-member",
+                { y: 50, autoAlpha: 0 },
+                {
+                    y: 0,
+                    autoAlpha: 1,
+                    duration: 0.8,
+                    stagger: 0.15,
+                    ease: "back.out(1.5)",
+                    immediateRender: false,
+                    scrollTrigger: {
+                        trigger: ".team-container",
+                        start: "top 75%",
+                        once: true,
+                    },
+                }
+            );
+
+        }, containerRef);
+        return () => ctx.revert();
+    }, []);
 
     return (
-        <div className="w-full">
+        <div className="w-full" ref={containerRef}>
             <section className="relative h-[58vh] min-h-[420px] w-full overflow-hidden">
                 <div
                     className="absolute inset-0 bg-cover bg-center"
@@ -78,7 +132,7 @@ const Contact = () => {
                     <div className="absolute inset-0 bg-black/35"></div>
                 </div>
                 <div className="relative z-10 flex h-full items-center justify-center px-6 text-center">
-                    <h1 className="font-cinzel text-5xl font-bold tracking-wide text-white md:text-7xl">
+                    <h1 className="font-cinzel text-5xl font-bold tracking-wide text-white md:text-7xl anim-hero-title">
                         CONTACT US
                     </h1>
                 </div>
@@ -90,12 +144,12 @@ const Contact = () => {
                         Wingate Park Golf Club
                     </h2>
 
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-3 cards-container">
                         <a
                             href="https://maps.google.com/?q=Wingate+Park+Golf+Club"
                             target="_blank"
                             rel="noreferrer"
-                            className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1"
+                            className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
                         >
                             <HouseSolidIcon className={`${iconClassName} text-brand-blue`} />
                             <h3 className="mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">Find Us</h3>
@@ -105,7 +159,7 @@ const Contact = () => {
 
                         <a
                             href={toEmailHref(contactDetails.email)}
-                            className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1"
+                            className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
                         >
                             <MailSolidIcon className={`${iconClassName} text-brand-blue`} />
                             <h3 className="mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">Email Us</h3>
@@ -114,7 +168,7 @@ const Contact = () => {
 
                         <a
                             href={toPhoneHref(contactDetails.phone)}
-                            className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1"
+                            className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
                         >
                             <PhoneSolidIcon className={`${iconClassName} text-brand-blue`} />
                             <h3 className="mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">Call Us</h3>
@@ -126,7 +180,7 @@ const Contact = () => {
                         <a
                             href={contactDetails.facebook}
                             {...toExternalLinkProps(contactDetails.facebook)}
-                            className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1"
+                            className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
                         >
                             <FacebookSolidIcon className={`${iconClassName} text-brand-blue`} />
                             <h3 className="font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">Follow Us</h3>
@@ -135,7 +189,7 @@ const Contact = () => {
                         <a
                             href={contactDetails.instagram}
                             {...toExternalLinkProps(contactDetails.instagram)}
-                            className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1"
+                            className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
                         >
                             <InstagramSolidIcon className={`${iconClassName} text-brand-blue`} />
                             <h3 className="font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">Follow Us</h3>
@@ -144,14 +198,14 @@ const Contact = () => {
                 </div>
             </section>
 
-            <section className="bg-slate-100 py-16">
+            <section className="bg-slate-100 py-16 anim-map-container">
                 <div className="mx-auto max-w-6xl px-6 lg:px-10">
                     <h2 className="mb-8 text-center font-cinzel text-4xl font-bold uppercase tracking-wide text-brand-blue">
                         Find Us
                     </h2>
                 </div>
                 <div className="relative left-1/2 w-screen -translate-x-1/2">
-                    <div className="relative">
+                    <div className="relative anim-map">
                         <iframe
                             title="Wingate Park Golf Club Location"
                             src="https://maps.google.com/maps?q=Wingate%20Park%20Golf%20Club%2C%20Harare&z=14&output=embed"
@@ -176,11 +230,11 @@ const Contact = () => {
                         <div className="mx-auto mt-4 h-1 w-24 bg-brand-yellow"></div>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-3 team-container">
                         {contactTeam.map((person) => (
                             <article
                                 key={person.email}
-                                className="group rounded-2xl border border-brand-blue/10 bg-white/90 px-7 py-9 text-center shadow-[0_18px_30px_rgba(14,27,61,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_36px_rgba(14,27,61,0.16)]"
+                                className="group rounded-2xl border border-brand-blue/10 bg-white/90 px-7 py-9 text-center shadow-[0_18px_30px_rgba(14,27,61,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_36px_rgba(14,27,61,0.16)] anim-team-member"
                             >
                                 <h3 className="relative mb-6 inline-block font-cinzel text-[2rem] font-bold uppercase leading-tight tracking-wide text-brand-blue">
                                     {person.name}

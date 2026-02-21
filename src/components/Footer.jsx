@@ -30,7 +30,7 @@ const Footer = () => {
                 {/* Top Section: Logo */}
                 <div className="flex justify-center mb-12">
                     <img
-                        src="https://new-wingate.ddev.site/wp-content/uploads/2026/02/wingate_logo-1.webp"
+                        src="/wp-content/uploads/2026/02/logo_compressed.png"
                         alt="Wingate Golf Club"
                         className="h-28 w-auto opacity-90 filter drop-shadow-lg" // Increased size and adjusted filters
                     />
@@ -74,10 +74,10 @@ const Footer = () => {
                             <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-brand-yellow/50"></span>
                         </h3>
                         <div className="flex space-x-4 mt-2">
-                            <a href={contactDetails.facebook} {...toExternalLinkProps(contactDetails.facebook)} className="flex justify-center items-center w-10 h-10 bg-white/10 text-white hover:bg-brand-yellow hover:text-brand-blue transition-all duration-300 rounded-sm">
+                            <a href={contactDetails.facebook} {...toExternalLinkProps(contactDetails.facebook)} className="flex justify-center items-center w-10 h-10 bg-white/10 text-white no-underline hover:no-underline focus:no-underline hover:bg-brand-yellow hover:text-brand-blue transition-all duration-300 rounded-sm">
                                 <Facebook size={20} fill="currentColor" strokeWidth={0} />
                             </a>
-                            <a href={contactDetails.instagram} {...toExternalLinkProps(contactDetails.instagram)} className="flex justify-center items-center w-10 h-10 bg-white/10 text-white hover:bg-brand-yellow hover:text-brand-blue transition-all duration-300 rounded-sm">
+                            <a href={contactDetails.instagram} {...toExternalLinkProps(contactDetails.instagram)} className="flex justify-center items-center w-10 h-10 bg-white/10 text-white no-underline hover:no-underline focus:no-underline hover:bg-brand-yellow hover:text-brand-blue transition-all duration-300 rounded-sm">
                                 <Instagram size={20} strokeWidth={2.5} />
                             </a>
                         </div>
@@ -88,7 +88,7 @@ const Footer = () => {
                 <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-xs font-montserrat text-gray-500">
                     <p>&copy; {new Date().getFullYear()} Wingate Golf Club. All Rights Reserved.</p>
                     <div className="mt-4 md:mt-0 space-x-6">
-                        <a href="#" className="hover:text-brand-yellow transition-colors">Join Our E-Club</a>
+                        <a href="/membership/" className="hover:text-brand-yellow transition-colors no-underline hover:no-underline focus:no-underline">Join Our Club</a>
                         <a href="#" className="hover:text-brand-yellow transition-colors">Privacy Policy</a>
                     </div>
                 </div>

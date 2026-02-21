@@ -1,0 +1,183 @@
+.wingate-admin-wrap {
+    max-width: 1200px;
+    margin: 20px auto;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.wingate-admin-hero {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.wingate-admin-hero h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5rem;
+    margin: 0 0 10px 0;
+    color: #c5a059; /* Gold accent */
+}
+
+.wingate-admin-hero p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    max-width: 600px;
+}
+
+.wingate-admin-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+.wingate-admin-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.wingate-admin-card h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    color: #1a1a1a;
+    margin-top: 0;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+.wingate-admin-field {
+    display: block;
+    margin-bottom: 25px;
+}
+
+.wingate-admin-field-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.wingate-admin-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.wingate-admin-input:focus {
+    border-color: #c5a059;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(197, 160, 89, 0.2);
+}
+
+.wingate-admin-field-help {
+    display: block;
+    margin-top: 5px;
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.wingate-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.wingate-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.wingate-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.wingate-slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .wingate-slider {
+    background-color: #c5a059;
+}
+
+input:focus + .wingate-slider {
+    box-shadow: 0 0 1px #c5a059;
+}
+
+input:checked + .wingate-slider:before {
+    transform: translateX(26px);
+}
+
+.wingate-admin-save {
+    background-color: #1a1a1a !important;
+    border-color: #1a1a1a !important;
+    color: #c5a059 !important;
+    font-weight: bold !important;
+    padding: 10px 30px !important;
+    height: auto !important;
+    font-size: 1rem !important;
+    transition: all 0.3s !important;
+}
+
+.wingate-admin-save:hover {
+    background-color: #333 !important;
+    color: #fff !important;
+}
+
+.wingate-checkbox-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.wingate-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.wingate-status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.wingate-status-active {
+    background-color: #e6f4ea;
+    color: #1e8e3e;
+}
+
+.wingate-status-inactive {
+    background-color: #fce8e6;
+    color: #d93025;
+}

@@ -7,7 +7,7 @@ const Hero = () => {
             <div
                 className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
                 style={{
-                    backgroundImage: "url('https://new-wingate.ddev.site/wp-content/uploads/2024/07/IMG-20240720-WA0010a.png')",
+                    backgroundImage: "url('/wp-content/uploads/2024/07/IMG-20240720-WA0010a.png')",
                 }}
             >
                 {/* Overlay for readability */}
@@ -31,9 +31,9 @@ const Hero = () => {
                     A PRESTIGIOUS 18-HOLE CHAMPIONSHIP COURSE
                 </p>
 
-                <button className="bg-brand-yellow text-brand-blue font-montserrat font-bold text-sm md:text-base py-4 px-10 rounded-sm hover:bg-brand-blue hover:text-brand-yellow transition-all duration-300 tracking-[0.15em] border border-brand-yellow hover:border-brand-blue shadow-lg transform hover:-translate-y-1">
+                <a href="/booking/" className="inline-flex items-center justify-center rounded-sm border border-brand-yellow bg-brand-yellow px-10 py-4 text-center font-montserrat text-sm font-bold tracking-[0.15em] text-brand-blue no-underline transition-all duration-300 shadow-lg transform hover:-translate-y-1 hover:bg-brand-blue hover:border-brand-blue hover:text-white hover:no-underline focus:no-underline md:text-base">
                     BOOK A TEE TIME
-                </button>
+                </a>
             </div>
 
             {/* Scroll Indicator (optional) */}

@@ -14,56 +14,56 @@ const Header = () => {
         {
             label: 'Home',
             href: '/',
-            hasDropdown: true,
-            subItems: [
-                { label: 'WELCOME', href: '#' }, // Placeholder
-            ]
+            hasDropdown: false
         },
         {
             label: 'The Course',
-            href: '#',
+            href: '/course/',
             hasDropdown: true,
             subItems: [
-                { label: 'COURSE DETAILS', href: '#' },
-                { label: 'RATES', href: '#' },
-                { label: 'HOLE BY HOLE', href: '#' },
-                { label: 'PASSES', href: '#' },
+                { label: 'COURSE DETAILS', href: '/course/' },
+                { label: 'RATES', href: '/rates/' },
+                { label: 'HOLE BY HOLE', href: '/hole-by-hole/' },
+                { label: 'GREEN FEES', href: '/green-fees/' },
                 { label: 'MEN\'S LEAGUE', href: '#' },
             ]
         },
         {
             label: 'Booking',
-            href: '#',
+            href: '/booking/',
             hasDropdown: true,
             subItems: [
-                { label: 'BOOK A TEE TIME', href: '#' }, // Placeholder
+                { label: 'BOOK A TEE TIME', href: '/booking/' },
             ]
         },
         {
             label: 'Membership',
-            href: '#',
+            href: '/membership/',
             hasDropdown: true,
             subItems: [
-                { label: 'MEMBERSHIP OPTIONS', href: '#' }, // Placeholder
+                { label: 'MEMBERSHIP OPTIONS', href: '/membership/' },
+                { label: 'APPLY NOW', href: '/membership/#apply' },
             ]
         },
         {
             label: 'The Club House',
-            href: '#',
+            href: '/club-house/',
+            hasDropdown: false
+        },
+        {
+            label: 'Upcoming Events',
+            href: '/events/',
             hasDropdown: true,
             subItems: [
-                { label: 'DINING', href: '#' }, // Placeholder
+                { label: 'TOURNAMENTS', href: '/events/tournament/' },
+                { label: 'WEDDINGS', href: '/events/wedding/' },
+                { label: 'BANQUETS', href: '/events/banquet/' }
             ]
         },
         {
-            label: 'Upcoming Events / News',
-            href: '#',
-            hasDropdown: true,
-            subItems: [
-                { label: 'TOURNAMENTS', href: '#' },
-                { label: 'WEDDINGS', href: '#' },
-                { label: 'BANQUETS', href: '#' }
-            ]
+            label: 'Club News',
+            href: '/news/', // Assumes a page is set as posts page, or we use a custom route
+            hasDropdown: false
         },
         {
             label: 'Contact Us',
@@ -77,7 +77,7 @@ const Header = () => {
             {/* Top Bar */}
             <div className="bg-white pt-3 pb-3">
                 <div className="w-full px-6 lg:px-10 flex justify-end items-center space-x-6 text-xs font-montserrat text-brand-blue font-bold">
-                    <a href="#" className="hover:text-white transition-colors">Join Our E-Club</a>
+                    <a href="/membership/" className="hover:text-white transition-colors no-underline hover:no-underline focus:no-underline">Join Our Club</a>
                     <span className="text-brand-blue/50">|</span>
                     <a href={toPhoneHref(contactDetails.phone)} className="flex items-center space-x-1 hover:text-white transition-colors">
                         <Phone size={12} className="fill-current" />
@@ -104,7 +104,7 @@ const Header = () => {
                     <div className="flex-shrink-0">
                         <a href="#">
                             <img
-                                src="https://new-wingate.ddev.site/wp-content/uploads/2026/02/wingate_logo-1.webp"
+                                src="/wp-content/uploads/2026/02/logo_compressed.png"
                                 alt="Wingate Golf Club"
                                 className="h-24 w-auto absolute top-2 z-50 filter drop-shadow-md" // Made logo larger and overlapping
                             />
