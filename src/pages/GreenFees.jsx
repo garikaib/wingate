@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Mail, Phone } from 'lucide-react';
@@ -8,6 +8,57 @@ gsap.registerPlugin(ScrollTrigger);
 const GreenFees = () => {
     const heroRef = useRef(null);
     const contentRef = useRef(null);
+    const [settings, setSettings] = useState(null);
+
+    const defaultSettings = {
+        hero: {
+            kicker: 'Championship Value',
+            title: 'Green Fees',
+            titleHighlight: 'Rates',
+            subtitle: 'Experience Championship Golf at Wingate Park',
+            backgroundImage: '/wp-content/uploads/2026/02/20260131_124600-scaled.jpg',
+        },
+        intro: {
+            content: 'Wingate Park Golf Club offers a prestigious golfing experience accessible to all. Whether you are a seasoned affiliated player, a visitor, or a junior starting your journey, we welcome you to challenge yourself on our wooded fairways and pristine greens.',
+        },
+        greenFees: [
+            { category: 'Affiliated', holes18: 20, holes9: 10 },
+            { category: 'Non-Affiliated', holes18: 30, holes9: 15 },
+            { category: 'Non-Residents', holes18: 60, holes9: 40 },
+            { category: 'Seniors Affiliated', holes18: 10, holes9: 5 },
+            { category: 'Seniors (Non-Members) 65-74yrs', holes18: 15, holes9: 10 },
+            { category: 'Juniors', holes18: 5, holes9: 5 },
+            { category: 'Students (with Valid Cards)', holes18: 15, holes9: 10 },
+            { category: 'Over 75 Years', holes18: 10, holes9: 5 },
+            { category: 'Mon/Tue/Thu AM "Special"', holes18: 10, holes9: 5 },
+        ],
+        cartHire: [
+            { type: 'High-Rider / 4-Seater', holes18: 40, holes9: 25 },
+            { type: 'Standard Cart', holes18: 35, holes9: 20 },
+            { type: 'Budget Carts', holes18: 30, holes9: 15 },
+            { type: '3-Wheeler (Trike)', holes18: 20, holes9: 12 },
+        ],
+        booking: {
+            title: 'Book Tee Time or Cart',
+            description: 'Ready to play? Contact the office to reserve your slot.',
+            phone: '0772 339 670',
+            email: 'reception@wingate.co.zw',
+        },
+        etiquette: {
+            title: 'Dress Code & Etiquette',
+            description: "To ensure an enjoyable experience for all members and visitors, please adhere to our club's dress code and etiquette.",
+            image: '/wp-content/uploads/2026/02/20260118_165728-scaled.jpg',
+            items: [
+                'Collared Shirts Required (No T-shirts)',
+                'Shirts must be tucked into trousers or shorts',
+                'Tailored shorts only (No rugby shorts)',
+                'No denim jeans or denim shorts allowed',
+                'Short white or "hidden" socks required',
+            ],
+            buttonText: 'Contact Us for More Info',
+            buttonUrl: '/contact-us/',
+        },
+    };
 
     useEffect(() => {
         const heroCtx = gsap.context(() => {
@@ -74,27 +125,27 @@ const GreenFees = () => {
         };
     }, []);
 
-    const greenFees = [
-        { category: 'Affiliated', holes18: 20, holes9: 10 },
-        { category: 'Non-Affiliated', holes18: 30, holes9: 15 },
-        { category: 'Non-Residents', holes18: 60, holes9: 40 },
-        { category: 'Seniors Affiliated', holes18: 10, holes9: 5 },
-        { category: 'Seniors (Non-Members) 65-74yrs', holes18: 15, holes9: 10 },
-        { category: 'Juniors', holes18: 5, holes9: 5 },
-        { category: 'Students (with Valid Cards)', holes18: 15, holes9: 10 },
-        { category: 'Over 75 Years', holes18: 10, holes9: 5 },
-        { category: 'Mon/Tue/Thu AM "Special"', holes18: 10, holes9: 5 },
-    ];
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const response = await fetch('/wp-json/wingate/v1/green-fees-settings');
+                if (!response.ok) throw new Error('Failed to fetch green fees settings');
+                const data = await response.json();
+                setSettings(data);
+            } catch (err) {
+                console.error('Failed to fetch green fees settings:', err);
+                setSettings(defaultSettings);
+            }
+        };
 
-    const cartHire = [
-        { type: 'High-Rider / 4-Seater', holes18: 40, holes9: 25 },
-        { type: 'Standard Cart', holes18: 35, holes9: 20 },
-        { type: 'Budget Carts', holes18: 30, holes9: 15 },
-        { type: '3-Wheeler (Trike)', holes18: 20, holes9: 12 },
-    ];
+        fetchSettings();
+    }, []);
 
-    const receptionPhone = '0772 339 670';
-    const receptionEmail = 'reception@wingate.co.zw';
+    const pageSettings = settings || defaultSettings;
+    const greenFees = pageSettings.greenFees || [];
+    const cartHire = pageSettings.cartHire || [];
+    const receptionPhone = pageSettings.booking?.phone || '';
+    const receptionEmail = pageSettings.booking?.email || '';
 
     return (
         <div className="bg-brand-gray min-h-screen font-sans">
@@ -102,7 +153,7 @@ const GreenFees = () => {
             <section ref={heroRef} className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="/wp-content/uploads/2026/02/20260131_124600-scaled.jpg"
+                        src={pageSettings.hero.backgroundImage}
                         alt="Green Fees Hero"
                         className="w-full h-full object-cover"
                     />
@@ -112,14 +163,14 @@ const GreenFees = () => {
                 </div>
                 <div className="relative z-10 text-center text-white hero-content px-4">
                     <div className="inline-block px-4 py-1 border border-brand-yellow/30 rounded-full mb-6 backdrop-blur-md bg-white/10">
-                        <span className="text-brand-yellow text-xs font-bold tracking-[0.3em] uppercase">Championship Value</span>
+                        <span className="text-brand-yellow text-xs font-bold tracking-[0.3em] uppercase">{pageSettings.hero.kicker}</span>
                     </div>
                     <h1 className="text-5xl md:text-7xl font-cinzel font-bold mb-4 tracking-tight leading-none text-white drop-shadow-2xl">
-                        Green <span className="text-brand-yellow">Fees</span> & Rates
+                        {pageSettings.hero.title} <span className="text-brand-yellow">{pageSettings.hero.titleHighlight}</span>
                     </h1>
                     <div className="w-24 h-1 bg-brand-yellow mx-auto mb-6"></div>
                     <p className="text-xl md:text-2xl font-montserrat font-light tracking-wide text-white/90">
-                        Experience Championship Golf at Wingate Park
+                        {pageSettings.hero.subtitle}
                     </p>
                 </div>
             </section>
@@ -129,9 +180,7 @@ const GreenFees = () => {
                 {/* Intro */}
                 <div className="text-center mb-16 anim-section">
                     <p className="text-lg md:text-xl font-merriweather text-gray-700 leading-relaxed max-w-4xl mx-auto">
-                        Wingate Park Golf Club offers a prestigious golfing experience accessible to all.
-                        Whether you are a seasoned affiliated player, a visitor, or a junior starting your journey,
-                        we welcome you to challenge yourself on our wooded fairways and pristine greens.
+                        {pageSettings.intro.content}
                     </p>
                 </div>
 
@@ -193,9 +242,9 @@ const GreenFees = () => {
                         {/* Booking Info */}
                         <div className="bg-brand-blue text-white p-5 md:p-6 rounded-sm shadow-lg anim-section relative overflow-hidden group">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-brand-yellow/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-brand-yellow/30 transition-all duration-500"></div>
-                            <h3 className="text-xl md:text-2xl font-cinzel font-bold mb-2 relative z-10 text-left">Book Tee Time or Cart</h3>
+                            <h3 className="text-xl md:text-2xl font-cinzel font-bold mb-2 relative z-10 text-left">{pageSettings.booking?.title}</h3>
                             <p className="font-montserrat text-sm md:text-base mb-4 text-gray-200 relative z-10 text-left">
-                                Ready to play? Contact the office to reserve your slot.
+                                {pageSettings.booking?.description}
                             </p>
                             <div className="relative z-10 flex flex-col gap-2">
                                 <a
@@ -230,26 +279,20 @@ const GreenFees = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
                         <div>
                             <img
-                                src="/wp-content/uploads/2026/02/20260118_165728-scaled.jpg"
+                                src={pageSettings.etiquette?.image}
                                 alt="Golf Etiquette"
                                 className="rounded-sm shadow-2xl w-full h-[360px] md:h-[520px] object-cover object-bottom"
                             />
                         </div>
                         <div>
                             <h2 className="text-3xl font-cinzel text-brand-blue mb-6 border-l-4 border-brand-yellow pl-4">
-                                Dress Code & Etiquette
+                                {pageSettings.etiquette?.title}
                             </h2>
                             <p className="font-montserrat text-gray-600 mb-6 leading-relaxed">
-                                To ensure an enjoyable experience for all members and visitors, please adhere to our club's dress code and etiquette.
+                                {pageSettings.etiquette?.description}
                             </p>
                             <ul className="space-y-4 font-montserrat text-gray-700">
-                                {[
-                                    'Collared Shirts Required (No T-shirts)',
-                                    'Shirts must be tucked into trousers or shorts',
-                                    'Tailored shorts only (No rugby shorts)',
-                                    'No denim jeans or denim shorts allowed',
-                                    'Short white or "hidden" socks required'
-                                ].map((item, i) => (
+                                {(pageSettings.etiquette?.items || []).map((item, i) => (
                                     <li key={i} className="flex items-start gap-3">
                                         <span className="text-brand-yellow mt-1">
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -262,8 +305,8 @@ const GreenFees = () => {
                             </ul>
 
                             <div className="mt-8">
-                                <a href="/contact-us/" className="inline-block bg-brand-blue !text-white visited:!text-white !no-underline hover:!no-underline focus:!no-underline font-cinzel font-bold uppercase tracking-widest px-8 py-3 rounded-sm border border-brand-blue hover:bg-brand-yellow hover:!text-brand-blue hover:border-brand-yellow transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
-                                    Contact Us for More Info
+                                <a href={pageSettings.etiquette?.buttonUrl} className="inline-block bg-brand-blue !text-white visited:!text-white !no-underline hover:!no-underline focus:!no-underline font-cinzel font-bold uppercase tracking-widest px-8 py-3 rounded-sm border border-brand-blue hover:bg-brand-yellow hover:!text-brand-blue hover:border-brand-yellow transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
+                                    {pageSettings.etiquette?.buttonText}
                                 </a>
                             </div>
                         </div>

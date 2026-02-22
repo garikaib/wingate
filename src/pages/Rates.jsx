@@ -11,7 +11,29 @@ const Rates = () => {
     const contentRef = useRef(null);
     const parallaxRef = useRef(null);
 
+    const [settings, setSettings] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const apiRoot = window.wingateThemeData?.root || '/wp-json/';
+                const response = await fetch(`${apiRoot}wingate/v1/rates-settings`);
+                if (!response.ok) throw new Error('Data fetch failed');
+                const data = await response.json();
+                setSettings(data);
+            } catch (err) {
+                console.error("Error loading rates data:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchSettings();
+    }, []);
+
+    useEffect(() => {
+        if (isLoading || !settings) return;
+
         const ctx = gsap.context(() => {
             // Hero Title Animation
             gsap.from(titleRef.current, {
@@ -57,40 +79,7 @@ const Rates = () => {
             });
         }, heroRef);
         return () => ctx.revert();
-    }, []);
-
-    const menRates = [
-        { category: "MALE", desc: "Over 18 non-student", quarterly: 210, monthly: 70 },
-        { category: "COUNTRY", desc: "+50km from CBD", quarterly: 165, monthly: 55 },
-        { category: "SENIOR", desc: "70-79 yrs & 10yrs member", quarterly: 150, monthly: 50 },
-        { category: "LOCAL PRO", desc: "Must have a current professional license", quarterly: 120, monthly: 40 },
-        { category: "STUDENT", desc: "College/Varsity (Proof required)", quarterly: 105, monthly: 35 },
-        { category: "JUNIOR", desc: "Junior under 19", quarterly: 105, monthly: 35 },
-        { category: "HOUSE MEN", desc: "Access to members facilities. Must pay visitor's fee golf", quarterly: 105, monthly: 35 },
-        { category: "LIMITED ROUNDS", desc: "Max 18 rounds a year (Once-off)", annual: 300 },
-        { category: "PENSIONER", desc: "Age 80+ & 10 years member", quarterly: 60, monthly: 20 },
-        { category: "ABSENTEE", desc: "Absent > 2mths, medical or out of country", quarterly: 60, monthly: 20 },
-    ];
-
-    const ladiesRates = [
-        { category: "FEMALE", desc: "FULL", quarterly: 180, monthly: 60 },
-        { category: "COUNTRY", desc: "+50km from CBD", quarterly: 125, monthly: 45 },
-        { category: "SENIOR", desc: "70-79 yrs & 10yrs member", quarterly: 120, monthly: 40 },
-        { category: "STUDENT FEMALE", desc: "College/Varsity (Proof required)", quarterly: 90, monthly: 30 },
-        { category: "JUNIOR", desc: "Junior under 19", quarterly: 75, monthly: 25 },
-        { category: "HOUSE FEMALE", desc: "Access to members facilities", quarterly: 75, monthly: 25 },
-        { category: "LIMITED", desc: "Max 18 rounds a year (Once-off)", annual: 250 },
-        { category: "PENSIONER", desc: "Age 80+ & 10 years member", quarterly: 30, monthly: 10 },
-        { category: "LOCAL PRO", desc: "Must have professional license", quarterly: 30, monthly: 10 },
-        { category: "ABSENTEE", desc: "Absent > 2mths, medical or out of country", quarterly: 30, monthly: 10 },
-    ];
-
-    const allRates = [
-        { category: "HNA", desc: "Annual HNA Subscription (Handicap)", flat: 20 },
-        { category: "ZGA", desc: "Annual Golf Union subscription", flat: 40 },
-        { category: "HLPGU", desc: "Annual Golf Union subscription (Ladies)", flat: "TBA" },
-        { category: "Locker", desc: "Locker in changing rooms", flat: 20 },
-    ];
+    }, [isLoading, settings]);
 
     const RateTable = ({ title, rates, columns, icon: Icon }) => (
         <div className="glass-card mb-20 relative">
@@ -167,12 +156,11 @@ const Rates = () => {
                     ref={parallaxRef}
                     className="absolute inset-0 bg-cover bg-center"
                     style={{
-                        backgroundImage: "url('/wp-content/uploads/2026/02/20251123_115906-scaled.jpg')",
+                        backgroundImage: `url('${settings.hero.backgroundImage}')`,
                         transform: "scale(1.1)"
                     }}
                 ></div>
 
-                {/* Refined Gradient Mask: Blue for depth, blending to White for the page */}
                 {/* Refined Gradient Mask: Blue for depth, blending to White for the page */}
                 <div className="absolute inset-0 bg-brand-blue/30"></div>
                 <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-white to-transparent"></div>
@@ -180,15 +168,15 @@ const Rates = () => {
 
                 <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
                     <div className="inline-block px-4 py-1 border border-brand-yellow/30 rounded-full mb-6 backdrop-blur-md bg-white/10">
-                        <span className="text-brand-yellow text-xs font-bold tracking-[0.3em] uppercase">Private Experience</span>
+                        <span className="text-brand-yellow text-xs font-bold tracking-[0.3em] uppercase">{settings.hero.kicker}</span>
                     </div>
-                    <h1 ref={titleRef} className="text-5xl md:text-8xl font-cinzel text-white mb-8 tracking-tighter drop-shadow-2xl leading-none">
-                        Membership <br /> <span className="text-brand-yellow">Subscriptions</span>
+                    <h1 ref={titleRef} className="text-5xl md:text-8xl font-cinzel text-white mb-8 tracking-tighter drop-shadow-2xl leading-none whitespace-pre-line">
+                        {settings.hero.title}
                     </h1>
                     <div className="flex flex-col items-center">
                         <div className="w-24 h-1 bg-brand-yellow/50 mb-6"></div>
                         <p className="text-sm md:text-lg text-white/90 font-montserrat tracking-[0.2em] uppercase font-light">
-                            Subs as from 1st January 2026
+                            {settings.hero.subtitle}
                         </p>
                     </div>
                 </div>
@@ -198,11 +186,10 @@ const Rates = () => {
             <main ref={contentRef} className="container mx-auto px-4 py-32 max-w-6xl relative">
                 <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12">
                     <div className="max-w-2xl">
-                        <span className="text-brand-yellow font-cinzel tracking-[0.4em] uppercase text-xs font-bold mb-4 block">The Investment</span>
-                        <h2 className="text-5xl md:text-6xl font-cinzel text-brand-blue mb-8 leading-tight">Elite Access, <br />Curated for You</h2>
-                        <p className="text-text-muted font-montserrat text-lg leading-relaxed font-light">
-                            At Wingate Park, we believe membership is more than just access—it's an entry into a legacy.
-                            Our restructured rates reflect our commitment to maintaining Zimbabwe's premier 18-hole Parkland Course.
+                        <span className="text-brand-yellow font-cinzel tracking-[0.4em] uppercase text-xs font-bold mb-4 block">{settings.intro.kicker}</span>
+                        <h2 className="text-5xl md:text-6xl font-cinzel text-brand-blue mb-8 leading-tight whitespace-pre-line">{settings.intro.title}</h2>
+                        <p className="text-text-muted font-montserrat text-lg leading-relaxed font-light whitespace-pre-line">
+                            {settings.intro.content}
                         </p>
                     </div>
 
@@ -215,22 +202,22 @@ const Rates = () => {
                     </div>
                 </div>
 
-                <RateTable title="Gentlemen" rates={menRates} columns={["Quarterly", "Monthly"]} icon={Users} />
-                <RateTable title="Ladies" rates={ladiesRates} columns={["Quarterly", "Monthly"]} icon={Users} />
-                <RateTable title="Admin & Extras" rates={allRates} columns={["Amount"]} icon={ShieldCheck} />
+                <RateTable title="Gentlemen" rates={settings.menRates} columns={["Quarterly", "Monthly"]} icon={Users} />
+                <RateTable title="Ladies" rates={settings.ladiesRates} columns={["Quarterly", "Monthly"]} icon={Users} />
+                <RateTable title="Admin & Extras" rates={settings.allRates} columns={["Amount"]} icon={ShieldCheck} />
 
                 {/* Final Call to Action - MORE IMPACTful */}
                 <div className="relative mt-32 py-24 px-8 rounded-3xl overflow-hidden bg-brand-blue text-center group shadow-2xl">
-                    <div className="absolute inset-0 opacity-20 grayscale-0 group-hover:scale-110 transition-transform duration-1000" style={{ backgroundImage: "url('/wp-content/uploads/2026/02/20251123_115906-scaled.jpg')", backgroundSize: 'cover' }}></div>
+                    <div className="absolute inset-0 opacity-20 grayscale-0 group-hover:scale-110 transition-transform duration-1000" style={{ backgroundImage: `url('${settings.cta.backgroundImage}')`, backgroundSize: 'cover' }}></div>
                     <div className="absolute inset-0 bg-gradient-to-br from-brand-blue via-brand-blue/90 to-black"></div>
                     <div className="relative z-10">
-                        <h3 className="text-4xl md:text-5xl font-cinzel text-brand-yellow mb-8 tracking-widest leading-tight">Elevate Your Game. <br /> Join the Legacy.</h3>
+                        <h3 className="text-4xl md:text-5xl font-cinzel text-brand-yellow mb-8 tracking-widest leading-tight whitespace-pre-line">{settings.cta.title}</h3>
                         <p className="text-white/70 font-montserrat mb-12 max-w-xl mx-auto text-lg font-light leading-relaxed">
-                            Start your journey with Zimbabwe's most prestigious golfing community today.
+                            {settings.cta.description}
                         </p>
                         <div className="flex flex-wrap justify-center gap-8">
-                            <a href="/membership" className="group flex items-center bg-brand-yellow text-brand-blue no-underline hover:no-underline focus:no-underline font-cinzel font-bold text-sm tracking-widest uppercase py-4 px-12 border border-brand-yellow hover:bg-white hover:border-white transition-all duration-300 rounded-sm shadow-xl shadow-brand-yellow/20">
-                                JOIN NOW <ChevronRight size={18} className="ml-3 group-hover:translate-x-2 transition-transform" />
+                            <a href={settings.cta.buttonUrl} className="group flex items-center bg-brand-yellow text-brand-blue no-underline hover:no-underline focus:no-underline font-cinzel font-bold text-sm tracking-widest uppercase py-4 px-12 border border-brand-yellow hover:bg-white hover:border-white transition-all duration-300 rounded-sm shadow-xl shadow-brand-yellow/20">
+                                {settings.cta.buttonText} <ChevronRight size={18} className="ml-3 group-hover:translate-x-2 transition-transform" />
                             </a>
                         </div>
                     </div>

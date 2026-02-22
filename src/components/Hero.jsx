@@ -1,13 +1,23 @@
 import React from 'react';
 
-const Hero = () => {
+const Hero = ({ settings }) => {
+    const data = settings || {
+        kicker: 'WELCOME TO',
+        title: 'WINGATE PARK',
+        subtitle: 'GOLF CLUB',
+        description: 'A PRESTIGIOUS 18-HOLE CHAMPIONSHIP COURSE',
+        buttonText: 'BOOK A TEE TIME',
+        buttonUrl: '/booking/',
+        backgroundImage: '/wp-content/uploads/2024/07/IMG-20240720-WA0010a.png'
+    };
+
     return (
         <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
             {/* Background Image */}
             <div
                 className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
                 style={{
-                    backgroundImage: "url('/wp-content/uploads/2024/07/IMG-20240720-WA0010a.png')",
+                    backgroundImage: `url('${data.backgroundImage}')`,
                 }}
             >
                 {/* Overlay for readability */}
@@ -17,22 +27,22 @@ const Hero = () => {
             {/* Content */}
             <div className="relative z-10 text-center px-4 flex flex-col items-center">
                 <h2 className="text-white font-cinzel text-sm md:text-lg tracking-[0.3em] mb-4 font-bold">
-                    WELCOME TO
+                    {data.kicker}
                 </h2>
                 <h1 className="text-white font-cinzel text-5xl md:text-7xl lg:text-9xl font-bold tracking-wider mb-2 drop-shadow-xl leading-tight">
-                    WINGATE PARK
+                    {data.title}
                 </h1>
                 <h2 className="text-white font-cinzel text-3xl md:text-5xl lg:text-6xl tracking-widest mb-6 drop-shadow-lg">
-                    GOLF CLUB
+                    {data.subtitle}
                 </h2>
                 <div className="w-24 h-1 bg-brand-yellow mb-8"></div>
 
                 <p className="text-white font-montserrat text-sm md:text-lg tracking-[0.2em] mb-10 max-w-2xl">
-                    A PRESTIGIOUS 18-HOLE CHAMPIONSHIP COURSE
+                    {data.description}
                 </p>
 
-                <a href="/booking/" className="inline-flex items-center justify-center rounded-sm border border-brand-yellow bg-brand-yellow px-10 py-4 text-center font-montserrat text-sm font-bold tracking-[0.15em] text-brand-blue no-underline transition-all duration-300 shadow-lg transform hover:-translate-y-1 hover:bg-brand-blue hover:border-brand-blue hover:text-white hover:no-underline focus:no-underline md:text-base">
-                    BOOK A TEE TIME
+                <a href={data.buttonUrl} className="inline-flex items-center justify-center rounded-sm border border-brand-yellow bg-brand-yellow px-10 py-4 text-center font-montserrat text-sm font-bold tracking-[0.15em] text-brand-blue no-underline transition-all duration-300 shadow-lg transform hover:-translate-y-1 hover:bg-brand-blue hover:border-brand-blue hover:text-white hover:no-underline focus:no-underline md:text-base">
+                    {data.buttonText}
                 </a>
             </div>
 

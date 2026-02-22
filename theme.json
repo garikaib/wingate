@@ -2,6 +2,10 @@
     "$schema": "https://schemas.wp.org/wp/6.7/theme.json",
     "version": 3,
     "settings": {
+        "layout": {
+            "contentSize": "1280px",
+            "wideSize": "100%"
+        },
         "color": {
             "palette": [
                 {

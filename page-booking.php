@@ -5,12 +5,20 @@
  * @package Wingate
  */
 
-$hero_image       = home_url( '/wp-content/uploads/2026/02/20260131_124600-scaled.jpg' );
+$booking_settings = function_exists( 'wingate_get_booking_settings_data' )
+	? wingate_get_booking_settings_data()
+	: array();
+
+$hero             = isset( $booking_settings['hero'] ) ? $booking_settings['hero'] : array();
+$quick_info       = isset( $booking_settings['quickInfo'] ) ? $booking_settings['quickInfo'] : array();
+$dress_code       = isset( $booking_settings['dressCode'] ) ? $booking_settings['dressCode'] : array();
+$cart_hire        = isset( $booking_settings['cartHire'] ) ? $booking_settings['cartHire'] : array();
+$cta              = isset( $booking_settings['cta'] ) ? $booking_settings['cta'] : array();
+
+$hero_image       = ! empty( $hero['backgroundImage'] ) ? $hero['backgroundImage'] : home_url( '/wp-content/uploads/2026/02/20260131_124600-scaled.jpg' );
 $booking_widget   = 'https://www.chronogolf.com/club/19667/widget';
-$rates_url        = home_url( '/rates/' );
-$green_fees_url   = home_url( '/green-fees/' );
-$membership_url   = home_url( '/membership/' );
-$contact_url      = home_url( '/contact-us/' );
+$rates_url        = ! empty( $cta['url'] ) ? home_url( $cta['url'] ) : home_url( '/rates/' );
+$contact_url      = ! empty( $quick_info[2]['url'] ) ? home_url( $quick_info[2]['url'] ) : home_url( '/contact-us/' );
 
 get_header();
 ?>
@@ -37,18 +45,18 @@ get_header();
 
         <!-- Content -->
         <div class="relative z-10 text-center px-4 max-w-5xl mx-auto flex flex-col items-center">
-            <div class="inline-block px-5 py-2 border border-brand-yellow/30 rounded-full mb-8 backdrop-blur-md bg-white/10">
-                <span class="text-brand-yellow text-xs font-bold tracking-[0.3em] uppercase">Private Experience</span>
+                <div class="inline-block px-5 py-2 border border-brand-yellow/30 rounded-full mb-8 backdrop-blur-md bg-white/10">
+                <span class="text-brand-yellow text-xs font-bold tracking-[0.3em] uppercase"><?php echo esc_html( isset( $hero['kicker'] ) ? $hero['kicker'] : 'Private Experience' ); ?></span>
             </div>
             
             <h1 class="text-5xl md:text-7xl lg:text-8xl font-cinzel text-white mb-6 tracking-tight drop-shadow-2xl leading-none">
-                Book <span class="text-brand-yellow">Tee Time</span>
+                <?php echo esc_html( isset( $hero['title'] ) ? $hero['title'] : 'Book' ); ?> <span class="text-brand-yellow"><?php echo esc_html( isset( $hero['titleHighlight'] ) ? $hero['titleHighlight'] : 'Tee Time' ); ?></span>
             </h1>
             
             <div class="w-24 h-1 bg-brand-yellow/50 mb-8"></div>
             
             <p class="text-sm md:text-lg text-white/90 font-montserrat tracking-[0.2em] uppercase font-light max-w-2xl">
-                Secure your round at one of Harare's finest courses
+                <?php echo esc_html( isset( $hero['subtitle'] ) ? $hero['subtitle'] : "Secure your round at one of Harare's finest courses" ); ?>
             </p>
         </div>
     </header>
@@ -59,16 +67,16 @@ get_header();
         <!-- Quick Info Cards (Glassmorphism) -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-24 max-w-6xl mx-auto">
             <div class="bg-white/90 backdrop-blur-xl border border-white/40 shadow-xl rounded-xl p-6 text-center transform hover:-translate-y-1 transition-all duration-300">
-                <p class="text-brand-blue/60 font-cinzel text-xs uppercase tracking-widest mb-2">Open Daily</p>
-                <p class="text-brand-blue font-cinzel text-xl font-bold">7:00 AM - 6:00 PM</p>
+                <p class="text-brand-blue/60 font-cinzel text-xs uppercase tracking-widest mb-2"><?php echo esc_html( isset( $quick_info[0]['label'] ) ? $quick_info[0]['label'] : 'Open Daily' ); ?></p>
+                <p class="text-brand-blue font-cinzel text-xl font-bold"><?php echo esc_html( isset( $quick_info[0]['value'] ) ? $quick_info[0]['value'] : '7:00 AM - 6:00 PM' ); ?></p>
             </div>
             <div class="bg-white/90 backdrop-blur-xl border border-white/40 shadow-xl rounded-xl p-6 text-center transform hover:-translate-y-1 transition-all duration-300">
-                <p class="text-brand-blue/60 font-cinzel text-xs uppercase tracking-widest mb-2">Course Type</p>
-                <p class="text-brand-blue font-cinzel text-xl font-bold">Championship 18</p>
+                <p class="text-brand-blue/60 font-cinzel text-xs uppercase tracking-widest mb-2"><?php echo esc_html( isset( $quick_info[1]['label'] ) ? $quick_info[1]['label'] : 'Course Type' ); ?></p>
+                <p class="text-brand-blue font-cinzel text-xl font-bold"><?php echo esc_html( isset( $quick_info[1]['value'] ) ? $quick_info[1]['value'] : 'Championship 18' ); ?></p>
             </div>
             <div class="bg-white/90 backdrop-blur-xl border border-white/40 shadow-xl rounded-xl p-6 text-center transform hover:-translate-y-1 transition-all duration-300">
-                <p class="text-brand-blue/60 font-cinzel text-xs uppercase tracking-widest mb-2">Questions?</p>
-                <a href="<?php echo esc_url( $contact_url ); ?>" class="text-brand-blue font-cinzel text-xl font-bold hover:text-brand-yellow transition-colors !no-underline hover:!no-underline" style="text-decoration: none !important;">Contact Us</a>
+                <p class="text-brand-blue/60 font-cinzel text-xs uppercase tracking-widest mb-2"><?php echo esc_html( isset( $quick_info[2]['label'] ) ? $quick_info[2]['label'] : 'Questions?' ); ?></p>
+                <a href="<?php echo esc_url( $contact_url ); ?>" class="text-brand-blue font-cinzel text-xl font-bold hover:text-brand-yellow transition-colors !no-underline hover:!no-underline" style="text-decoration: none !important;"><?php echo esc_html( isset( $quick_info[2]['value'] ) ? $quick_info[2]['value'] : 'Contact Us' ); ?></a>
             </div>
         </div>
 
@@ -92,22 +100,23 @@ get_header();
             <!-- Dress Code Card -->
             <div class="bg-brand-blue/5 rounded-2xl p-8 md:p-10 border border-brand-blue/10">
                 <div class="flex items-center gap-4 mb-6">
-                    <div class="w-12 h-12 rounded-full bg-brand-blue flex items-center justify-center text-brand-yellow font-bold font-cinzel text-xl">D</div>
-                    <h3 class="font-cinzel text-2xl text-brand-blue">Dress Code</h3>
+                    <div class="w-12 h-12 rounded-full bg-brand-blue flex items-center justify-center text-brand-yellow font-bold font-cinzel text-xl"><?php echo esc_html( isset( $dress_code['badge'] ) ? $dress_code['badge'] : 'D' ); ?></div>
+                    <h3 class="font-cinzel text-2xl text-brand-blue"><?php echo esc_html( isset( $dress_code['title'] ) ? $dress_code['title'] : 'Dress Code' ); ?></h3>
                 </div>
                 <ul class="space-y-4 font-montserrat text-slate-700">
-                    <li class="flex items-center gap-3">
-                        <span class="w-1.5 h-1.5 rounded-full bg-brand-yellow"></span>
-                        <span>Collared shirts required (tucked in).</span>
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <span class="w-1.5 h-1.5 rounded-full bg-brand-yellow"></span>
-                        <span>Tailored shorts only (no rugby/denim).</span>
-                    </li>
-                    <li class="flex items-center gap-3">
-                        <span class="w-1.5 h-1.5 rounded-full bg-brand-yellow"></span>
-                        <span>Short white or "hidden" socks.</span>
-                    </li>
+					<?php
+					$dress_items = isset( $dress_code['items'] ) && is_array( $dress_code['items'] ) ? $dress_code['items'] : array(
+						'Collared shirts required (tucked in).',
+						'Tailored shorts only (no rugby/denim).',
+						'Short white or "hidden" socks.',
+					);
+					foreach ( $dress_items as $item ) :
+						?>
+						<li class="flex items-center gap-3">
+							<span class="w-1.5 h-1.5 rounded-full bg-brand-yellow"></span>
+							<span><?php echo esc_html( $item ); ?></span>
+						</li>
+					<?php endforeach; ?>
                 </ul>
             </div>
 
@@ -116,17 +125,17 @@ get_header();
                 <div class="absolute top-0 right-0 w-32 h-32 bg-brand-yellow/10 rounded-full -mr-10 -mt-10 blur-2xl transition-all duration-500 group-hover:bg-brand-yellow/20"></div>
                 
                 <div class="flex items-center gap-4 mb-6 relative z-10">
-                    <div class="w-12 h-12 rounded-full bg-brand-blue flex items-center justify-center text-brand-yellow font-bold font-cinzel text-xl">C</div>
-                    <h3 class="font-cinzel text-2xl text-brand-blue">Cart Hire</h3>
+                    <div class="w-12 h-12 rounded-full bg-brand-blue flex items-center justify-center text-brand-yellow font-bold font-cinzel text-xl"><?php echo esc_html( isset( $cart_hire['badge'] ) ? $cart_hire['badge'] : 'C' ); ?></div>
+                    <h3 class="font-cinzel text-2xl text-brand-blue"><?php echo esc_html( isset( $cart_hire['title'] ) ? $cart_hire['title'] : 'Cart Hire' ); ?></h3>
                 </div>
                 
                 <p class="font-montserrat text-slate-700 mb-6 relative z-10">
-                    Carts available first-come, first-served. Recommended to reserve via Pro Shop.
+                    <?php echo esc_html( isset( $cart_hire['description'] ) ? $cart_hire['description'] : 'Carts available first-come, first-served. Recommended to reserve via Pro Shop.' ); ?>
                 </p>
                 
                 <div class="bg-white rounded-lg p-4 border border-brand-blue/10 inline-block shadow-sm relative z-10">
-                    <span class="font-montserrat font-bold text-brand-blue block text-sm uppercase tracking-wider mb-1">18 Holes</span>
-                    <span class="font-cinzel text-lg text-slate-800">Standard $35 <span class="text-brand-yellow mx-2">|</span> High-Rider $40</span>
+                    <span class="font-montserrat font-bold text-brand-blue block text-sm uppercase tracking-wider mb-1"><?php echo esc_html( isset( $cart_hire['label'] ) ? $cart_hire['label'] : '18 Holes' ); ?></span>
+                    <span class="font-cinzel text-lg text-slate-800"><?php echo esc_html( isset( $cart_hire['ratesText'] ) ? $cart_hire['ratesText'] : 'Standard $35 | High-Rider $40' ); ?></span>
                 </div>
             </div>
 
@@ -135,7 +144,7 @@ get_header();
         <!-- CTA Section -->
         <div class="mt-20 mb-24 text-center">
              <a href="<?php echo esc_url( $rates_url ); ?>" class="inline-block rounded-sm bg-brand-yellow px-10 py-4 text-brand-blue font-cinzel font-bold uppercase tracking-widest !no-underline hover:!no-underline border border-brand-yellow transition-all duration-300 hover:bg-white hover:text-brand-blue shadow-lg hover:shadow-xl hover:-translate-y-1" style="text-decoration: none !important;">
-                View All Rates
+                <?php echo esc_html( isset( $cta['text'] ) ? $cta['text'] : 'View All Rates' ); ?>
             </a>
         </div>
 

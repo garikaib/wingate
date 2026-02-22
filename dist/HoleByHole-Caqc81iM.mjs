@@ -1,67 +1,34 @@
-import { r as n, g as a, j as e, S as h } from "./main-B1uaK48I.mjs";
-a.registerPlugin(h);
-const g = [
-  {
-    number: 1,
-    par: 4,
-    index: 12,
-    distance: 385,
-    image: "/wp-content/uploads/2026/02/20260118_131838-scaled.jpg",
-    description: "A gentle opener that invites you to swing freely. Avoid the bunkers on the right to set up a clean approach."
-  },
-  {
-    number: 2,
-    par: 5,
-    index: 4,
-    distance: 510,
-    image: "/wp-content/uploads/2026/02/20260118_162436-scaled.jpg",
-    description: "A true test of length and accuracy. The green is well-guarded, demanding a precise approach shot."
-  },
-  {
-    number: 3,
-    par: 3,
-    index: 18,
-    distance: 165,
-    image: "/wp-content/uploads/2026/02/20260110_082734-scaled.jpg",
-    description: "A picturesque par 3 requiring a solid iron shot over water. Adjust for the wind coming off the lake."
-  },
-  {
-    number: 4,
-    par: 4,
-    index: 2,
-    distance: 420,
-    image: "/wp-content/uploads/2026/02/20251206_181910-scaled.jpg",
-    description: "Dogleg right that rewards the brave. Cut the corner at your peril, or play safe for a longer approach."
-  },
-  {
-    number: 5,
-    par: 4,
-    index: 10,
-    distance: 395,
-    image: "/wp-content/uploads/2026/02/20251127_102423-scaled.jpg",
-    description: "Straightaway par 4 with a narrow fairway. Precision off the tee is key to scoring well here."
-  },
-  {
-    number: 6,
-    par: 5,
-    index: 6,
-    distance: 530,
-    image: "/wp-content/uploads/2026/02/20260125_134724-scaled.jpg",
-    description: "A reachable par 5 for long hitters. The green complex is tricky, so short game is tested."
-  },
-  // Filling the rest with placeholders/cycles of the above for now to complete 18
-  ...Array.from({ length: 12 }).map((i, r) => ({
-    number: r + 7,
-    par: r % 2 === 0 ? 4 : r % 3 === 0 ? 3 : 5,
-    index: r + 7,
-    distance: 350 + r * 10,
-    image: "/wp-content/uploads/2026/02/20260118_131838-scaled.jpg",
-    // Reusing first image as fallback
-    description: "A challenging hole that demands focus. Stay out of the rough to ensure a good score."
-  }))
-], f = () => {
-  const i = n.useRef(null), r = n.useRef(null), c = n.useRef(null);
-  n.useEffect(() => {
+import { r, g as a, j as e, S as E } from "./main-D0uV6uTS.mjs";
+a.registerPlugin(E);
+const T = () => {
+  const f = r.useRef(null), l = r.useRef(null), x = r.useRef(null), [o, j] = r.useState(null), [y, v] = r.useState([]), [N, k] = r.useState(!0);
+  r.useEffect(() => {
+    (async () => {
+      try {
+        const n = window.wingateThemeData?.root || "/wp-json/", [d, p] = await Promise.all([
+          fetch(`${n}wingate/v1/hole-by-hole`),
+          fetch(`${n}wingate/v1/scorecard`)
+        ]);
+        if (!d.ok || !p.ok) throw new Error("Data fetch failed");
+        const g = await d.json(), w = await p.json(), C = [...w.out || [], ...w.in || []], R = g.holes.map((b) => {
+          const h = C.find((D) => D.hole === b.hole) || {};
+          return {
+            ...b,
+            number: b.hole,
+            par: h.par || 0,
+            index: h.si || 0,
+            distance: h.white || 0
+            // Default display distance
+          };
+        });
+        j(g), v(R);
+      } catch (n) {
+        console.error("Error loading hole by hole data:", n);
+      } finally {
+        k(!1);
+      }
+    })();
+  }, []), r.useEffect(() => {
     const t = a.context(() => {
       a.fromTo(
         ".hero-title",
@@ -72,22 +39,22 @@ const g = [
         { y: 30, opacity: 0 },
         { y: 0, opacity: 1, duration: 1, ease: "power3.out", delay: 0.4 }
       );
-    }, i), m = a.context(() => {
+    }, f), n = a.context(() => {
       a.fromTo(
-        r.current,
+        l.current,
         { opacity: 0, y: 50 },
         {
           opacity: 1,
           y: 0,
           duration: 1,
           scrollTrigger: {
-            trigger: r.current,
+            trigger: l.current,
             start: "top 80%",
             toggleActions: "play none none reverse"
           }
         }
       );
-    }, r), u = a.context(() => {
+    }, l), d = a.context(() => {
       a.fromTo(
         ".gallery-item",
         { opacity: 0, y: 50 },
@@ -98,60 +65,60 @@ const g = [
           stagger: 0.1,
           ease: "power3.out",
           scrollTrigger: {
-            trigger: c.current,
+            trigger: x.current,
             start: "top 75%",
             toggleActions: "play none none reverse"
           }
         }
       );
-    }, c);
+    }, x);
     return () => {
-      t.revert(), m.revert(), u.revert();
+      t.revert(), n.revert(), d.revert();
     };
   }, []);
-  const [s, d] = n.useState(null), o = n.useRef(null), l = n.useRef(null), p = (t) => {
-    d(t);
-  }, x = () => {
-    o.current && l.current ? a.timeline({
-      onComplete: () => d(null)
-    }).to(l.current, {
+  const [s, m] = r.useState(null), i = r.useRef(null), c = r.useRef(null), z = (t) => {
+    m(t);
+  }, u = () => {
+    i.current && c.current ? a.timeline({
+      onComplete: () => m(null)
+    }).to(c.current, {
       scale: 0.8,
       opacity: 0,
       duration: 0.3,
       ease: "power2.in"
-    }).to(o.current, {
+    }).to(i.current, {
       opacity: 0,
       duration: 0.3
-    }, "<") : d(null);
+    }, "<") : m(null);
   };
-  return n.useEffect(() => {
-    s && o.current && l.current && a.timeline().fromTo(
-      o.current,
+  return r.useEffect(() => {
+    s && i.current && c.current && a.timeline().fromTo(
+      i.current,
       { opacity: 0 },
       { opacity: 1, duration: 0.4, ease: "power2.out" }
     ).fromTo(
-      l.current,
+      c.current,
       { scale: 0.8, opacity: 0, y: 20 },
       { scale: 1, opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.2)" },
       "-=0.2"
     );
-  }, [s]), n.useEffect(() => {
-    const t = (m) => {
-      m.key === "Escape" && x();
+  }, [s]), r.useEffect(() => {
+    const t = (n) => {
+      n.key === "Escape" && u();
     };
     return window.addEventListener("keydown", t), () => window.removeEventListener("keydown", t);
-  }, []), /* @__PURE__ */ e.jsxs("div", { className: "bg-brand-gray min-h-screen font-sans", children: [
+  }, []), N || !o ? /* @__PURE__ */ e.jsx("div", { className: "min-h-screen flex items-center justify-center bg-brand-gray", children: /* @__PURE__ */ e.jsx("div", { className: "w-16 h-16 border-4 border-brand-blue border-t-brand-yellow rounded-full animate-spin" }) }) : /* @__PURE__ */ e.jsxs("div", { className: "bg-brand-gray min-h-screen font-sans", children: [
     /* @__PURE__ */ e.jsxs(
       "section",
       {
-        ref: i,
+        ref: f,
         className: "relative h-screen flex items-center justify-center overflow-hidden",
         children: [
           /* @__PURE__ */ e.jsxs("div", { className: "absolute inset-0 z-0", children: [
             /* @__PURE__ */ e.jsx(
               "img",
               {
-                src: "/wp-content/uploads/2026/02/20260118_131838-scaled.jpg",
+                src: o.hero.backgroundImage,
                 alt: "Course Hero",
                 className: "w-full h-full object-cover transform scale-105 transition-transform duration-[20s] ease-linear hover:scale-100"
               }
@@ -161,34 +128,31 @@ const g = [
             /* @__PURE__ */ e.jsx("div", { className: "absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-brand-gray to-transparent" })
           ] }),
           /* @__PURE__ */ e.jsxs("div", { className: "relative z-10 text-center text-white px-4 max-w-4xl mx-auto", children: [
-            /* @__PURE__ */ e.jsx("div", { className: "inline-block px-4 py-1 border border-brand-yellow/30 rounded-full mb-6 backdrop-blur-md bg-white/10", children: /* @__PURE__ */ e.jsx("span", { className: "text-brand-yellow text-xs font-bold tracking-[0.3em] uppercase", children: "Championship Layout" }) }),
-            /* @__PURE__ */ e.jsxs("h1", { className: "hero-title text-5xl md:text-8xl font-cinzel font-bold mb-5 tracking-tight leading-none text-white drop-shadow-2xl", children: [
-              "Hole By ",
-              /* @__PURE__ */ e.jsx("span", { className: "text-brand-yellow", children: "Hole" })
-            ] }),
+            /* @__PURE__ */ e.jsx("div", { className: "inline-block px-4 py-1 border border-brand-yellow/30 rounded-full mb-6 backdrop-blur-md bg-white/10", children: /* @__PURE__ */ e.jsx("span", { className: "text-brand-yellow text-xs font-bold tracking-[0.3em] uppercase", children: o.hero.kicker }) }),
+            /* @__PURE__ */ e.jsx("h1", { className: "hero-title text-5xl md:text-8xl font-cinzel font-bold mb-5 tracking-tight leading-none text-white drop-shadow-2xl", children: o.hero.title }),
             /* @__PURE__ */ e.jsx("div", { className: "w-24 h-1 bg-brand-yellow mx-auto mb-6" }),
-            /* @__PURE__ */ e.jsx("p", { className: "hero-subtitle text-xl md:text-2xl font-montserrat font-light tracking-wide text-white/90 drop-shadow-md", children: "A WORLD-CLASS CHALLENGE AWAITS" })
+            /* @__PURE__ */ e.jsx("p", { className: "hero-subtitle text-xl md:text-2xl font-montserrat font-light tracking-wide text-white/90 drop-shadow-md", children: o.hero.subtitle })
           ] }),
-          /* @__PURE__ */ e.jsx("div", { className: "absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-white cursor-pointer", onClick: () => r.current?.scrollIntoView({ behavior: "smooth" }), children: /* @__PURE__ */ e.jsx("svg", { xmlns: "http://www.w3.org/2000/svg", className: "h-8 w-8", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ e.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 14l-7 7m0 0l-7-7m7 7V3" }) }) })
+          /* @__PURE__ */ e.jsx("div", { className: "absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-white cursor-pointer", onClick: () => l.current?.scrollIntoView({ behavior: "smooth" }), children: /* @__PURE__ */ e.jsx("svg", { xmlns: "http://www.w3.org/2000/svg", className: "h-8 w-8", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ e.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 14l-7 7m0 0l-7-7m7 7V3" }) }) })
         ]
       }
     ),
     /* @__PURE__ */ e.jsxs(
       "section",
       {
-        ref: r,
+        ref: l,
         className: "py-20 px-6 md:px-12 max-w-7xl mx-auto text-center",
         children: [
-          /* @__PURE__ */ e.jsx("h2", { className: "text-3xl md:text-5xl font-cinzel text-brand-blue mb-8", children: "THE COURSE" }),
+          /* @__PURE__ */ e.jsx("h2", { className: "text-3xl md:text-5xl font-cinzel text-brand-blue mb-8", children: o.intro.title }),
           /* @__PURE__ */ e.jsx("div", { className: "w-24 h-1 bg-golf-gold mx-auto mb-10" }),
-          /* @__PURE__ */ e.jsx("p", { className: "text-lg md:text-xl font-merriweather text-gray-700 leading-relaxed max-w-4xl mx-auto", children: 'Welcome to a golfing experience like no other. Our championship course is a masterpiece of design, weaving through natural landscapes to provide a stern yet fair test for golfers of all abilities. Renowned for its pristine conditioning, fast undulating greens, and strategic bunkering, Wingate offers a premium "private club" feel that challenges seasoned players while remaining accessible to those looking to improve their game.' })
+          /* @__PURE__ */ e.jsx("div", { className: "text-lg md:text-xl font-merriweather text-gray-700 leading-relaxed max-w-4xl mx-auto whitespace-pre-line", children: o.intro.content })
         ]
       }
     ),
-    /* @__PURE__ */ e.jsx("section", { ref: c, className: "py-12 px-4 md:px-8 max-w-7xl mx-auto mb-20", children: /* @__PURE__ */ e.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8", children: g.map((t) => /* @__PURE__ */ e.jsxs(
+    /* @__PURE__ */ e.jsx("section", { ref: x, className: "py-12 px-4 md:px-8 max-w-7xl mx-auto mb-20", children: /* @__PURE__ */ e.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8", children: y.map((t) => /* @__PURE__ */ e.jsxs(
       "div",
       {
-        onClick: () => p(t),
+        onClick: () => z(t),
         className: "gallery-item group relative bg-white rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 cursor-pointer",
         children: [
           /* @__PURE__ */ e.jsxs("div", { className: "h-64 overflow-hidden relative", children: [
@@ -234,13 +198,13 @@ const g = [
     s && /* @__PURE__ */ e.jsx(
       "div",
       {
-        ref: o,
+        ref: i,
         className: "fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm",
-        onClick: x,
+        onClick: u,
         children: /* @__PURE__ */ e.jsxs(
           "div",
           {
-            ref: l,
+            ref: c,
             className: "bg-white rounded-sm overflow-hidden shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col md:flex-row",
             onClick: (t) => t.stopPropagation(),
             children: [
@@ -262,7 +226,7 @@ const g = [
                 /* @__PURE__ */ e.jsx(
                   "button",
                   {
-                    onClick: x,
+                    onClick: u,
                     className: "absolute top-4 right-4 text-gray-400 hover:text-brand-blue transition-colors z-10 p-2",
                     children: /* @__PURE__ */ e.jsx("svg", { xmlns: "http://www.w3.org/2000/svg", className: "h-8 w-8", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ e.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M6 18L18 6M6 6l12 12" }) })
                   }
@@ -299,5 +263,5 @@ const g = [
   ] });
 };
 export {
-  f as default
+  T as default
 };

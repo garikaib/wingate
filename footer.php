@@ -13,7 +13,7 @@
 
     </div><!-- #content -->
     
-    <div id="footer-root"></div>
+    <?php block_template_part( 'footer' ); ?>
 
 </div><!-- #page -->
 

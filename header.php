@@ -26,6 +26,6 @@
 <div id="page" class="site">
 	<a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e( 'Skip to content', 'wingate' ); ?></a>
 
-	<div id="header-root"></div>
+	<?php block_template_part( 'header' ); ?>
 
 	<div id="content" class="site-content">

@@ -4,70 +4,56 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const holesData = [
-    {
-        number: 1,
-        par: 4,
-        index: 12,
-        distance: 385,
-        image: '/wp-content/uploads/2026/02/20260118_131838-scaled.jpg',
-        description: 'A gentle opener that invites you to swing freely. Avoid the bunkers on the right to set up a clean approach.',
-    },
-    {
-        number: 2,
-        par: 5,
-        index: 4,
-        distance: 510,
-        image: '/wp-content/uploads/2026/02/20260118_162436-scaled.jpg',
-        description: 'A true test of length and accuracy. The green is well-guarded, demanding a precise approach shot.',
-    },
-    {
-        number: 3,
-        par: 3,
-        index: 18,
-        distance: 165,
-        image: '/wp-content/uploads/2026/02/20260110_082734-scaled.jpg',
-        description: 'A picturesque par 3 requiring a solid iron shot over water. Adjust for the wind coming off the lake.',
-    },
-    {
-        number: 4,
-        par: 4,
-        index: 2,
-        distance: 420,
-        image: '/wp-content/uploads/2026/02/20251206_181910-scaled.jpg',
-        description: 'Dogleg right that rewards the brave. Cut the corner at your peril, or play safe for a longer approach.',
-    },
-    {
-        number: 5,
-        par: 4,
-        index: 10,
-        distance: 395,
-        image: '/wp-content/uploads/2026/02/20251127_102423-scaled.jpg',
-        description: 'Straightaway par 4 with a narrow fairway. Precision off the tee is key to scoring well here.',
-    },
-    {
-        number: 6,
-        par: 5,
-        index: 6,
-        distance: 530,
-        image: '/wp-content/uploads/2026/02/20260125_134724-scaled.jpg',
-        description: 'A reachable par 5 for long hitters. The green complex is tricky, so short game is tested.',
-    },
-    // Filling the rest with placeholders/cycles of the above for now to complete 18
-    ...Array.from({ length: 12 }).map((_, i) => ({
-        number: i + 7,
-        par: i % 2 === 0 ? 4 : (i % 3 === 0 ? 3 : 5),
-        index: (i + 7),
-        distance: 350 + (i * 10),
-        image: '/wp-content/uploads/2026/02/20260118_131838-scaled.jpg', // Reusing first image as fallback
-        description: 'A challenging hole that demands focus. Stay out of the rough to ensure a good score.',
-    }))
-];
-
 const HoleByHole = () => {
     const heroRef = useRef(null);
     const introRef = useRef(null);
     const galleryRef = useRef(null);
+
+    const [settings, setSettings] = useState(null);
+    const [holesData, setHolesData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const apiRoot = window.wingateThemeData?.root || '/wp-json/';
+
+                // Fetch both visual settings and scorecard numerical data in parallel
+                const [settingsRes, scorecardRes] = await Promise.all([
+                    fetch(`${apiRoot}wingate/v1/hole-by-hole`),
+                    fetch(`${apiRoot}wingate/v1/scorecard`)
+                ]);
+
+                if (!settingsRes.ok || !scorecardRes.ok) throw new Error('Data fetch failed');
+
+                const settingsData = await settingsRes.json();
+                const scorecardData = await scorecardRes.json();
+
+                // Merge the 18 holes data: Visuals from settings + Numbers from scorecard
+                // The scorecard returns { out: [...9], in: [...9] }
+                const flatScorecard = [...(scorecardData.out || []), ...(scorecardData.in || [])];
+                const mergedHoles = settingsData.holes.map(visualHole => {
+                    const numberData = flatScorecard.find(h => h.hole === visualHole.hole) || {};
+                    return {
+                        ...visualHole,
+                        number: visualHole.hole,
+                        par: numberData.par || 0,
+                        index: numberData.si || 0,
+                        distance: numberData.white || 0 // Default display distance
+                    };
+                });
+
+                setSettings(settingsData);
+                setHolesData(mergedHoles);
+            } catch (err) {
+                console.error("Error loading hole by hole data:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     useEffect(() => {
         // Hero Animation
@@ -183,6 +169,14 @@ const HoleByHole = () => {
         return () => window.removeEventListener('keydown', handleEsc);
     }, []);
 
+    if (isLoading || !settings) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-brand-gray">
+                <div className="w-16 h-16 border-4 border-brand-blue border-t-brand-yellow rounded-full animate-spin"></div>
+            </div>
+        );
+    }
+
     return (
         <div className="bg-brand-gray min-h-screen font-sans">
             {/* Hero Section */}
@@ -192,7 +186,7 @@ const HoleByHole = () => {
             >
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="/wp-content/uploads/2026/02/20260118_131838-scaled.jpg"
+                        src={settings.hero.backgroundImage}
                         alt="Course Hero"
                         className="w-full h-full object-cover transform scale-105 transition-transform duration-[20s] ease-linear hover:scale-100"
                     />
@@ -203,14 +197,14 @@ const HoleByHole = () => {
 
                 <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
                     <div className="inline-block px-4 py-1 border border-brand-yellow/30 rounded-full mb-6 backdrop-blur-md bg-white/10">
-                        <span className="text-brand-yellow text-xs font-bold tracking-[0.3em] uppercase">Championship Layout</span>
+                        <span className="text-brand-yellow text-xs font-bold tracking-[0.3em] uppercase">{settings.hero.kicker}</span>
                     </div>
                     <h1 className="hero-title text-5xl md:text-8xl font-cinzel font-bold mb-5 tracking-tight leading-none text-white drop-shadow-2xl">
-                        Hole By <span className="text-brand-yellow">Hole</span>
+                        {settings.hero.title}
                     </h1>
                     <div className="w-24 h-1 bg-brand-yellow mx-auto mb-6"></div>
                     <p className="hero-subtitle text-xl md:text-2xl font-montserrat font-light tracking-wide text-white/90 drop-shadow-md">
-                        A WORLD-CLASS CHALLENGE AWAITS
+                        {settings.hero.subtitle}
                     </p>
                 </div>
 
@@ -227,16 +221,12 @@ const HoleByHole = () => {
                 className="py-20 px-6 md:px-12 max-w-7xl mx-auto text-center"
             >
                 <h2 className="text-3xl md:text-5xl font-cinzel text-brand-blue mb-8">
-                    THE COURSE
+                    {settings.intro.title}
                 </h2>
                 <div className="w-24 h-1 bg-golf-gold mx-auto mb-10"></div>
-                <p className="text-lg md:text-xl font-merriweather text-gray-700 leading-relaxed max-w-4xl mx-auto">
-                    Welcome to a golfing experience like no other. Our championship course is a masterpiece of design,
-                    weaving through natural landscapes to provide a stern yet fair test for golfers of all abilities.
-                    Renowned for its pristine conditioning, fast undulating greens, and strategic bunkering,
-                    Wingate offers a premium "private club" feel that challenges seasoned players while remaining
-                    accessible to those looking to improve their game.
-                </p>
+                <div className="text-lg md:text-xl font-merriweather text-gray-700 leading-relaxed max-w-4xl mx-auto whitespace-pre-line">
+                    {settings.intro.content}
+                </div>
             </section>
 
             {/* Gallery Section */}

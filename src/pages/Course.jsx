@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ChevronRight, ArrowRight, MapPin, Flag, Trophy, Clock } from 'lucide-react';
@@ -10,8 +10,37 @@ const Course = () => {
     const titleRef = useRef(null);
     const contentRef = useRef(null);
     const galleryRef = useRef(null);
+    const [settings, setSettings] = useState(null);
+    const [scorecardData, setScorecardData] = useState({ out: [], in: [] });
 
     useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const response = await fetch('/wp-json/wingate/v1/course-settings');
+                if (response.ok) {
+                    const data = await response.json();
+                    setSettings(data);
+                }
+            } catch (err) {
+                console.error('Failed to fetch course settings:', err);
+            }
+        };
+
+        const fetchScorecard = async () => {
+            try {
+                const response = await fetch('/wp-json/wingate/v1/scorecard');
+                if (response.ok) {
+                    const data = await response.json();
+                    setScorecardData(data);
+                }
+            } catch (err) {
+                console.error('Failed to fetch scorecard:', err);
+            }
+        };
+
+        fetchSettings();
+        fetchScorecard();
+
         const ctx = gsap.context(() => {
             // Hero Title Animation
             gsap.from(titleRef.current, {
@@ -36,7 +65,34 @@ const Course = () => {
         return () => ctx.revert();
     }, []);
 
-    const scorecardOut = [
+    const heroSettings = settings?.hero || {
+        kicker: 'Championship Layout',
+        title: 'The Course',
+        backgroundImage: '/wp-content/uploads/2026/02/20260118_162436-scaled.jpg'
+    };
+
+    const introSettings = settings?.intro || {
+        title: "Well Manicured & \nWooded Parkland",
+        content: "Wingate Park Golf Club is an 18-hole, well-manicured, and wooded course founded 52 years ago. Located in the tranquil Pomona area of Harare, it offers a unique and challenging golfing experience with fairways lined with mature trees.\n\nDespite playing on these old style characteristics, the course is thoroughly modern in other ways. The 18th is a long par 4 requiring negotiation of water on all three shots.",
+        image: '/wp-content/uploads/2026/02/20260118_131838-scaled.jpg',
+        stats: {
+            holes: '18',
+            par: '72',
+            distance: '6450m',
+            time: '4.5 Hrs'
+        }
+    };
+
+    const galleryCtaSettings = settings?.galleryCta || {
+        kicker: 'Visual Tour',
+        title: "Experience the \n Beauty",
+        description: 'Explore our gallery to see the manicured fairways, challenging bunkers, and scenic water hazards that make Wingate Park truly unique.',
+        image: '/wp-content/uploads/2026/02/20260126_140911-scaled.jpg',
+        buttonText: 'View Gallery',
+        buttonUrl: '/gallery'
+    };
+
+    const scorecardOut = scorecardData.out.length > 0 ? scorecardData.out : [
         { hole: 1, par: 4, white: 422, blue: 404, red: 329, si: 7 },
         { hole: 2, par: 5, white: 467, blue: 459, red: 452, si: 5 },
         { hole: 3, par: 3, white: 150, blue: 134, red: 122, si: 15 },
@@ -48,7 +104,7 @@ const Course = () => {
         { hole: 9, par: 4, white: 418, blue: 367, red: 335, si: 1 },
     ];
 
-    const scorecardIn = [
+    const scorecardIn = scorecardData.in.length > 0 ? scorecardData.in : [
         { hole: 10, par: 5, white: 495, blue: 470, red: 462, si: 14 },
         { hole: 11, par: 4, white: 386, blue: 372, red: 309, si: 6 },
         { hole: 12, par: 5, white: 523, blue: 515, red: 445, si: 10 },
@@ -67,8 +123,8 @@ const Course = () => {
                 <div
                     className="absolute inset-0 bg-cover bg-center"
                     style={{
-                        backgroundImage: "url('/wp-content/uploads/2026/02/20260118_162436-scaled.jpg')",
-                        transform: "scale(1.1)" // Slight scale for parallax feel if JS was adding it, just static for now or can add ref
+                        backgroundImage: `url('${heroSettings.backgroundImage}')`,
+                        transform: "scale(1.1)"
                     }}
                 ></div>
                 <div className="absolute inset-0 bg-brand-blue/30 mix-blend-multiply"></div>
@@ -77,10 +133,10 @@ const Course = () => {
 
                 <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
                     <div className="inline-block px-4 py-1 border border-brand-yellow/30 rounded-full mb-6 backdrop-blur-md bg-white/10">
-                        <span className="text-brand-yellow text-xs font-bold tracking-[0.3em] uppercase">Championship Layout</span>
+                        <span className="text-brand-yellow text-xs font-bold tracking-[0.3em] uppercase">{heroSettings.kicker}</span>
                     </div>
-                    <h1 ref={titleRef} className="text-5xl md:text-8xl font-cinzel text-white mb-6 tracking-tight drop-shadow-2xl leading-none">
-                        The <span className="text-brand-yellow">Course</span>
+                    <h1 ref={titleRef} className="text-5xl md:text-8xl font-cinzel text-white mb-6 tracking-tight drop-shadow-2xl leading-none whitespace-pre-wrap">
+                        {heroSettings.title}
                     </h1>
                     <div className="w-24 h-1 bg-brand-yellow mx-auto mb-8"></div>
                 </div>
@@ -90,19 +146,11 @@ const Course = () => {
             <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center reveal-section">
                     <div>
-                        <h2 className="text-4xl md:text-5xl font-cinzel text-brand-blue mb-8 leading-tight">
-                            Well Manicured & <br /><span className="text-brand-yellow">Wooded Parkland</span>
+                        <h2 className="text-4xl md:text-5xl font-cinzel text-brand-blue mb-8 leading-tight whitespace-pre-wrap">
+                            {introSettings.title}
                         </h2>
-                        <div className="space-y-6 text-text-muted text-lg font-light leading-relaxed">
-                            <p>
-                                Wingate Park Golf Club is an 18-hole, well-manicured, and wooded course founded 52 years ago.
-                                Located in the tranquil Pomona area of Harare, it offers a unique and challenging golfing experience
-                                with fairways lined with mature trees.
-                            </p>
-                            <p>
-                                Despite playing on these old style characteristics, the course is thoroughly modern in other ways.
-                                The 18th is a long par 4 requiring negotiation of water on all three shots.
-                            </p>
+                        <div className="space-y-6 text-text-muted text-lg font-light leading-relaxed whitespace-pre-wrap">
+                            {introSettings.content}
                         </div>
 
                         <div className="grid grid-cols-2 gap-8 mt-12 bg-brand-blue/5 p-8 rounded-2xl border border-brand-blue/10">
@@ -111,35 +159,35 @@ const Course = () => {
                                     <Flag size={20} />
                                     <span className="font-bold text-sm uppercase tracking-widest">Holes</span>
                                 </div>
-                                <span className="text-4xl font-cinzel font-bold text-brand-blue">18</span>
+                                <span className="text-4xl font-cinzel font-bold text-brand-blue">{introSettings.stats.holes}</span>
                             </div>
                             <div>
                                 <div className="flex items-center gap-3 mb-2 text-brand-blue">
                                     <Trophy size={20} />
                                     <span className="font-bold text-sm uppercase tracking-widest">Par</span>
                                 </div>
-                                <span className="text-4xl font-cinzel font-bold text-brand-blue">72</span>
+                                <span className="text-4xl font-cinzel font-bold text-brand-blue">{introSettings.stats.par}</span>
                             </div>
                             <div>
                                 <div className="flex items-center gap-3 mb-2 text-brand-blue">
                                     <MapPin size={20} />
                                     <span className="font-bold text-sm uppercase tracking-widest">Distance</span>
                                 </div>
-                                <span className="text-2xl font-cinzel font-bold text-brand-blue">6450m</span>
+                                <span className="text-2xl font-cinzel font-bold text-brand-blue">{introSettings.stats.distance}</span>
                             </div>
                             <div>
                                 <div className="flex items-center gap-3 mb-2 text-brand-blue">
                                     <Clock size={20} />
                                     <span className="font-bold text-sm uppercase tracking-widest">Est. Time</span>
                                 </div>
-                                <span className="text-2xl font-cinzel font-bold text-brand-blue">4.5 Hrs</span>
+                                <span className="text-2xl font-cinzel font-bold text-brand-blue">{introSettings.stats.time}</span>
                             </div>
                         </div>
                     </div>
                     <div className="relative h-[600px] rounded-3xl overflow-hidden shadow-2xl group">
                         <div
                             className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-105"
-                            style={{ backgroundImage: "url('/wp-content/uploads/2026/02/20260118_131838-scaled.jpg')" }}
+                            style={{ backgroundImage: `url('${introSettings.image}')` }}
                         ></div>
                         {/* Overlay Card */}
                         <div className="absolute bottom-8 left-8 right-8 bg-white/95 backdrop-blur-xl p-8 rounded-xl border-l-4 border-brand-yellow shadow-lg">
@@ -221,22 +269,22 @@ const Course = () => {
             {/* Gallery Call to Action */}
             <section ref={galleryRef} className="relative py-32 px-6 overflow-hidden">
                 <div className="absolute inset-0 bg-brand-blue">
-                    <div className="absolute inset-0 opacity-40 mix-blend-overlay" style={{ backgroundImage: "url('/wp-content/uploads/2026/02/20260126_140911-scaled.jpg')", backgroundSize: 'cover', backgroundposition: 'center' }}></div>
+                    <div className="absolute inset-0 opacity-40 mix-blend-overlay" style={{ backgroundImage: `url('${galleryCtaSettings.image}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
                     <div className="absolute inset-0 bg-gradient-to-r from-brand-blue/90 to-brand-blue/40"></div>
                 </div>
 
                 <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
                     <div className="text-white max-w-2xl reveal-section">
-                        <span className="text-brand-yellow font-cinzel tracking-[0.2em] font-bold uppercase mb-4 block">Visual Tour</span>
-                        <h2 className="text-5xl md:text-6xl font-cinzel mb-6 leading-none">Experience the <br /> Beauty</h2>
+                        <span className="text-brand-yellow font-cinzel tracking-[0.2em] font-bold uppercase mb-4 block">{galleryCtaSettings.kicker}</span>
+                        <h2 className="text-5xl md:text-6xl font-cinzel mb-6 leading-none whitespace-pre-wrap">{galleryCtaSettings.title}</h2>
                         <p className="text-white/80 text-lg font-light leading-relaxed max-w-xl">
-                            Explore our gallery to see the manicured fairways, challenging bunkers, and scenic water hazards that make Wingate Park truly unique.
+                            {galleryCtaSettings.description}
                         </p>
                     </div>
 
                     <div className="reveal-section">
-                        <a href="/gallery" className="group relative inline-flex items-center overflow-hidden rounded-sm bg-brand-yellow px-12 py-6 text-brand-blue no-underline hover:no-underline focus:no-underline font-cinzel font-bold tracking-widest uppercase transition-all duration-300 hover:bg-white hover:text-brand-blue shadow-2xl hover:shadow-brand-yellow/50">
-                            <span className="mr-4 text-lg">View Gallery</span>
+                        <a href={galleryCtaSettings.buttonUrl} className="group relative inline-flex items-center overflow-hidden rounded-sm bg-brand-yellow px-12 py-6 text-brand-blue no-underline hover:no-underline focus:no-underline font-cinzel font-bold tracking-widest uppercase transition-all duration-300 hover:bg-white hover:text-brand-blue shadow-2xl hover:shadow-brand-yellow/50">
+                            <span className="mr-4 text-lg">{galleryCtaSettings.buttonText}</span>
                             <ArrowRight className="transition-transform group-hover:translate-x-2" />
                         </a>
                     </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PeekWindowSection from '../components/PeekWindowSection';
 import ContactInfoStrip from '../components/ContactInfoStrip';
 import {
@@ -12,39 +12,67 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const heroImage = '/wp-content/uploads/2026/01/605410094_1291221263032055_7504380241267586286_n-scaled.jpg';
-const contactTeam = [
-    {
-        name: 'Daryl Catterall',
-        title: 'Club Manager',
-        phoneLabel: '0714681041',
-        phoneHref: 'tel:0714681041',
-        email: 'daryl@wingate.co.zw',
+const defaultContactPageSettings = {
+    hero: {
+        title: 'CONTACT US',
+        backgroundImage: '/wp-content/uploads/2026/01/605410094_1291221263032055_7504380241267586286_n-scaled.jpg',
     },
-    {
-        name: 'D Kasiyandima',
-        title: 'Office Assistant Manager',
-        phoneLabel: '0719339670',
-        phoneHref: 'tel:0719339670',
-        email: 'functions@wingate.co.zw',
+    club: {
+        title: 'Wingate Park Golf Club',
     },
-    {
-        name: 'T Musiyakuvi',
-        title: 'Office Assistant Manager',
-        phoneLabel: '0772339670',
-        phoneHref: 'tel:0772339670',
-        email: 'reception@wingate.co.zw',
+    cards: {
+        findUsTitle: 'Find Us',
+        emailTitle: 'Email Us',
+        phoneTitle: 'Call Us',
+        socialTitle: 'Follow Us',
     },
-];
+    location: {
+        mapUrl: 'https://maps.google.com/?q=Wingate+Park+Golf+Club',
+        lineOne: 'Alpes Road',
+        lineTwo: 'Harare, Zimbabwe',
+        mapSectionTitle: 'Find Us',
+        mapEmbedUrl: 'https://maps.google.com/maps?q=Wingate%20Park%20Golf%20Club%2C%20Harare&z=14&output=embed',
+    },
+    teamSection: {
+        title: 'Contact Team',
+    },
+    team: [
+        {
+            name: 'Daryl Catterall',
+            title: 'Club Manager',
+            phoneLabel: '0714681041',
+            phoneHref: 'tel:0714681041',
+            email: 'daryl@wingate.co.zw',
+        },
+        {
+            name: 'D Kasiyandima',
+            title: 'Office Assistant Manager',
+            phoneLabel: '0719339670',
+            phoneHref: 'tel:0719339670',
+            email: 'functions@wingate.co.zw',
+        },
+        {
+            name: 'T Musiyakuvi',
+            title: 'Office Assistant Manager',
+            phoneLabel: '0772339670',
+            phoneHref: 'tel:0772339670',
+            email: 'reception@wingate.co.zw',
+        },
+    ],
+};
+
+const mergeContactPageSettings = (incoming) => ({
+    ...defaultContactPageSettings,
+    ...incoming,
+    hero: { ...defaultContactPageSettings.hero, ...(incoming?.hero || {}) },
+    club: { ...defaultContactPageSettings.club, ...(incoming?.club || {}) },
+    cards: { ...defaultContactPageSettings.cards, ...(incoming?.cards || {}) },
+    location: { ...defaultContactPageSettings.location, ...(incoming?.location || {}) },
+    teamSection: { ...defaultContactPageSettings.teamSection, ...(incoming?.teamSection || {}) },
+    team: Array.isArray(incoming?.team) ? incoming.team : defaultContactPageSettings.team,
+});
 
 const iconClassName = 'mx-auto mb-4 h-14 w-14 transition-colors duration-300 group-hover:text-brand-yellow';
-
-// ... Icons (HouseSolidIcon, etc.) kept same but omitted for brevity in thinking, 
-// strictly speaking I must include them or risk deleting them if I replace whole file.
-// The replace_file_content tool requires me to NOT omit existing code if I'm replacing the whole file or a range.
-// I will use StartLine/EndLine or replace the whole file carefully.
-// Since I want to wrap everything in `containerRef` and add `useEffect`, replacing the whole component function is best.
-// I will keep the icons outside.
 
 const HouseSolidIcon = ({ className = '' }) => (
     <svg viewBox="0 0 576 512" aria-hidden="true" className={className} fill="currentColor">
@@ -79,6 +107,24 @@ const InstagramSolidIcon = ({ className = '' }) => (
 const Contact = () => {
     const contactDetails = getContactDetails();
     const containerRef = useRef(null);
+    const [pageSettings, setPageSettings] = useState(defaultContactPageSettings);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const response = await fetch('/wp-json/wingate/v1/contact-page-settings');
+                if (!response.ok) {
+                    return;
+                }
+                const data = await response.json();
+                setPageSettings(mergeContactPageSettings(data));
+            } catch (error) {
+                // Keep defaults when endpoint is unavailable.
+            }
+        };
+
+        fetchSettings();
+    }, []);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -127,13 +173,13 @@ const Contact = () => {
             <section className="relative h-[58vh] min-h-[420px] w-full overflow-hidden">
                 <div
                     className="absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: `url('${heroImage}')` }}
+                    style={{ backgroundImage: `url('${pageSettings.hero.backgroundImage}')` }}
                 >
                     <div className="absolute inset-0 bg-black/35"></div>
                 </div>
                 <div className="relative z-10 flex h-full items-center justify-center px-6 text-center">
                     <h1 className="font-cinzel text-5xl font-bold tracking-wide text-white md:text-7xl anim-hero-title">
-                        CONTACT US
+                        {pageSettings.hero.title}
                     </h1>
                 </div>
             </section>
@@ -141,20 +187,20 @@ const Contact = () => {
             <section className="bg-neutral-100 px-6 py-18 lg:px-10">
                 <div className="mx-auto max-w-6xl">
                     <h2 className="mb-10 text-center font-cinzel text-4xl font-bold uppercase tracking-wide text-brand-blue md:text-5xl">
-                        Wingate Park Golf Club
+                        {pageSettings.club.title}
                     </h2>
 
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-3 cards-container">
                         <a
-                            href="https://maps.google.com/?q=Wingate+Park+Golf+Club"
+                            href={pageSettings.location.mapUrl}
                             target="_blank"
                             rel="noreferrer"
                             className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
                         >
                             <HouseSolidIcon className={`${iconClassName} text-brand-blue`} />
-                            <h3 className="mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">Find Us</h3>
-                            <p className="font-montserrat text-base text-slate-700 transition-colors duration-300 group-hover:text-brand-yellow">Alpes Road</p>
-                            <p className="font-montserrat text-base text-slate-700 transition-colors duration-300 group-hover:text-brand-yellow">Harare, Zimbabwe</p>
+                            <h3 className="mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">{pageSettings.cards.findUsTitle}</h3>
+                            <p className="font-montserrat text-base text-slate-700 transition-colors duration-300 group-hover:text-brand-yellow">{pageSettings.location.lineOne}</p>
+                            <p className="font-montserrat text-base text-slate-700 transition-colors duration-300 group-hover:text-brand-yellow">{pageSettings.location.lineTwo}</p>
                         </a>
 
                         <a
@@ -162,7 +208,7 @@ const Contact = () => {
                             className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
                         >
                             <MailSolidIcon className={`${iconClassName} text-brand-blue`} />
-                            <h3 className="mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">Email Us</h3>
+                            <h3 className="mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">{pageSettings.cards.emailTitle}</h3>
                             <p className="font-montserrat text-base text-slate-700 transition-colors duration-300 group-hover:text-brand-yellow">{contactDetails.email}</p>
                         </a>
 
@@ -171,7 +217,7 @@ const Contact = () => {
                             className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
                         >
                             <PhoneSolidIcon className={`${iconClassName} text-brand-blue`} />
-                            <h3 className="mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">Call Us</h3>
+                            <h3 className="mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">{pageSettings.cards.phoneTitle}</h3>
                             <p className="font-montserrat text-base text-slate-700 transition-colors duration-300 group-hover:text-brand-yellow">{contactDetails.phone}</p>
                         </a>
                     </div>
@@ -183,7 +229,7 @@ const Contact = () => {
                             className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
                         >
                             <FacebookSolidIcon className={`${iconClassName} text-brand-blue`} />
-                            <h3 className="font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">Follow Us</h3>
+                            <h3 className="font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">{pageSettings.cards.socialTitle}</h3>
                         </a>
 
                         <a
@@ -192,7 +238,7 @@ const Contact = () => {
                             className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
                         >
                             <InstagramSolidIcon className={`${iconClassName} text-brand-blue`} />
-                            <h3 className="font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">Follow Us</h3>
+                            <h3 className="font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">{pageSettings.cards.socialTitle}</h3>
                         </a>
                     </div>
                 </div>
@@ -201,14 +247,14 @@ const Contact = () => {
             <section className="bg-slate-100 py-16 anim-map-container">
                 <div className="mx-auto max-w-6xl px-6 lg:px-10">
                     <h2 className="mb-8 text-center font-cinzel text-4xl font-bold uppercase tracking-wide text-brand-blue">
-                        Find Us
+                        {pageSettings.location.mapSectionTitle}
                     </h2>
                 </div>
                 <div className="relative left-1/2 w-screen -translate-x-1/2">
                     <div className="relative anim-map">
                         <iframe
                             title="Wingate Park Golf Club Location"
-                            src="https://maps.google.com/maps?q=Wingate%20Park%20Golf%20Club%2C%20Harare&z=14&output=embed"
+                            src={pageSettings.location.mapEmbedUrl}
                             className="h-[560px] w-full"
                             loading="lazy"
                             referrerPolicy="no-referrer-when-downgrade"
@@ -225,15 +271,15 @@ const Contact = () => {
                 <div className="mx-auto max-w-6xl">
                     <div className="mb-12 text-center">
                         <h2 className="font-cinzel text-4xl font-bold uppercase tracking-wide text-brand-blue md:text-5xl">
-                            Contact Team
+                            {pageSettings.teamSection.title}
                         </h2>
                         <div className="mx-auto mt-4 h-1 w-24 bg-brand-yellow"></div>
                     </div>
 
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-3 team-container">
-                        {contactTeam.map((person) => (
+                        {pageSettings.team.map((person, index) => (
                             <article
-                                key={person.email}
+                                key={person.email || index}
                                 className="group rounded-2xl border border-brand-blue/10 bg-white/90 px-7 py-9 text-center shadow-[0_18px_30px_rgba(14,27,61,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_36px_rgba(14,27,61,0.16)] anim-team-member"
                             >
                                 <h3 className="relative mb-6 inline-block font-cinzel text-[2rem] font-bold uppercase leading-tight tracking-wide text-brand-blue">

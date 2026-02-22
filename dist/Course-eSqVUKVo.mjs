@@ -1,10 +1,12 @@
-import { c as s, r as a, g as l, j as e, S as x } from "./main-B1uaK48I.mjs";
-import { A as b } from "./arrow-right-D7zSc8mM.mjs";
-const h = [
+import { r as l, g as d, j as e, S as y } from "./main-D0uV6uTS.mjs";
+import { c as b } from "./createLucideIcon-DBhvyBvn.mjs";
+import { T as N } from "./trophy-Ckh9is4d.mjs";
+import { A as v } from "./arrow-right-DTpuADse.mjs";
+const k = [
   ["path", { d: "M12 6v6l4 2", key: "mmk7yg" }],
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]
-], p = s("clock", h);
-const m = [
+], z = b("clock", k);
+const S = [
   [
     "path",
     {
@@ -12,8 +14,8 @@ const m = [
       key: "1jaruq"
     }
   ]
-], u = s("flag", m);
-const g = [
+], T = b("flag", S);
+const C = [
   [
     "path",
     {
@@ -22,37 +24,51 @@ const g = [
     }
   ],
   ["circle", { cx: "12", cy: "10", r: "3", key: "ilqhr7" }]
-], j = s("map-pin", g);
-const y = [
-  ["path", { d: "M10 14.66v1.626a2 2 0 0 1-.976 1.696A5 5 0 0 0 7 21.978", key: "1n3hpd" }],
-  ["path", { d: "M14 14.66v1.626a2 2 0 0 0 .976 1.696A5 5 0 0 1 17 21.978", key: "rfe1zi" }],
-  ["path", { d: "M18 9h1.5a1 1 0 0 0 0-5H18", key: "7xy6bh" }],
-  ["path", { d: "M4 22h16", key: "57wxv0" }],
-  ["path", { d: "M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z", key: "1mhfuq" }],
-  ["path", { d: "M6 9H4.5a1 1 0 0 1 0-5H6", key: "tex48p" }]
-], f = s("trophy", y);
-l.registerPlugin(x);
-const v = () => {
-  const n = a.useRef(null), d = a.useRef(null);
-  a.useRef(null);
-  const o = a.useRef(null);
-  a.useEffect(() => {
-    const t = l.context(() => {
-      l.from(d.current, {
+], R = b("map-pin", C);
+d.registerPlugin(y);
+const A = () => {
+  const h = l.useRef(null), p = l.useRef(null);
+  l.useRef(null);
+  const u = l.useRef(null), [i, m] = l.useState(null), [o, g] = l.useState({ out: [], in: [] });
+  l.useEffect(() => {
+    const t = async () => {
+      try {
+        const r = await fetch("/wp-json/wingate/v1/course-settings");
+        if (r.ok) {
+          const x = await r.json();
+          m(x);
+        }
+      } catch (r) {
+        console.error("Failed to fetch course settings:", r);
+      }
+    }, a = async () => {
+      try {
+        const r = await fetch("/wp-json/wingate/v1/scorecard");
+        if (r.ok) {
+          const x = await r.json();
+          g(x);
+        }
+      } catch (r) {
+        console.error("Failed to fetch scorecard:", r);
+      }
+    };
+    t(), a();
+    const j = d.context(() => {
+      d.from(p.current, {
         y: 100,
         opacity: 0,
         duration: 1.5,
         ease: "expo.out",
         delay: 0.2
-      }), l.utils.toArray(".reveal-section").forEach((r) => {
-        l.from(r, {
+      }), d.utils.toArray(".reveal-section").forEach((r) => {
+        d.from(r, {
           y: 60,
           opacity: 0,
           duration: 1,
           ease: "power3.out",
           scrollTrigger: { trigger: r, start: "top 80%" }
         });
-      }), l.from(".score-row", {
+      }), d.from(".score-row", {
         x: -30,
         opacity: 0,
         duration: 0.8,
@@ -60,10 +76,35 @@ const v = () => {
         ease: "power2.out",
         scrollTrigger: { trigger: ".score-table", start: "top 75%" }
       });
-    }, n);
-    return () => t.revert();
+    }, h);
+    return () => j.revert();
   }, []);
-  const i = [
+  const c = i?.hero || {
+    kicker: "Championship Layout",
+    title: "The Course",
+    backgroundImage: "/wp-content/uploads/2026/02/20260118_162436-scaled.jpg"
+  }, s = i?.intro || {
+    title: `Well Manicured & 
+Wooded Parkland`,
+    content: `Wingate Park Golf Club is an 18-hole, well-manicured, and wooded course founded 52 years ago. Located in the tranquil Pomona area of Harare, it offers a unique and challenging golfing experience with fairways lined with mature trees.
+
+Despite playing on these old style characteristics, the course is thoroughly modern in other ways. The 18th is a long par 4 requiring negotiation of water on all three shots.`,
+    image: "/wp-content/uploads/2026/02/20260118_131838-scaled.jpg",
+    stats: {
+      holes: "18",
+      par: "72",
+      distance: "6450m",
+      time: "4.5 Hrs"
+    }
+  }, n = i?.galleryCta || {
+    kicker: "Visual Tour",
+    title: `Experience the 
+ Beauty`,
+    description: "Explore our gallery to see the manicured fairways, challenging bunkers, and scenic water hazards that make Wingate Park truly unique.",
+    image: "/wp-content/uploads/2026/02/20260126_140911-scaled.jpg",
+    buttonText: "View Gallery",
+    buttonUrl: "/gallery"
+  }, w = o.out.length > 0 ? o.out : [
     { hole: 1, par: 4, white: 422, blue: 404, red: 329, si: 7 },
     { hole: 2, par: 5, white: 467, blue: 459, red: 452, si: 5 },
     { hole: 3, par: 3, white: 150, blue: 134, red: 122, si: 15 },
@@ -73,7 +114,7 @@ const v = () => {
     { hole: 7, par: 4, white: 370, blue: 357, red: 349, si: 9 },
     { hole: 8, par: 4, white: 337, blue: 324, red: 312, si: 17 },
     { hole: 9, par: 4, white: 418, blue: 367, red: 335, si: 1 }
-  ], c = [
+  ], f = o.in.length > 0 ? o.in : [
     { hole: 10, par: 5, white: 495, blue: 470, red: 462, si: 14 },
     { hole: 11, par: 4, white: 386, blue: 372, red: 309, si: 6 },
     { hole: 12, par: 5, white: 523, blue: 515, red: 445, si: 10 },
@@ -84,16 +125,15 @@ const v = () => {
     { hole: 17, par: 3, white: 141, blue: 132, red: 123, si: 18 },
     { hole: 18, par: 4, white: 355, blue: 335, red: 316, si: 8 }
   ];
-  return /* @__PURE__ */ e.jsxs("div", { className: "bg-white min-h-screen relative overflow-hidden font-montserrat", ref: n, children: [
+  return /* @__PURE__ */ e.jsxs("div", { className: "bg-white min-h-screen relative overflow-hidden font-montserrat", ref: h, children: [
     /* @__PURE__ */ e.jsxs("header", { className: "relative h-[85vh] flex items-center justify-center bg-brand-blue overflow-hidden", children: [
       /* @__PURE__ */ e.jsx(
         "div",
         {
           className: "absolute inset-0 bg-cover bg-center",
           style: {
-            backgroundImage: "url('/wp-content/uploads/2026/02/20260118_162436-scaled.jpg')",
+            backgroundImage: `url('${c.backgroundImage}')`,
             transform: "scale(1.1)"
-            // Slight scale for parallax feel if JS was adding it, just static for now or can add ref
           }
         }
       ),
@@ -101,53 +141,43 @@ const v = () => {
       /* @__PURE__ */ e.jsx("div", { className: "absolute inset-x-0 bottom-0 h-1 bg-gradient-to-t from-white to-transparent" }),
       /* @__PURE__ */ e.jsx("div", { className: "absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/40 to-transparent" }),
       /* @__PURE__ */ e.jsxs("div", { className: "relative z-10 text-center px-4 max-w-5xl mx-auto", children: [
-        /* @__PURE__ */ e.jsx("div", { className: "inline-block px-4 py-1 border border-brand-yellow/30 rounded-full mb-6 backdrop-blur-md bg-white/10", children: /* @__PURE__ */ e.jsx("span", { className: "text-brand-yellow text-xs font-bold tracking-[0.3em] uppercase", children: "Championship Layout" }) }),
-        /* @__PURE__ */ e.jsxs("h1", { ref: d, className: "text-5xl md:text-8xl font-cinzel text-white mb-6 tracking-tight drop-shadow-2xl leading-none", children: [
-          "The ",
-          /* @__PURE__ */ e.jsx("span", { className: "text-brand-yellow", children: "Course" })
-        ] }),
+        /* @__PURE__ */ e.jsx("div", { className: "inline-block px-4 py-1 border border-brand-yellow/30 rounded-full mb-6 backdrop-blur-md bg-white/10", children: /* @__PURE__ */ e.jsx("span", { className: "text-brand-yellow text-xs font-bold tracking-[0.3em] uppercase", children: c.kicker }) }),
+        /* @__PURE__ */ e.jsx("h1", { ref: p, className: "text-5xl md:text-8xl font-cinzel text-white mb-6 tracking-tight drop-shadow-2xl leading-none whitespace-pre-wrap", children: c.title }),
         /* @__PURE__ */ e.jsx("div", { className: "w-24 h-1 bg-brand-yellow mx-auto mb-8" })
       ] })
     ] }),
     /* @__PURE__ */ e.jsx("section", { className: "py-24 px-6 md:px-12 max-w-7xl mx-auto", children: /* @__PURE__ */ e.jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-16 items-center reveal-section", children: [
       /* @__PURE__ */ e.jsxs("div", { children: [
-        /* @__PURE__ */ e.jsxs("h2", { className: "text-4xl md:text-5xl font-cinzel text-brand-blue mb-8 leading-tight", children: [
-          "Well Manicured & ",
-          /* @__PURE__ */ e.jsx("br", {}),
-          /* @__PURE__ */ e.jsx("span", { className: "text-brand-yellow", children: "Wooded Parkland" })
-        ] }),
-        /* @__PURE__ */ e.jsxs("div", { className: "space-y-6 text-text-muted text-lg font-light leading-relaxed", children: [
-          /* @__PURE__ */ e.jsx("p", { children: "Wingate Park Golf Club is an 18-hole, well-manicured, and wooded course founded 52 years ago. Located in the tranquil Pomona area of Harare, it offers a unique and challenging golfing experience with fairways lined with mature trees." }),
-          /* @__PURE__ */ e.jsx("p", { children: "Despite playing on these old style characteristics, the course is thoroughly modern in other ways. The 18th is a long par 4 requiring negotiation of water on all three shots." })
-        ] }),
+        /* @__PURE__ */ e.jsx("h2", { className: "text-4xl md:text-5xl font-cinzel text-brand-blue mb-8 leading-tight whitespace-pre-wrap", children: s.title }),
+        /* @__PURE__ */ e.jsx("div", { className: "space-y-6 text-text-muted text-lg font-light leading-relaxed whitespace-pre-wrap", children: s.content }),
         /* @__PURE__ */ e.jsxs("div", { className: "grid grid-cols-2 gap-8 mt-12 bg-brand-blue/5 p-8 rounded-2xl border border-brand-blue/10", children: [
           /* @__PURE__ */ e.jsxs("div", { children: [
             /* @__PURE__ */ e.jsxs("div", { className: "flex items-center gap-3 mb-2 text-brand-blue", children: [
-              /* @__PURE__ */ e.jsx(u, { size: 20 }),
+              /* @__PURE__ */ e.jsx(T, { size: 20 }),
               /* @__PURE__ */ e.jsx("span", { className: "font-bold text-sm uppercase tracking-widest", children: "Holes" })
             ] }),
-            /* @__PURE__ */ e.jsx("span", { className: "text-4xl font-cinzel font-bold text-brand-blue", children: "18" })
+            /* @__PURE__ */ e.jsx("span", { className: "text-4xl font-cinzel font-bold text-brand-blue", children: s.stats.holes })
           ] }),
           /* @__PURE__ */ e.jsxs("div", { children: [
             /* @__PURE__ */ e.jsxs("div", { className: "flex items-center gap-3 mb-2 text-brand-blue", children: [
-              /* @__PURE__ */ e.jsx(f, { size: 20 }),
+              /* @__PURE__ */ e.jsx(N, { size: 20 }),
               /* @__PURE__ */ e.jsx("span", { className: "font-bold text-sm uppercase tracking-widest", children: "Par" })
             ] }),
-            /* @__PURE__ */ e.jsx("span", { className: "text-4xl font-cinzel font-bold text-brand-blue", children: "72" })
+            /* @__PURE__ */ e.jsx("span", { className: "text-4xl font-cinzel font-bold text-brand-blue", children: s.stats.par })
           ] }),
           /* @__PURE__ */ e.jsxs("div", { children: [
             /* @__PURE__ */ e.jsxs("div", { className: "flex items-center gap-3 mb-2 text-brand-blue", children: [
-              /* @__PURE__ */ e.jsx(j, { size: 20 }),
+              /* @__PURE__ */ e.jsx(R, { size: 20 }),
               /* @__PURE__ */ e.jsx("span", { className: "font-bold text-sm uppercase tracking-widest", children: "Distance" })
             ] }),
-            /* @__PURE__ */ e.jsx("span", { className: "text-2xl font-cinzel font-bold text-brand-blue", children: "6450m" })
+            /* @__PURE__ */ e.jsx("span", { className: "text-2xl font-cinzel font-bold text-brand-blue", children: s.stats.distance })
           ] }),
           /* @__PURE__ */ e.jsxs("div", { children: [
             /* @__PURE__ */ e.jsxs("div", { className: "flex items-center gap-3 mb-2 text-brand-blue", children: [
-              /* @__PURE__ */ e.jsx(p, { size: 20 }),
+              /* @__PURE__ */ e.jsx(z, { size: 20 }),
               /* @__PURE__ */ e.jsx("span", { className: "font-bold text-sm uppercase tracking-widest", children: "Est. Time" })
             ] }),
-            /* @__PURE__ */ e.jsx("span", { className: "text-2xl font-cinzel font-bold text-brand-blue", children: "4.5 Hrs" })
+            /* @__PURE__ */ e.jsx("span", { className: "text-2xl font-cinzel font-bold text-brand-blue", children: s.stats.time })
           ] })
         ] })
       ] }),
@@ -156,7 +186,7 @@ const v = () => {
           "div",
           {
             className: "absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-105",
-            style: { backgroundImage: "url('/wp-content/uploads/2026/02/20260118_131838-scaled.jpg')" }
+            style: { backgroundImage: `url('${s.image}')` }
           }
         ),
         /* @__PURE__ */ e.jsxs("div", { className: "absolute bottom-8 left-8 right-8 bg-white/95 backdrop-blur-xl p-8 rounded-xl border-l-4 border-brand-yellow shadow-lg", children: [
@@ -183,14 +213,14 @@ const v = () => {
             /* @__PURE__ */ e.jsx("th", { className: "py-4 px-6 text-right bg-black/20 text-brand-yellow border-l border-brand-blue/20", children: "Stroke" })
           ] }) }),
           /* @__PURE__ */ e.jsxs("tbody", { className: "divide-y divide-brand-blue/5", children: [
-            i.map((t, r) => /* @__PURE__ */ e.jsxs("tr", { className: `score-row hover:bg-brand-blue/[0.02] transition-colors ${r % 2 === 0 ? "bg-brand-blue/[0.01]" : ""}`, children: [
+            w.map((t, a) => /* @__PURE__ */ e.jsxs("tr", { className: `score-row hover:bg-brand-blue/[0.02] transition-colors ${a % 2 === 0 ? "bg-brand-blue/[0.01]" : ""}`, children: [
               /* @__PURE__ */ e.jsx("td", { className: "py-4 px-6 font-bold text-brand-blue", children: t.hole }),
               /* @__PURE__ */ e.jsx("td", { className: "py-4 px-4 text-center font-bold bg-brand-yellow/[0.07] border-x border-brand-blue/5 text-brand-blue", children: t.par }),
               /* @__PURE__ */ e.jsx("td", { className: "py-4 px-4 text-center font-medium text-brand-blue", children: t.white }),
               /* @__PURE__ */ e.jsx("td", { className: "py-4 px-4 text-center font-light text-text-muted", children: t.blue }),
               /* @__PURE__ */ e.jsx("td", { className: "py-4 px-4 text-center font-light text-text-muted", children: t.red }),
               /* @__PURE__ */ e.jsx("td", { className: "py-4 px-6 text-right text-xs font-bold text-brand-blue bg-brand-yellow/[0.07] border-l border-brand-blue/5", children: t.si })
-            ] }, r)),
+            ] }, a)),
             /* @__PURE__ */ e.jsxs("tr", { className: "bg-brand-blue/10 font-bold text-brand-blue", children: [
               /* @__PURE__ */ e.jsx("td", { className: "py-4 px-6", children: "OUT" }),
               /* @__PURE__ */ e.jsx("td", { className: "py-4 px-4 text-center bg-brand-yellow/10 border-x border-brand-blue/5 text-brand-blue-dark", children: "36" }),
@@ -199,14 +229,14 @@ const v = () => {
               /* @__PURE__ */ e.jsx("td", { className: "py-4 px-4 text-center", children: "2774" }),
               /* @__PURE__ */ e.jsx("td", { className: "py-4 px-6 bg-brand-yellow/10 border-l border-brand-blue/5" })
             ] }),
-            c.map((t, r) => /* @__PURE__ */ e.jsxs("tr", { className: `score-row hover:bg-brand-blue/[0.02] transition-colors ${r % 2 === 0 ? "bg-brand-blue/[0.01]" : ""}`, children: [
+            f.map((t, a) => /* @__PURE__ */ e.jsxs("tr", { className: `score-row hover:bg-brand-blue/[0.02] transition-colors ${a % 2 === 0 ? "bg-brand-blue/[0.01]" : ""}`, children: [
               /* @__PURE__ */ e.jsx("td", { className: "py-4 px-6 font-bold text-brand-blue", children: t.hole }),
               /* @__PURE__ */ e.jsx("td", { className: "py-4 px-4 text-center font-bold bg-brand-yellow/[0.07] border-x border-brand-blue/5 text-brand-blue", children: t.par }),
               /* @__PURE__ */ e.jsx("td", { className: "py-4 px-4 text-center font-medium text-brand-blue", children: t.white }),
               /* @__PURE__ */ e.jsx("td", { className: "py-4 px-4 text-center font-light text-text-muted", children: t.blue }),
               /* @__PURE__ */ e.jsx("td", { className: "py-4 px-4 text-center font-light text-text-muted", children: t.red }),
               /* @__PURE__ */ e.jsx("td", { className: "py-4 px-6 text-right text-xs font-bold text-brand-blue bg-brand-yellow/[0.07] border-l border-brand-blue/5", children: t.si })
-            ] }, r)),
+            ] }, a)),
             /* @__PURE__ */ e.jsxs("tr", { className: "bg-brand-blue/10 font-bold text-brand-blue border-t-2 border-brand-blue", children: [
               /* @__PURE__ */ e.jsx("td", { className: "py-5 px-6", children: "TOTAL" }),
               /* @__PURE__ */ e.jsx("td", { className: "py-5 px-4 text-center text-lg bg-brand-yellow/10 border-x border-brand-blue/5 border-b border-brand-blue/5 text-brand-blue-dark", children: "72" }),
@@ -219,29 +249,25 @@ const v = () => {
         ] }) }) })
       ] })
     ] }),
-    /* @__PURE__ */ e.jsxs("section", { ref: o, className: "relative py-32 px-6 overflow-hidden", children: [
+    /* @__PURE__ */ e.jsxs("section", { ref: u, className: "relative py-32 px-6 overflow-hidden", children: [
       /* @__PURE__ */ e.jsxs("div", { className: "absolute inset-0 bg-brand-blue", children: [
-        /* @__PURE__ */ e.jsx("div", { className: "absolute inset-0 opacity-40 mix-blend-overlay", style: { backgroundImage: "url('/wp-content/uploads/2026/02/20260126_140911-scaled.jpg')", backgroundSize: "cover", backgroundposition: "center" } }),
+        /* @__PURE__ */ e.jsx("div", { className: "absolute inset-0 opacity-40 mix-blend-overlay", style: { backgroundImage: `url('${n.image}')`, backgroundSize: "cover", backgroundPosition: "center" } }),
         /* @__PURE__ */ e.jsx("div", { className: "absolute inset-0 bg-gradient-to-r from-brand-blue/90 to-brand-blue/40" })
       ] }),
       /* @__PURE__ */ e.jsxs("div", { className: "relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12", children: [
         /* @__PURE__ */ e.jsxs("div", { className: "text-white max-w-2xl reveal-section", children: [
-          /* @__PURE__ */ e.jsx("span", { className: "text-brand-yellow font-cinzel tracking-[0.2em] font-bold uppercase mb-4 block", children: "Visual Tour" }),
-          /* @__PURE__ */ e.jsxs("h2", { className: "text-5xl md:text-6xl font-cinzel mb-6 leading-none", children: [
-            "Experience the ",
-            /* @__PURE__ */ e.jsx("br", {}),
-            " Beauty"
-          ] }),
-          /* @__PURE__ */ e.jsx("p", { className: "text-white/80 text-lg font-light leading-relaxed max-w-xl", children: "Explore our gallery to see the manicured fairways, challenging bunkers, and scenic water hazards that make Wingate Park truly unique." })
+          /* @__PURE__ */ e.jsx("span", { className: "text-brand-yellow font-cinzel tracking-[0.2em] font-bold uppercase mb-4 block", children: n.kicker }),
+          /* @__PURE__ */ e.jsx("h2", { className: "text-5xl md:text-6xl font-cinzel mb-6 leading-none whitespace-pre-wrap", children: n.title }),
+          /* @__PURE__ */ e.jsx("p", { className: "text-white/80 text-lg font-light leading-relaxed max-w-xl", children: n.description })
         ] }),
-        /* @__PURE__ */ e.jsx("div", { className: "reveal-section", children: /* @__PURE__ */ e.jsxs("a", { href: "/gallery", className: "group relative inline-flex items-center overflow-hidden rounded-sm bg-brand-yellow px-12 py-6 text-brand-blue no-underline hover:no-underline focus:no-underline font-cinzel font-bold tracking-widest uppercase transition-all duration-300 hover:bg-white hover:text-brand-blue shadow-2xl hover:shadow-brand-yellow/50", children: [
-          /* @__PURE__ */ e.jsx("span", { className: "mr-4 text-lg", children: "View Gallery" }),
-          /* @__PURE__ */ e.jsx(b, { className: "transition-transform group-hover:translate-x-2" })
+        /* @__PURE__ */ e.jsx("div", { className: "reveal-section", children: /* @__PURE__ */ e.jsxs("a", { href: n.buttonUrl, className: "group relative inline-flex items-center overflow-hidden rounded-sm bg-brand-yellow px-12 py-6 text-brand-blue no-underline hover:no-underline focus:no-underline font-cinzel font-bold tracking-widest uppercase transition-all duration-300 hover:bg-white hover:text-brand-blue shadow-2xl hover:shadow-brand-yellow/50", children: [
+          /* @__PURE__ */ e.jsx("span", { className: "mr-4 text-lg", children: n.buttonText }),
+          /* @__PURE__ */ e.jsx(v, { className: "transition-transform group-hover:translate-x-2" })
         ] }) })
       ] })
     ] })
   ] });
 };
 export {
-  v as default
+  A as default
 };
