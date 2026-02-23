@@ -337,8 +337,8 @@ body.wingate-mobile-menu-open {
         height: auto !important;
         max-height: 4.5rem !important;
         object-fit: contain;
-        margin-top: 6px;
-        transform: none;
+        margin-top: 0;
+        transform: translateY(48px);
     }
 
     #header-root .wingate-main-header {
