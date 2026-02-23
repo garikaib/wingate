@@ -1,5 +1,5 @@
-import { r as u, j as e } from "./main-D0uV6uTS.mjs";
-import { M as T } from "./MediaPicker-wZAWg_bt.mjs";
+import { r as u, j as e } from "./main-C4Y7UEwf.mjs";
+import { M as T } from "./MediaPicker-DcG7_P1U.mjs";
 const o = "bg-white p-6 md:p-8 rounded-[2rem] shadow-xl border border-gray-100", d = "mb-6 pb-5 border-b border-gray-100", x = "text-2xl md:text-3xl font-cinzel font-bold uppercase tracking-wide text-brand-blue", g = "text-sm text-gray-500 font-montserrat mt-2", l = "block text-[11px] font-bold tracking-[0.16em] uppercase text-gray-600 mb-2", r = "w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50/70 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition", j = "px-3 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-colors", F = () => {
   const [n, h] = u.useState(null), [_, f] = u.useState(!0), [N, w] = u.useState(!1), [v, p] = u.useState({ text: "", type: "" }), C = window.wingateAdminData?.root || "/wp-json/", E = window.wingateAdminData?.nonce || "";
   u.useEffect(() => {

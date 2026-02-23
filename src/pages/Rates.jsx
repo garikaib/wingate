@@ -1,11 +1,36 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ChevronRight, ShieldCheck, CreditCard, Users } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const DEFAULT_RATES_SETTINGS = {
+    hero: {
+        kicker: 'Private Experience',
+        title: 'Membership \n Subscriptions',
+        subtitle: 'Subs as from 1st January 2026',
+        backgroundImage: ''
+    },
+    intro: {
+        kicker: 'The Investment',
+        title: 'Elite Access, \nCurated for You',
+        content: ''
+    },
+    menRates: [],
+    ladiesRates: [],
+    allRates: [],
+    cta: {
+        title: 'Elevate Your Game. \n Join the Legacy.',
+        description: '',
+        buttonText: 'JOIN NOW',
+        buttonUrl: '/membership',
+        backgroundImage: ''
+    }
+};
+
 const Rates = () => {
+    const rootRef = useRef(null);
     const heroRef = useRef(null);
     const titleRef = useRef(null);
     const contentRef = useRef(null);
@@ -36,50 +61,78 @@ const Rates = () => {
 
         const ctx = gsap.context(() => {
             // Hero Title Animation
-            gsap.from(titleRef.current, {
-                y: 100,
-                opacity: 0,
-                duration: 1.5,
-                ease: "expo.out"
-            });
+            if (titleRef.current) {
+                gsap.from(titleRef.current, {
+                    y: 100,
+                    opacity: 0,
+                    duration: 1.5,
+                    ease: "expo.out"
+                });
+            }
 
             // Parallax Effect on Hero
-            gsap.to(parallaxRef.current, {
-                yPercent: 30,
-                ease: "none",
-                scrollTrigger: {
-                    trigger: heroRef.current,
-                    start: "top top",
-                    end: "bottom top",
-                    scrub: true
-                }
-            });
+            if (parallaxRef.current && heroRef.current) {
+                gsap.to(parallaxRef.current, {
+                    yPercent: 30,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: heroRef.current,
+                        start: "top top",
+                        end: "bottom top",
+                        scrub: true
+                    }
+                });
+            }
 
             // Sections Reveal
-            gsap.from(".glass-card", {
-                y: 60,
-                opacity: 0,
-                duration: 1,
-                stagger: 0.3,
-                ease: "power3.out",
-                scrollTrigger: {
-                    trigger: contentRef.current,
-                    start: "top 75%"
-                }
-            });
+            const cards = contentRef.current?.querySelectorAll('.glass-card') || [];
+            if (cards.length && contentRef.current) {
+                gsap.from(cards, {
+                    y: 60,
+                    opacity: 0,
+                    duration: 1,
+                    stagger: 0.3,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: contentRef.current,
+                        start: "top 75%"
+                    }
+                });
+            }
 
             // Floating elements animation
-            gsap.to(".floater", {
-                y: -20,
-                duration: 2,
-                repeat: -1,
-                yoyo: true,
-                ease: "sine.inOut",
-                stagger: 0.5
-            });
-        }, heroRef);
+            const floaters = rootRef.current?.querySelectorAll('.floater') || [];
+            if (floaters.length) {
+                gsap.to(floaters, {
+                    y: -20,
+                    duration: 2,
+                    repeat: -1,
+                    yoyo: true,
+                    ease: "sine.inOut",
+                    stagger: 0.5
+                });
+            }
+        }, rootRef);
         return () => ctx.revert();
     }, [isLoading, settings]);
+
+    const resolvedSettings = {
+        hero: {
+            ...DEFAULT_RATES_SETTINGS.hero,
+            ...(settings?.hero && typeof settings.hero === 'object' ? settings.hero : {})
+        },
+        intro: {
+            ...DEFAULT_RATES_SETTINGS.intro,
+            ...(settings?.intro && typeof settings.intro === 'object' ? settings.intro : {})
+        },
+        menRates: Array.isArray(settings?.menRates) ? settings.menRates : DEFAULT_RATES_SETTINGS.menRates,
+        ladiesRates: Array.isArray(settings?.ladiesRates) ? settings.ladiesRates : DEFAULT_RATES_SETTINGS.ladiesRates,
+        allRates: Array.isArray(settings?.allRates) ? settings.allRates : DEFAULT_RATES_SETTINGS.allRates,
+        cta: {
+            ...DEFAULT_RATES_SETTINGS.cta,
+            ...(settings?.cta && typeof settings.cta === 'object' ? settings.cta : {})
+        }
+    };
 
     const RateTable = ({ title, rates, columns, icon: Icon }) => (
         <div className="glass-card mb-20 relative">
@@ -143,7 +196,7 @@ const Rates = () => {
     );
 
     return (
-        <div className="bg-white min-h-screen relative overflow-hidden">
+        <div ref={rootRef} className="bg-white min-h-screen relative overflow-hidden">
             {/* Background elements - VIBRANT BRAND COLORS */}
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden -z-10">
                 <div className="floater absolute top-1/4 right-0 w-96 h-96 bg-brand-yellow/5 rounded-full blur-[100px]"></div>
@@ -156,7 +209,7 @@ const Rates = () => {
                     ref={parallaxRef}
                     className="absolute inset-0 bg-cover bg-center"
                     style={{
-                        backgroundImage: `url('${settings.hero.backgroundImage}')`,
+                        backgroundImage: `url('${resolvedSettings.hero.backgroundImage}')`,
                         transform: "scale(1.1)"
                     }}
                 ></div>
@@ -168,15 +221,15 @@ const Rates = () => {
 
                 <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
                     <div className="inline-block px-4 py-1 border border-brand-yellow/30 rounded-full mb-6 backdrop-blur-md bg-white/10">
-                        <span className="text-brand-yellow text-xs font-bold tracking-[0.3em] uppercase">{settings.hero.kicker}</span>
+                        <span className="text-brand-yellow text-xs font-bold tracking-[0.3em] uppercase">{resolvedSettings.hero.kicker}</span>
                     </div>
                     <h1 ref={titleRef} className="text-5xl md:text-8xl font-cinzel text-white mb-8 tracking-tighter drop-shadow-2xl leading-none whitespace-pre-line">
-                        {settings.hero.title}
+                        {resolvedSettings.hero.title}
                     </h1>
                     <div className="flex flex-col items-center">
                         <div className="w-24 h-1 bg-brand-yellow/50 mb-6"></div>
                         <p className="text-sm md:text-lg text-white/90 font-montserrat tracking-[0.2em] uppercase font-light">
-                            {settings.hero.subtitle}
+                            {resolvedSettings.hero.subtitle}
                         </p>
                     </div>
                 </div>
@@ -186,10 +239,10 @@ const Rates = () => {
             <main ref={contentRef} className="container mx-auto px-4 py-32 max-w-6xl relative">
                 <div className="flex flex-col lg:flex-row justify-between items-end mb-24 gap-12">
                     <div className="max-w-2xl">
-                        <span className="text-brand-yellow font-cinzel tracking-[0.4em] uppercase text-xs font-bold mb-4 block">{settings.intro.kicker}</span>
-                        <h2 className="text-5xl md:text-6xl font-cinzel text-brand-blue mb-8 leading-tight whitespace-pre-line">{settings.intro.title}</h2>
+                        <span className="text-brand-yellow font-cinzel tracking-[0.4em] uppercase text-xs font-bold mb-4 block">{resolvedSettings.intro.kicker}</span>
+                        <h2 className="text-5xl md:text-6xl font-cinzel text-brand-blue mb-8 leading-tight whitespace-pre-line">{resolvedSettings.intro.title}</h2>
                         <p className="text-text-muted font-montserrat text-lg leading-relaxed font-light whitespace-pre-line">
-                            {settings.intro.content}
+                            {resolvedSettings.intro.content}
                         </p>
                     </div>
 
@@ -202,22 +255,22 @@ const Rates = () => {
                     </div>
                 </div>
 
-                <RateTable title="Gentlemen" rates={settings.menRates} columns={["Quarterly", "Monthly"]} icon={Users} />
-                <RateTable title="Ladies" rates={settings.ladiesRates} columns={["Quarterly", "Monthly"]} icon={Users} />
-                <RateTable title="Admin & Extras" rates={settings.allRates} columns={["Amount"]} icon={ShieldCheck} />
+                <RateTable title="Gentlemen" rates={resolvedSettings.menRates} columns={["Quarterly", "Monthly"]} icon={Users} />
+                <RateTable title="Ladies" rates={resolvedSettings.ladiesRates} columns={["Quarterly", "Monthly"]} icon={Users} />
+                <RateTable title="Admin & Extras" rates={resolvedSettings.allRates} columns={["Amount"]} icon={ShieldCheck} />
 
                 {/* Final Call to Action - MORE IMPACTful */}
                 <div className="relative mt-32 py-24 px-8 rounded-3xl overflow-hidden bg-brand-blue text-center group shadow-2xl">
-                    <div className="absolute inset-0 opacity-20 grayscale-0 group-hover:scale-110 transition-transform duration-1000" style={{ backgroundImage: `url('${settings.cta.backgroundImage}')`, backgroundSize: 'cover' }}></div>
+                    <div className="absolute inset-0 opacity-20 grayscale-0 group-hover:scale-110 transition-transform duration-1000" style={{ backgroundImage: `url('${resolvedSettings.cta.backgroundImage}')`, backgroundSize: 'cover' }}></div>
                     <div className="absolute inset-0 bg-gradient-to-br from-brand-blue via-brand-blue/90 to-black"></div>
                     <div className="relative z-10">
-                        <h3 className="text-4xl md:text-5xl font-cinzel text-brand-yellow mb-8 tracking-widest leading-tight whitespace-pre-line">{settings.cta.title}</h3>
+                        <h3 className="text-4xl md:text-5xl font-cinzel text-brand-yellow mb-8 tracking-widest leading-tight whitespace-pre-line">{resolvedSettings.cta.title}</h3>
                         <p className="text-white/70 font-montserrat mb-12 max-w-xl mx-auto text-lg font-light leading-relaxed">
-                            {settings.cta.description}
+                            {resolvedSettings.cta.description}
                         </p>
                         <div className="flex flex-wrap justify-center gap-8">
-                            <a href={settings.cta.buttonUrl} className="group flex items-center bg-brand-yellow text-brand-blue no-underline hover:no-underline focus:no-underline font-cinzel font-bold text-sm tracking-widest uppercase py-4 px-12 border border-brand-yellow hover:bg-white hover:border-white transition-all duration-300 rounded-sm shadow-xl shadow-brand-yellow/20">
-                                {settings.cta.buttonText} <ChevronRight size={18} className="ml-3 group-hover:translate-x-2 transition-transform" />
+                            <a href={resolvedSettings.cta.buttonUrl} className="group flex items-center bg-brand-yellow text-brand-blue no-underline hover:no-underline focus:no-underline font-cinzel font-bold text-sm tracking-widest uppercase py-4 px-12 border border-brand-yellow hover:bg-white hover:border-white transition-all duration-300 rounded-sm shadow-xl shadow-brand-yellow/20">
+                                {resolvedSettings.cta.buttonText} <ChevronRight size={18} className="ml-3 group-hover:translate-x-2 transition-transform" />
                             </a>
                         </div>
                     </div>

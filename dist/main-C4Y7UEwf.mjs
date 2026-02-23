@@ -32675,133 +32675,133 @@ wx && il.createRoot(wx).render(
   /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(uC, {}) })
 );
 const Ux = document.getElementById("membership-root");
-Ux && import("./Membership-CBUhUO25.mjs").then(({ default: v }) => {
+Ux && import("./Membership-DTnvd7x5.mjs").then(({ default: v }) => {
   il.createRoot(Ux).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const Nx = document.getElementById("rates-root");
-Nx && import("./Rates-CnlZdNel.mjs").then(({ default: v }) => {
+Nx && import("./Rates-BhLEkmVP.mjs").then(({ default: v }) => {
   il.createRoot(Nx).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const Hx = document.getElementById("course-root");
-Hx && import("./Course-eSqVUKVo.mjs").then(({ default: v }) => {
+Hx && import("./Course-BfQizIgi.mjs").then(({ default: v }) => {
   il.createRoot(Hx).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const jx = document.getElementById("not-found-root");
-jx && import("./NotFound-DdT8q9Cq.mjs").then(({ default: v }) => {
+jx && import("./NotFound-B5Dq_quE.mjs").then(({ default: v }) => {
   il.createRoot(jx).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const Bx = document.getElementById("hole-by-hole-root");
-Bx && import("./HoleByHole-Caqc81iM.mjs").then(({ default: v }) => {
+Bx && import("./HoleByHole-BNBKKkkW.mjs").then(({ default: v }) => {
   il.createRoot(Bx).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const Yx = document.getElementById("green-fees-root");
-Yx && import("./GreenFees-CyOz0LAC.mjs").then(({ default: v }) => {
+Yx && import("./GreenFees-DWeHY_Wl.mjs").then(({ default: v }) => {
   il.createRoot(Yx).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const qx = document.getElementById("events-admin-root");
-qx && import("./EventsAdmin-BDOpTcSK.mjs").then(({ default: v }) => {
+qx && import("./EventsAdmin-BIaLQna4.mjs").then(({ default: v }) => {
   il.createRoot(qx).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const Gx = document.getElementById("home-settings-admin-root");
-Gx && import("./HomeSettingsAdmin-CVFTAW6W.mjs").then(({ default: v }) => {
+Gx && import("./HomeSettingsAdmin-YcKk9fqU.mjs").then(({ default: v }) => {
   il.createRoot(Gx).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const Lx = document.getElementById("contact-page-settings-admin-root");
-Lx && import("./ContactPageSettingsAdmin-DdbFMedc.mjs").then(({ default: v }) => {
+Lx && import("./ContactPageSettingsAdmin-CZCnTDGq.mjs").then(({ default: v }) => {
   il.createRoot(Lx).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const Xx = document.getElementById("course-settings-admin-root");
-Xx && import("./CourseSettingsAdmin-DKyYZWLW.mjs").then(({ default: v }) => {
+Xx && import("./CourseSettingsAdmin-BtVnuDu3.mjs").then(({ default: v }) => {
   il.createRoot(Xx).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const Vx = document.getElementById("hole-by-hole-admin-root");
-Vx && import("./HoleByHoleAdmin-hJwSv3VH.mjs").then(({ default: v }) => {
+Vx && import("./HoleByHoleAdmin-Cp_6HCi0.mjs").then(({ default: v }) => {
   il.createRoot(Vx).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const Qx = document.getElementById("green-fees-settings-admin-root");
-Qx && import("./GreenFeesSettingsAdmin-B7CY3WzM.mjs").then(({ default: v }) => {
+Qx && import("./GreenFeesSettingsAdmin-DZVE5ug-.mjs").then(({ default: v }) => {
   il.createRoot(Qx).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const Zx = document.getElementById("booking-settings-admin-root");
-Zx && import("./BookingSettingsAdmin-CcSZO-eC.mjs").then(({ default: v }) => {
+Zx && import("./BookingSettingsAdmin-DPtlXTs7.mjs").then(({ default: v }) => {
   il.createRoot(Zx).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const Jx = document.getElementById("news-layout-settings-admin-root");
-Jx && import("./NewsLayoutSettingsAdmin-naA2TdMK.mjs").then(({ default: v }) => {
+Jx && import("./NewsLayoutSettingsAdmin-DkadpPpD.mjs").then(({ default: v }) => {
   il.createRoot(Jx).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const kx = document.getElementById("rates-admin-root");
-kx && import("./RatesAdmin-C7UecwPR.mjs").then(({ default: v }) => {
+kx && import("./RatesAdmin-BRneFogX.mjs").then(({ default: v }) => {
   il.createRoot(kx).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const Kx = document.getElementById("membership-admin-root");
-Kx && import("./MembershipAdmin-yRXnEPeO.mjs").then(({ default: v }) => {
+Kx && import("./MembershipAdmin-DvrK4eT3.mjs").then(({ default: v }) => {
   il.createRoot(Kx).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const $x = document.getElementById("edit-pages-gateway-admin-root");
-$x && import("./EditPagesGatewayAdmin-Duzp3HSO.mjs").then(({ default: v }) => {
+$x && import("./EditPagesGatewayAdmin-417aqEpk.mjs").then(({ default: v }) => {
   il.createRoot($x).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const Wx = document.getElementById("mens-handicap-root");
-Wx && import("./MensHandicap-RGmszHlU.mjs").then(({ default: v }) => {
+Wx && import("./MensHandicap-BPjtKZy_.mjs").then(({ default: v }) => {
   il.createRoot(Wx).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const Fx = document.getElementById("handicap-main-root");
-Fx && import("./HandicapMain-KzcllQzh.mjs").then(({ default: v }) => {
+Fx && import("./HandicapMain-BeFcc3U6.mjs").then(({ default: v }) => {
   il.createRoot(Fx).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const Ix = document.getElementById("ladies-handicap-root");
-Ix && import("./LadiesHandicap-CIhUmBD6.mjs").then(({ default: v }) => {
+Ix && import("./LadiesHandicap-CZzwYe-B.mjs").then(({ default: v }) => {
   il.createRoot(Ix).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const Px = document.getElementById("kitchen-root");
-Px && import("./Kitchen-BQFNi7Ln.mjs").then(({ default: v }) => {
+Px && import("./Kitchen-D5pO-S_6.mjs").then(({ default: v }) => {
   il.createRoot(Px).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );
 });
 const eR = document.getElementById("bar-root");
-eR && import("./LoyalAncient-BbKPZ8ZP.mjs").then(({ default: v }) => {
+eR && import("./LoyalAncient-uTOvnCIE.mjs").then(({ default: v }) => {
   il.createRoot(eR).render(
     /* @__PURE__ */ K.jsx($n.StrictMode, { children: /* @__PURE__ */ K.jsx(v, {}) })
   );

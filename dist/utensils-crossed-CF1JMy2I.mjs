@@ -1,4 +1,4 @@
-import { c as e } from "./createLucideIcon-DBhvyBvn.mjs";
+import { c as e } from "./createLucideIcon-BXI0vGFy.mjs";
 const a = [
   [
     "path",

@@ -1,4 +1,4 @@
-import { c as a } from "./createLucideIcon-DBhvyBvn.mjs";
+import { c as a } from "./createLucideIcon-BXI0vGFy.mjs";
 const e = [
   ["path", { d: "M10 14.66v1.626a2 2 0 0 1-.976 1.696A5 5 0 0 0 7 21.978", key: "1n3hpd" }],
   ["path", { d: "M14 14.66v1.626a2 2 0 0 0 .976 1.696A5 5 0 0 1 17 21.978", key: "rfe1zi" }],

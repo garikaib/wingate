@@ -1,4 +1,4 @@
-import { j as e } from "./main-D0uV6uTS.mjs";
+import { j as e } from "./main-C4Y7UEwf.mjs";
 const r = [
   { slug: "wingate-home-settings", title: "Home Page", description: "Hero, cards, and welcome sections." },
   { slug: "wingate-contact-page-settings", title: "Contact Us", description: "Hero, map block, and contact team section." },

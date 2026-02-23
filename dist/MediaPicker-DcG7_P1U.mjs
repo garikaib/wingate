@@ -1,4 +1,4 @@
-import { r as i, j as e } from "./main-D0uV6uTS.mjs";
+import { r as i, j as e } from "./main-C4Y7UEwf.mjs";
 const d = ({ onSelect: r, value: t, label: s }) => {
   const a = i.useCallback(() => {
     const o = window.wp.media({
