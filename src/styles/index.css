@@ -329,11 +329,15 @@ body.wingate-mobile-menu-open {
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        overflow: visible;
     }
 
     #header-root .wingate-absolute-logo img {
-        height: 4.5rem !important;
-        margin-top: 0;
+        width: auto !important;
+        height: auto !important;
+        max-height: 4.5rem !important;
+        object-fit: contain;
+        margin-top: 6px;
         transform: none;
     }
 
