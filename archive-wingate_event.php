@@ -13,7 +13,14 @@ $type = get_query_var( 'wingate_event_type', '' );
 if ( empty( $type ) && isset( $_GET['type'] ) ) {
 	$type = sanitize_text_field( wp_unslash( $_GET['type'] ) );
 }
-$allowed_types = array( 'tournament', 'wedding', 'banquet', 'social' );
+$event_categories = function_exists( 'wingate_tools_get_event_categories' ) ? wingate_tools_get_event_categories() : array();
+$category_map = array();
+foreach ( $event_categories as $category ) {
+	if ( isset( $category['slug'] ) ) {
+		$category_map[ (string) $category['slug'] ] = $category;
+	}
+}
+$allowed_types = array_keys( $category_map );
 if ( ! in_array( $type, $allowed_types, true ) ) {
 	$type = '';
 }
@@ -24,22 +31,17 @@ $event_filter_links = array(
 		'url'   => get_post_type_archive_link( 'wingate_event' ),
 		'key'   => '',
 	),
-	array(
-		'label' => 'Tournaments',
-		'url'   => home_url( '/events/tournament/' ),
-		'key'   => 'tournament',
-	),
-	array(
-		'label' => 'Weddings',
-		'url'   => home_url( '/events/wedding/' ),
-		'key'   => 'wedding',
-	),
-	array(
-		'label' => 'Banquets',
-		'url'   => home_url( '/events/banquet/' ),
-		'key'   => 'banquet',
-	),
 );
+foreach ( $event_categories as $category ) {
+	if ( 'banquet' === (string) $category['slug'] ) {
+		continue;
+	}
+	$event_filter_links[] = array(
+		'label' => isset( $category['label'] ) ? (string) $category['label'] : ucfirst( (string) $category['slug'] ),
+		'url'   => home_url( '/events/' . rawurlencode( (string) $category['slug'] ) . '/' ),
+		'key'   => (string) $category['slug'],
+	);
+}
 ?>
 
 <div class="bg-white min-h-screen relative overflow-hidden">
@@ -53,7 +55,7 @@ $event_filter_links = array(
 	        <div class="relative z-10 text-center px-4 max-w-5xl mx-auto flex flex-col items-center">
 	            <h1 class="text-5xl md:text-7xl font-cinzel text-white mb-6 tracking-tight drop-shadow-2xl leading-none">
 	                <?php 
-	                $title_suffix = $type ? ucfirst($type) . 's' : 'Events'; // e.g. Tournaments, Weddings
+	                $title_suffix = $type && isset( $category_map[ $type ]['label'] ) ? (string) $category_map[ $type ]['label'] : 'Events';
 	                ?>
 	                Upcoming <span class="text-brand-yellow"><?php echo esc_html($title_suffix); ?></span>
 	            </h1>
@@ -103,6 +105,7 @@ $event_filter_links = array(
                     <?php foreach ($month_events as $post) : setup_postdata($post); 
                         $event_date = get_post_meta($post->ID, 'event_date', true);
                         $event_type = get_post_meta($post->ID, 'event_type', true);
+                        $event_type_label = isset( $category_map[ $event_type ]['label'] ) ? (string) $category_map[ $event_type ]['label'] : ( $event_type ?: 'Event' );
                         $day = date('d', strtotime($event_date));
                         $weekday = date('l', strtotime($event_date));
                         $thumb_url = get_the_post_thumbnail_url($post->ID, 'medium'); // Smaller thumb for list view
@@ -119,7 +122,7 @@ $event_filter_links = array(
 	                            <div class="p-6 flex-grow flex flex-col justify-center text-center items-center">
 	                                <div class="flex items-center gap-3 mb-2">
 	                                    <span class="inline-block px-2 py-1 bg-brand-blue/5 text-brand-blue text-[10px] font-bold uppercase tracking-wider rounded group-hover:bg-brand-yellow group-hover:text-brand-blue transition-colors duration-300">
-	                                        <?php echo esc_html($event_type ?: 'Event'); ?>
+	                                        <?php echo esc_html($event_type_label); ?>
 	                                    </span>
 	                                </div>
 	                                <h3 class="text-xl font-cinzel text-brand-blue font-bold mb-2 group-hover:text-brand-yellow transition-colors text-center">

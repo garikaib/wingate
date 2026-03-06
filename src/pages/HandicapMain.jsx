@@ -66,7 +66,7 @@ export default function HandicapMain() {
             <div className="inline-flex rounded-full bg-brand-blue/10 p-3 text-brand-blue"><Users size={22} /></div>
             <h2 className="mt-4 font-cinzel text-3xl text-brand-blue">Admin Editing</h2>
             <p className="mt-2 text-brand-blue/70">
-              Club admins can add, edit, seed and publish handicap rows from the Wingate Handicap Manager.
+              Club admins can add, edit and publish handicap rows from the Wingate Handicap Manager.
             </p>
             <a href="/wp-admin/admin.php?page=wingate-handicap-manager" className="mt-6 inline-flex items-center gap-2 rounded-sm border border-brand-blue/20 px-5 py-3 text-xs font-bold uppercase tracking-widest text-brand-blue !no-underline hover:bg-brand-blue hover:text-white transition-colors">
               Open Handicap Manager

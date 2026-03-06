@@ -11,6 +11,8 @@ while ( have_posts() ) : the_post();
 
     $event_date = get_post_meta(get_the_ID(), 'event_date', true);
     $event_type = get_post_meta(get_the_ID(), 'event_type', true);
+    $event_category = function_exists( 'wingate_tools_get_event_category' ) ? wingate_tools_get_event_category( $event_type ) : null;
+    $event_type_label = $event_category && isset( $event_category['label'] ) ? (string) $event_category['label'] : ( $event_type ?: 'Event' );
     $thumb_url = get_the_post_thumbnail_url(get_the_ID(), 'full');
     $is_private = get_post_meta(get_the_ID(), 'is_private', true) === '1';
     $rsvp_enabled = get_post_meta(get_the_ID(), 'rsvp_enabled', true) === '1';
@@ -46,7 +48,7 @@ while ( have_posts() ) : the_post();
         
         <div class="relative z-10 text-center px-4 max-w-4xl mx-auto flex flex-col items-center animate-fade-in-up">
             <span class="inline-block bg-brand-yellow text-brand-blue text-xs font-bold px-4 py-2 rounded-full mb-6 uppercase tracking-widest shadow-lg">
-                <?php echo esc_html($event_type ?: 'Event'); ?>
+                <?php echo esc_html($event_type_label); ?>
             </span>
             <span class="inline-block mb-3 rounded-full border border-white/30 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white/90 backdrop-blur-sm">
                 <?php echo $is_private ? 'Private (Invite Only)' : 'Public Event'; ?>

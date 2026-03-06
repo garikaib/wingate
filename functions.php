@@ -138,28 +138,66 @@ function wingate_enqueue_assets() {
 	// Google Fonts
 	wp_enqueue_style( 'wingate-fonts', 'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&display=swap', array(), null );
 
-	// React Bundle (dist folder)
 	if ( file_exists( get_stylesheet_directory() . '/dist/new-wingate.css' ) ) {
 		wp_enqueue_style( 'wingate-react-style', get_stylesheet_directory_uri() . '/dist/new-wingate.css', array(), $style_version );
 	}
 
-	wp_enqueue_script( 'wingate-react-bundle', get_stylesheet_directory_uri() . '/dist/wingate-theme.es.js', array(), $bundle_version, true );
-	wp_script_add_data( 'wingate-react-bundle', 'type', 'module' );
-	wp_localize_script(
-		'wingate-react-bundle',
-		'wingateThemeData',
-		array(
-			'contactDetails' => wingate_get_contact_details(),
+	if ( wingate_should_enqueue_react_bundle() ) {
+		wp_enqueue_script( 'wingate-react-bundle', get_stylesheet_directory_uri() . '/dist/wingate-theme.es.js', array(), $bundle_version, true );
+		wp_script_add_data( 'wingate-react-bundle', 'type', 'module' );
+		wp_localize_script(
+			'wingate-react-bundle',
+			'wingateThemeData',
+			array(
+				'contactDetails' => wingate_get_contact_details(),
+			)
+		);
+	}
+}
+
+function wingate_should_enqueue_react_bundle() {
+	if ( is_admin() ) {
+		return false;
+	}
+
+	return is_front_page()
+		|| is_404()
+		|| is_page(
+			array(
+				'contact-us',
+				'membership',
+				'rates',
+				'course',
+				'green-fees',
+				'the-kitchen',
+				'loyal-ancient',
+				'handicaps',
+				'mens-handicap',
+				'ladies-handicap',
+				'hole-by-hole',
+			)
 		)
-	);
+		|| is_page_template( 'page-contact-us.php' )
+		|| is_page_template( 'page-membership.php' )
+		|| is_page_template( 'page-rates.php' )
+		|| is_page_template( 'page-course.php' )
+		|| is_page_template( 'page-course-layout.php' )
+		|| is_page_template( 'page-green-fees.php' )
+		|| is_page_template( 'page-the-kitchen.php' )
+		|| is_page_template( 'page-loyal-ancient.php' )
+		|| is_page_template( 'page-handicaps.php' )
+		|| is_page_template( 'page-mens-handicap.php' )
+		|| is_page_template( 'page-ladies-handicap.php' )
+		|| is_page_template( 'page-hole-by-hole.php' );
 }
 
 add_filter( 'script_loader_tag', 'wingate_force_module_script_tag', 10, 3 );
 function wingate_force_module_script_tag( $tag, $handle, $src ) {
 	// Check if this script should be a module
 	$type = wp_scripts()->get_data( $handle, 'type' );
+	$is_wingate_tools_admin = 0 === strpos( (string) $handle, 'wingate-tools-admin-' );
 	
-	if ( 'module' !== $type && 'wingate-react-bundle' !== $handle && 'wingate-tools-admin' !== $handle ) {
+	if ( 'module' !== $type && 'wingate-react-bundle' !== $handle && ! $is_wingate_tools_admin ) {
 		return $tag;
 	}
 
@@ -773,6 +811,15 @@ function wingate_register_admin_menu() {
 		'wingate_render_edit_pages_hub_page'
 	);
 
+	add_submenu_page(
+		'wingate-settings',
+		'Menu Builder',
+		'Menu Builder',
+		'manage_options',
+		'wingate-menu-builder',
+		'wingate_render_menu_builder_page'
+	);
+
 	// Keep editor pages accessible via direct links, and hide them later from sidebar.
 	add_submenu_page(
 		'wingate-settings',
@@ -1242,6 +1289,10 @@ function wingate_render_edit_pages_hub_page() {
 	wingate_render_admin_spa( 'Edit Pages', 'edit-pages-gateway-admin-root' );
 }
 
+function wingate_render_menu_builder_page() {
+	wingate_render_admin_spa( 'Menu Builder', 'menu-builder-admin-root' );
+}
+
 
 /**
  * Maintenance Mode Logic
@@ -1388,7 +1439,7 @@ add_action( 'init', 'wingate_register_event_type_rewrites' );
 function wingate_register_event_type_rewrites() {
 	add_rewrite_tag( '%wingate_event_type%', '([a-z0-9_-]+)' );
 	add_rewrite_rule(
-		'^events/(tournament|wedding|banquet|social)/?$',
+		'^events/([a-z0-9_-]+)/?$',
 		'index.php?post_type=wingate_event&wingate_event_type=$matches[1]',
 		'top'
 	);
@@ -1402,13 +1453,14 @@ function wingate_register_event_filter_query_var( $vars ) {
 
 add_action( 'init', 'wingate_maybe_flush_event_rewrite_rules', 20 );
 function wingate_maybe_flush_event_rewrite_rules() {
-	if ( '1' === get_option( 'wingate_event_type_rewrite_flushed', '0' ) ) {
+	$rewrite_version = '2';
+	if ( $rewrite_version === get_option( 'wingate_event_type_rewrite_flushed', '0' ) ) {
 		return;
 	}
 
 	wingate_register_event_type_rewrites();
 	flush_rewrite_rules( false );
-	update_option( 'wingate_event_type_rewrite_flushed', '1' );
+	update_option( 'wingate_event_type_rewrite_flushed', $rewrite_version );
 }
 
 /**
@@ -1428,7 +1480,15 @@ function wingate_filter_events_by_type($query) {
             $type = sanitize_text_field( wp_unslash( $_GET['type'] ) );
         }
 
-        $allowed_types = array( 'tournament', 'wedding', 'banquet', 'social' );
+        $allowed_types = array();
+        if ( function_exists( 'wingate_tools_get_event_categories' ) ) {
+            foreach ( wingate_tools_get_event_categories() as $category ) {
+                if ( isset( $category['slug'] ) ) {
+                    $allowed_types[] = sanitize_key( (string) $category['slug'] );
+                }
+            }
+        }
+
         if ( ! empty( $type ) && in_array( $type, $allowed_types, true ) ) {
             $meta_query = array(
                 array(
@@ -1492,6 +1552,7 @@ function wingate_force_classic_templates($template) {
 
 require_once __DIR__ . '/inc/events-cpt.php';
 require_once __DIR__ . '/inc/api-routes.php';
+require_once __DIR__ . '/inc/menu-builder.php';
 
 /**
  * Wingate Events SPA Admin Page

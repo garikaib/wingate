@@ -19,6 +19,7 @@ const pageEditors = [
 
 const managementTools = [
     { slug: 'wingate-settings', title: 'Contact & Social', description: 'Global phone, email, address, and social links.' },
+    { slug: 'wingate-menu-builder', title: 'Menu Builder', description: 'Manage the main, mobile, and footer navigation menus.' },
     { slug: 'wingate-maintenance', title: 'Maintenance Mode', description: 'Access control when the site is under maintenance.' },
 ];
 
