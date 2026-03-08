@@ -15,6 +15,15 @@ add_action('rest_api_init', function () {
         'permission_callback' => '__return_true',
     ]);
 
+    // --- Restore Safe State API ---
+    register_rest_route('wingate/v1', '/restore-safe-state', [
+        'methods' => 'POST',
+        'callback' => 'wingate_restore_safe_state',
+        'permission_callback' => function () {
+            return current_user_can('manage_options');
+        },
+    ]);
+
     // --- Home Settings API ---
     register_rest_route('wingate/v1', '/home-settings', [
         'methods' => 'GET',

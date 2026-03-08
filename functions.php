@@ -832,6 +832,15 @@ function wingate_register_admin_menu() {
 
 	add_submenu_page(
 		'wingate-settings',
+		'Restore Theme',
+		'Restore Theme',
+		'manage_options',
+		'wingate-safe-state',
+		'wingate_render_safe_state_admin_page'
+	);
+
+	add_submenu_page(
+		'wingate-settings',
 		'Contact Us Page',
 		'Contact Us Page',
 		'manage_options',
@@ -1034,7 +1043,8 @@ function wingate_hide_sidebar_submenus_css() {
 		#toplevel_page_wingate-settings .wp-submenu a[href="admin.php?page=wingate-membership-settings"],
 		#toplevel_page_wingate-settings .wp-submenu a[href="admin.php?page=wingate-rates-settings"],
 		#toplevel_page_wingate-settings .wp-submenu a[href="admin.php?page=wingate-news-layout-settings"],
-		#toplevel_page_wingate-settings .wp-submenu a[href="admin.php?page=wingate-scorecard-maker"] {
+		#toplevel_page_wingate-settings .wp-submenu a[href="admin.php?page=wingate-scorecard-maker"],
+		#toplevel_page_wingate-settings .wp-submenu a[href="admin.php?page=wingate-safe-state"] {
 			display: none !important;
 		}
 	</style>
@@ -1068,6 +1078,7 @@ function wingate_enqueue_admin_assets( $hook ) {
 		'admin_page_wingate-membership-settings',
 			'admin_page_wingate-rates-settings',
 			'admin_page_wingate-news-layout-settings',
+			'admin_page_wingate-safe-state',
 			'wingate_page_wingate-contact-page-settings',
 			'wingate_page_wingate-home-settings',
 			'wingate_page_wingate-course-settings',
@@ -1076,7 +1087,8 @@ function wingate_enqueue_admin_assets( $hook ) {
 		'wingate_page_wingate-booking-settings',
 		'wingate_page_wingate-membership-settings',
 		'wingate_page_wingate-rates-settings',
-		'wingate_page_wingate-news-layout-settings'
+		'wingate_page_wingate-news-layout-settings',
+		'wingate_page_wingate-safe-state'
 	];
 
 	if ( ! in_array( $hook, $valid_hooks ) ) {
@@ -1293,6 +1305,10 @@ function wingate_render_menu_builder_page() {
 	wingate_render_admin_spa( 'Menu Builder', 'menu-builder-admin-root' );
 }
 
+function wingate_render_safe_state_admin_page() {
+	wingate_render_admin_spa( 'Restore Safe State', 'safe-state-admin-root' );
+}
+
 
 /**
  * Maintenance Mode Logic
@@ -1439,6 +1455,11 @@ add_action( 'init', 'wingate_register_event_type_rewrites' );
 function wingate_register_event_type_rewrites() {
 	add_rewrite_tag( '%wingate_event_type%', '([a-z0-9_-]+)' );
 	add_rewrite_rule(
+		'^events/([a-z0-9_-]+)/page/([0-9]{1,})/?$',
+		'index.php?post_type=wingate_event&wingate_event_type=$matches[1]&paged=$matches[2]',
+		'top'
+	);
+	add_rewrite_rule(
 		'^events/([a-z0-9_-]+)/?$',
 		'index.php?post_type=wingate_event&wingate_event_type=$matches[1]',
 		'top'
@@ -1453,7 +1474,7 @@ function wingate_register_event_filter_query_var( $vars ) {
 
 add_action( 'init', 'wingate_maybe_flush_event_rewrite_rules', 20 );
 function wingate_maybe_flush_event_rewrite_rules() {
-	$rewrite_version = '2';
+	$rewrite_version = '3';
 	if ( $rewrite_version === get_option( 'wingate_event_type_rewrite_flushed', '0' ) ) {
 		return;
 	}
@@ -1545,6 +1566,14 @@ function wingate_force_classic_templates($template) {
     if (is_singular('post')) {
         $custom = locate_template('single.php');
         if ($custom) return $custom;
+    }
+
+    // Default pages without a more specific page template.
+    if ( is_page() ) {
+        $custom = locate_template( 'page.php' );
+        if ( $custom ) {
+            return $custom;
+        }
     }
 
     return $template;

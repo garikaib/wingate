@@ -16,11 +16,11 @@ const pageEditors = [
     { slug: 'wingate-rates-settings', title: 'Rates', description: 'Subscriptions and pricing tables.' },
     { slug: 'wingate-news-layout-settings', title: 'News Layout', description: 'Select the premium news layout.' },
 ];
-
 const managementTools = [
     { slug: 'wingate-settings', title: 'Contact & Social', description: 'Global phone, email, address, and social links.' },
     { slug: 'wingate-menu-builder', title: 'Menu Builder', description: 'Manage the main, mobile, and footer navigation menus.' },
     { slug: 'wingate-maintenance', title: 'Maintenance Mode', description: 'Access control when the site is under maintenance.' },
+    { slug: 'wingate-safe-state', title: 'Restore Theme', description: 'Emergency theme reset and extraction utility.' },
 ];
 
 const buildAdminLink = (slug) => {
