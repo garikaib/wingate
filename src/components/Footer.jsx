@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Facebook, Instagram, ArrowUp } from 'lucide-react';
-import { getContactDetails, toExternalLinkProps, toPhoneHref } from '../config/contactDetails';
+import { getContactDetails, toExternalLinkProps, toPhoneHref, toPhoneLinkProps } from '../config/contactDetails';
 
 const Footer = () => {
     const [showScroll, setShowScroll] = useState(false);
@@ -30,9 +30,9 @@ const Footer = () => {
                 {/* Top Section: Logo */}
                 <div className="flex justify-center mb-12">
                     <img
-                        src="/wp-content/uploads/2026/02/logo_compressed.png"
+                        src="/wp-content/uploads/2026/08/wingate_ineverse.webp"
                         alt="Wingate Golf Club"
-                        className="h-28 w-auto opacity-90 filter drop-shadow-lg" // Increased size and adjusted filters
+                        className="h-36 w-auto opacity-90 filter drop-shadow-lg" // Increased size and adjusted filters
                     />
                 </div>
 
@@ -50,7 +50,7 @@ const Footer = () => {
                         </h3>
                         <div className="font-montserrat text-sm leading-relaxed space-y-1">
                             <p>73JG+RJ2, Alpes Rd, Harare, Zimbabwe</p>
-                            <a href={toPhoneHref(contactDetails.phone)} className="hover:text-brand-yellow transition-colors block mt-2 underline">{contactDetails.phone}</a>
+                            <a href={toPhoneHref(contactDetails.phone, contactDetails.phoneType)} {...toPhoneLinkProps(contactDetails.phoneType)} className="hover:text-brand-yellow transition-colors block mt-2 underline">{contactDetails.phone}</a>
                         </div>
                     </div>
 
@@ -63,7 +63,7 @@ const Footer = () => {
                         <div className="font-montserrat text-sm leading-relaxed space-y-1">
                             <p>Open Daily</p>
                             <p>7:00 AM - 7:00 PM</p>
-                            <a href={toPhoneHref(contactDetails.phone)} className="hover:text-brand-yellow transition-colors block mt-2 underline">{contactDetails.phone}</a>
+                            <a href={toPhoneHref(contactDetails.phone, contactDetails.phoneType)} {...toPhoneLinkProps(contactDetails.phoneType)} className="hover:text-brand-yellow transition-colors block mt-2 underline">{contactDetails.phone}</a>
                         </div>
                     </div>
 

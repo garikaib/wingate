@@ -7,7 +7,9 @@ add_action('rest_api_init', function () {
     register_rest_route('wingate/v1', '/generate-form', [
         'methods' => 'POST',
         'callback' => 'wingate_generate_membership_form',
-        'permission_callback' => '__return_true', // Open endpoint, or implement nonce check if needed
+        'permission_callback' => function ( WP_REST_Request $request ) {
+            return wingate_verify_public_rest_request( $request, 'membership_form', 4, 10 * MINUTE_IN_SECONDS );
+        },
     ]);
     register_rest_route('wingate/v1', '/form-download', [
         'methods' => 'GET',
@@ -165,6 +167,53 @@ add_action('rest_api_init', function () {
     ]);
 });
 
+function wingate_sanitize_settings_value( $value, $key = '' ) {
+    if ( is_array( $value ) ) {
+        $sanitized = [];
+        foreach ( $value as $child_key => $child_value ) {
+            $sanitized[ $child_key ] = wingate_sanitize_settings_value( $child_value, is_string( $child_key ) ? $child_key : $key );
+        }
+        return $sanitized;
+    }
+
+    if ( is_bool( $value ) ) {
+        return (bool) $value;
+    }
+
+    if ( is_int( $value ) || is_float( $value ) ) {
+        return $value;
+    }
+
+    if ( null === $value ) {
+        return '';
+    }
+
+    $value = (string) $value;
+    $lower_key = strtolower( (string) $key );
+
+    if ( false !== strpos( $lower_key, 'email' ) ) {
+        return sanitize_email( $value );
+    }
+
+    if (
+        false !== strpos( $lower_key, 'url' ) ||
+        false !== strpos( $lower_key, 'image' ) ||
+        false !== strpos( $lower_key, 'href' )
+    ) {
+        return esc_url_raw( $value );
+    }
+
+    return sanitize_textarea_field( $value );
+}
+
+function wingate_sanitize_settings_payload( $payload ) {
+    if ( ! is_array( $payload ) ) {
+        return [];
+    }
+
+    return wingate_sanitize_settings_value( $payload );
+}
+
 function wingate_get_home_settings_defaults() {
     return [
         'hero' => [
@@ -218,7 +267,7 @@ function wingate_get_home_settings() {
 }
 
 function wingate_update_home_settings($request) {
-    $params = $request->get_json_params();
+    $params = wingate_sanitize_settings_payload( $request->get_json_params() );
     update_option('wingate_home_settings', $params);
     return new WP_REST_Response(['success' => true], 200);
 }
@@ -261,7 +310,7 @@ function wingate_get_course_settings() {
 }
 
 function wingate_update_course_settings($request) {
-    $params = $request->get_json_params();
+    $params = wingate_sanitize_settings_payload( $request->get_json_params() );
     update_option('wingate_course_settings', $params);
     return new WP_REST_Response(['success' => true], 200);
 }
@@ -302,7 +351,7 @@ function wingate_get_scorecard() {
 }
 
 function wingate_update_scorecard($request) {
-    $params = $request->get_json_params();
+    $params = wingate_sanitize_settings_payload( $request->get_json_params() );
     update_option('wingate_scorecard', $params);
     return new WP_REST_Response(['success' => true], 200);
 }
@@ -674,7 +723,7 @@ function wingate_get_hole_by_hole_settings() {
 }
 
 function wingate_update_hole_by_hole_settings($request) {
-    $params = $request->get_json_params();
+    $params = wingate_sanitize_settings_payload( $request->get_json_params() );
     update_option('wingate_hole_by_hole_settings', $params);
     return new WP_REST_Response(['success' => true], 200);
 }
@@ -714,6 +763,7 @@ function wingate_get_green_fees_settings_defaults() {
             'title' => 'Book Tee Time or Cart',
             'description' => 'Ready to play? Contact the office to reserve your slot.',
             'phone' => '0772 339 670',
+            'phoneType' => 'tel',
             'email' => 'reception@wingate.co.zw'
         ],
         'etiquette' => [
@@ -740,7 +790,7 @@ function wingate_get_green_fees_settings() {
 }
 
 function wingate_update_green_fees_settings($request) {
-    $params = $request->get_json_params();
+    $params = wingate_sanitize_settings_payload( $request->get_json_params() );
     update_option('wingate_green_fees_settings', $params);
     return new WP_REST_Response(['success' => true], 200);
 }
@@ -795,7 +845,7 @@ function wingate_get_booking_settings() {
 }
 
 function wingate_update_booking_settings($request) {
-    $params = $request->get_json_params();
+    $params = wingate_sanitize_settings_payload( $request->get_json_params() );
     update_option('wingate_booking_settings', $params);
     return new WP_REST_Response(['success' => true], 200);
 }
@@ -834,7 +884,7 @@ function wingate_get_news_layout_settings() {
 }
 
 function wingate_update_news_layout_settings($request) {
-    $params = $request->get_json_params();
+    $params = wingate_sanitize_settings_payload( $request->get_json_params() );
     $defaults = wingate_get_news_layout_settings_defaults();
     $merged = wp_parse_args(is_array($params) ? $params : [], $defaults);
 
@@ -930,7 +980,7 @@ function wingate_get_rates_settings() {
 }
 
 function wingate_update_rates_settings($request) {
-    $params = $request->get_json_params();
+    $params = wingate_sanitize_settings_payload( $request->get_json_params() );
     update_option('wingate_rates_settings', $params);
     return new WP_REST_Response(['success' => true], 200);
 }
@@ -979,7 +1029,7 @@ function wingate_get_membership_settings() {
 }
 
 function wingate_update_membership_settings($request) {
-    $params = $request->get_json_params();
+    $params = wingate_sanitize_settings_payload( $request->get_json_params() );
     update_option('wingate_membership_settings', $params);
     return new WP_REST_Response(['success' => true], 200);
 }
@@ -1017,6 +1067,7 @@ function wingate_get_contact_page_settings_defaults() {
                 'title' => 'Club Manager',
                 'phoneLabel' => '0714681041',
                 'phoneHref' => 'tel:0714681041',
+                'phoneType' => 'tel',
                 'email' => 'daryl@wingate.co.zw',
             ],
             [
@@ -1024,6 +1075,7 @@ function wingate_get_contact_page_settings_defaults() {
                 'title' => 'Office Assistant Manager',
                 'phoneLabel' => '0719339670',
                 'phoneHref' => 'tel:0719339670',
+                'phoneType' => 'tel',
                 'email' => 'functions@wingate.co.zw',
             ],
             [
@@ -1031,6 +1083,7 @@ function wingate_get_contact_page_settings_defaults() {
                 'title' => 'Office Assistant Manager',
                 'phoneLabel' => '0772339670',
                 'phoneHref' => 'tel:0772339670',
+                'phoneType' => 'tel',
                 'email' => 'reception@wingate.co.zw',
             ],
         ],
@@ -1054,7 +1107,7 @@ function wingate_get_contact_page_settings() {
 }
 
 function wingate_update_contact_page_settings($request) {
-    $params = $request->get_json_params();
+    $params = wingate_sanitize_settings_payload( $request->get_json_params() );
     $defaults = wingate_get_contact_page_settings_defaults();
     $merged = wp_parse_args(is_array($params) ? $params : [], $defaults);
 

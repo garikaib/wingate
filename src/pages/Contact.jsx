@@ -6,6 +6,7 @@ import {
     toEmailHref,
     toExternalLinkProps,
     toPhoneHref,
+    toPhoneLinkProps,
 } from '../config/contactDetails';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -42,6 +43,7 @@ const defaultContactPageSettings = {
             title: 'Club Manager',
             phoneLabel: '0714681041',
             phoneHref: 'tel:0714681041',
+            phoneType: 'tel',
             email: 'daryl@wingate.co.zw',
         },
         {
@@ -49,6 +51,7 @@ const defaultContactPageSettings = {
             title: 'Office Assistant Manager',
             phoneLabel: '0719339670',
             phoneHref: 'tel:0719339670',
+            phoneType: 'tel',
             email: 'functions@wingate.co.zw',
         },
         {
@@ -56,6 +59,7 @@ const defaultContactPageSettings = {
             title: 'Office Assistant Manager',
             phoneLabel: '0772339670',
             phoneHref: 'tel:0772339670',
+            phoneType: 'tel',
             email: 'reception@wingate.co.zw',
         },
     ],
@@ -69,7 +73,12 @@ const mergeContactPageSettings = (incoming) => ({
     cards: { ...defaultContactPageSettings.cards, ...(incoming?.cards || {}) },
     location: { ...defaultContactPageSettings.location, ...(incoming?.location || {}) },
     teamSection: { ...defaultContactPageSettings.teamSection, ...(incoming?.teamSection || {}) },
-    team: Array.isArray(incoming?.team) ? incoming.team : defaultContactPageSettings.team,
+    team: Array.isArray(incoming?.team)
+        ? incoming.team.map((member) => ({
+            ...member,
+            phoneType: member?.phoneType === 'whatsapp' ? 'whatsapp' : 'tel',
+        }))
+        : defaultContactPageSettings.team,
 });
 
 const iconClassName = 'mx-auto mb-4 h-14 w-14 transition-colors duration-300 group-hover:text-brand-yellow';
@@ -89,6 +98,12 @@ const MailSolidIcon = ({ className = '' }) => (
 const PhoneSolidIcon = ({ className = '' }) => (
     <svg viewBox="0 0 512 512" aria-hidden="true" className={className} fill="currentColor">
         <path d="M375.8 275.2c-16.5-16.5-42.3-18.6-61.2-5l-36.7 26.4c-6.9 5-16.2 4.2-22.2-1.8l-38.3-38.3c-6-6-6.8-15.3-1.8-22.2l26.4-36.7c13.6-18.9 11.5-44.7-5-61.2L184.7 84c-17.1-17.1-44.5-18.7-63.6-3.7L93.5 102C74.8 116.8 64 139.1 64 162.9c0 40.4 16 79.2 44.6 107.8l196.7 196.7C333.9 496 372.7 512 413.1 512c23.8 0 46.1-10.8 60.9-29.5l21.7-27.6c15-19.1 13.4-46.5-3.7-63.6l-116.2-116.1z" />
+    </svg>
+);
+
+const WhatsAppSolidIcon = ({ className = '' }) => (
+    <svg viewBox="0 0 448 512" aria-hidden="true" className={className} fill="currentColor">
+        <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32 101.5 32 1.9 131.6 1.9 254c0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.5-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2s-9.7 1.4-14.8 6.9c-5.1 5.5-19.4 19-19.4 46.3s19.9 53.7 22.6 57.4c2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
     </svg>
 );
 
@@ -213,10 +228,13 @@ const Contact = () => {
                         </a>
 
                         <a
-                            href={toPhoneHref(contactDetails.phone)}
+                            href={toPhoneHref(contactDetails.phone, contactDetails.phoneType)}
+                            {...toPhoneLinkProps(contactDetails.phoneType)}
                             className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
                         >
-                            <PhoneSolidIcon className={`${iconClassName} text-brand-blue`} />
+                            {contactDetails.phoneType === 'whatsapp'
+                                ? <WhatsAppSolidIcon className={`${iconClassName} text-brand-blue`} />
+                                : <PhoneSolidIcon className={`${iconClassName} text-brand-blue`} />}
                             <h3 className="mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">{pageSettings.cards.phoneTitle}</h3>
                             <p className="font-montserrat text-base text-slate-700 transition-colors duration-300 group-hover:text-brand-yellow">{contactDetails.phone}</p>
                         </a>
@@ -294,7 +312,8 @@ const Contact = () => {
                                 <div className="space-y-2 font-montserrat text-base">
                                     <p>
                                         <a
-                                            href={person.phoneHref}
+                                            href={person.phoneType === 'whatsapp' ? toPhoneHref(person.phoneLabel, 'whatsapp') : (person.phoneHref || toPhoneHref(person.phoneLabel, 'tel'))}
+                                            {...toPhoneLinkProps(person.phoneType)}
                                             className="font-semibold text-slate-700 decoration-brand-yellow decoration-2 underline-offset-4 transition-colors hover:text-brand-blue"
                                         >
                                             {person.phoneLabel}

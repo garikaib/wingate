@@ -264,6 +264,13 @@ const GreenFeesSettingsAdmin = () => {
                             <input className={INPUT_CLASS} type="text" value={settings.booking.phone} onChange={(e) => updateNested('booking', 'phone', e.target.value)} />
                         </div>
                         <div>
+                            <label className={FIELD_LABEL_CLASS}>Phone Link Type</label>
+                            <select className={INPUT_CLASS} value={settings.booking.phoneType === 'whatsapp' ? 'whatsapp' : 'tel'} onChange={(e) => updateNested('booking', 'phoneType', e.target.value)}>
+                                <option value="tel">Telephone call</option>
+                                <option value="whatsapp">WhatsApp only</option>
+                            </select>
+                        </div>
+                        <div>
                             <label className={FIELD_LABEL_CLASS}>Email</label>
                             <input className={INPUT_CLASS} type="text" value={settings.booking.email} onChange={(e) => updateNested('booking', 'email', e.target.value)} />
                         </div>

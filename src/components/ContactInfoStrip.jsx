@@ -1,5 +1,5 @@
 import React from 'react';
-import { getContactDetails, toEmailHref, toPhoneHref } from '../config/contactDetails';
+import { getContactDetails, toEmailHref, toPhoneHref, toPhoneLinkProps } from '../config/contactDetails';
 
 const ContactInfoStrip = () => {
     const contactDetails = getContactDetails();
@@ -30,7 +30,7 @@ const ContactInfoStrip = () => {
                         </h3>
                         <div className="mx-auto mt-4 mb-5 h-1 w-20 bg-brand-yellow/80"></div>
                         <p className="font-montserrat text-lg text-brand-blue">
-                            <a href={toPhoneHref(contactDetails.phone)} className="transition-colors hover:text-brand-yellow">
+                            <a href={toPhoneHref(contactDetails.phone, contactDetails.phoneType)} {...toPhoneLinkProps(contactDetails.phoneType)} className="transition-colors hover:text-brand-yellow">
                                 {contactDetails.phone}
                             </a>
                         </p>

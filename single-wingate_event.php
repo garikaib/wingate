@@ -10,14 +10,23 @@ get_header();
 while ( have_posts() ) : the_post();
 
     $event_date = get_post_meta(get_the_ID(), 'event_date', true);
+    $event_end_date = function_exists( 'wingate_tools_get_event_end_date' ) ? wingate_tools_get_event_end_date( get_the_ID() ) : $event_date;
     $event_type = get_post_meta(get_the_ID(), 'event_type', true);
     $event_category = function_exists( 'wingate_tools_get_event_category' ) ? wingate_tools_get_event_category( $event_type ) : null;
     $event_type_label = $event_category && isset( $event_category['label'] ) ? (string) $event_category['label'] : ( $event_type ?: 'Event' );
     $thumb_url = get_the_post_thumbnail_url(get_the_ID(), 'full');
     $is_private = get_post_meta(get_the_ID(), 'is_private', true) === '1';
     $rsvp_enabled = get_post_meta(get_the_ID(), 'rsvp_enabled', true) === '1';
+    $event_visibility = function_exists( 'wingate_tools_get_event_visibility' ) ? wingate_tools_get_event_visibility( get_the_ID() ) : 'public';
+    $event_effective_visibility = function_exists( 'wingate_tools_get_event_effective_visibility' ) ? wingate_tools_get_event_effective_visibility( get_the_ID() ) : $event_visibility;
+    $event_lifecycle = function_exists( 'wingate_tools_get_event_lifecycle' ) ? wingate_tools_get_event_lifecycle( get_the_ID() ) : 'upcoming';
+    $event_archived_at = function_exists( 'wingate_tools_get_event_archived_at' ) ? wingate_tools_get_event_archived_at( get_the_ID() ) : '';
+    $rsvp_cutoff_date = function_exists( 'wingate_tools_get_event_rsvp_cutoff_date' ) ? wingate_tools_get_event_rsvp_cutoff_date( get_the_ID() ) : '';
+    $rsvp_open = function_exists( 'wingate_tools_is_event_rsvp_open' ) ? wingate_tools_is_event_rsvp_open( get_the_ID() ) : $rsvp_enabled;
     $tournament_booking_mode = get_post_meta(get_the_ID(), 'tournament_booking_mode', true) ?: 'rsvp';
     $uses_chrono_booking = ( $event_type === 'tournament' && $tournament_booking_mode === 'chrono' );
+    $has_rsvp_workflow = $rsvp_enabled && ! $uses_chrono_booking;
+    $can_show_rsvp = $rsvp_enabled && ! $uses_chrono_booking && $rsvp_open && 'public' === $event_effective_visibility;
     $booking_url = home_url('/booking/');
     $registry_pdf_url = get_post_meta(get_the_ID(), 'registry_pdf_url', true);
     $how_we_met = get_post_meta(get_the_ID(), 'how_we_met', true);
@@ -33,6 +42,23 @@ while ( have_posts() ) : the_post();
     $recurring_until_date = get_post_meta(get_the_ID(), 'recurring_until_date', true) ?: '';
     $recurring_count = (int) get_post_meta(get_the_ID(), 'recurring_count', true);
     if ($recurring_count < 1) $recurring_count = 10;
+    $event_date_label = $event_date ? date('l, F j, Y', strtotime($event_date)) : 'Date TBD';
+    if ( $event_date && $event_end_date && $event_end_date !== $event_date ) {
+        $event_date_label = date('l, F j, Y', strtotime($event_date)) . ' to ' . date('l, F j, Y', strtotime($event_end_date));
+    }
+    $lifecycle_labels = array(
+        'upcoming' => 'Upcoming Event',
+        'live' => 'Happening Now',
+        'past' => 'Past Event',
+        'unscheduled' => 'Schedule Pending',
+    );
+    $visibility_labels = array(
+        'public' => 'Public Listing',
+        'archived' => 'Archived',
+        'hidden' => 'Hidden',
+    );
+    $lifecycle_label = isset( $lifecycle_labels[ $event_lifecycle ] ) ? $lifecycle_labels[ $event_lifecycle ] : 'Event';
+    $visibility_label = isset( $visibility_labels[ $event_effective_visibility ] ) ? $visibility_labels[ $event_effective_visibility ] : 'Public Listing';
     
     // If no featured image, use a default hero
     $bg_image = $thumb_url ?: home_url('/wp-content/uploads/2026/02/20260131_124600-scaled.jpg');
@@ -50,20 +76,53 @@ while ( have_posts() ) : the_post();
             <span class="inline-block bg-brand-yellow text-brand-blue text-xs font-bold px-4 py-2 rounded-full mb-6 uppercase tracking-widest shadow-lg">
                 <?php echo esc_html($event_type_label); ?>
             </span>
-            <span class="inline-block mb-3 rounded-full border border-white/30 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white/90 backdrop-blur-sm">
-                <?php echo $is_private ? 'Private (Invite Only)' : 'Public Event'; ?>
-            </span>
+            <div class="mb-3 flex flex-wrap items-center justify-center gap-2">
+                <span class="inline-block rounded-full border border-white/30 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white/90 backdrop-blur-sm">
+                    <?php echo $is_private ? 'Private (Invite Only)' : 'Public Event'; ?>
+                </span>
+                <span class="inline-block rounded-full border border-white/30 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white/90 backdrop-blur-sm">
+                    <?php echo esc_html( $lifecycle_label ); ?>
+                </span>
+                <span class="inline-block rounded-full border border-white/30 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white/90 backdrop-blur-sm">
+                    <?php echo esc_html( $visibility_label ); ?>
+                </span>
+            </div>
             <h1 class="text-4xl md:text-6xl font-cinzel text-white mb-6 tracking-tight drop-shadow-2xl leading-none">
                 <?php the_title(); ?>
             </h1>
             <div class="flex items-center gap-2 text-white/90 font-montserrat tracking-widest uppercase border border-white/30 px-6 py-3 rounded-sm backdrop-blur-sm">
                 <span class="dashicons dashicons-calendar-alt"></span>
-                <span><?php echo $event_date ? date('l, F j, Y', strtotime($event_date)) : 'Date TBD'; ?></span>
+                <span><?php echo esc_html( $event_date_label ); ?></span>
             </div>
         </div>
     </header>
 
     <main class="container mx-auto px-4 py-20 relative z-20 max-w-4xl">
+        <?php if ( 'archived' === $event_effective_visibility || 'past' === $event_lifecycle || ( $has_rsvp_workflow && ! $rsvp_open ) ) : ?>
+            <div class="mb-8 rounded-2xl border border-brand-blue/10 bg-brand-blue/[0.03] p-5">
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                    <span class="inline-flex rounded-full border border-brand-blue/15 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-brand-blue"><?php echo esc_html( $lifecycle_label ); ?></span>
+                    <span class="inline-flex rounded-full border border-brand-blue/15 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-brand-blue"><?php echo esc_html( $visibility_label ); ?></span>
+                </div>
+                <?php if ( 'archived' === $event_effective_visibility ) : ?>
+                    <p class="text-sm text-gray-700">
+                        This event has been archived and is no longer shown in the active event listings.
+                        <?php if ( ! empty( $event_archived_at ) ) : ?>
+                            Archived on <?php echo esc_html( date_i18n( 'F j, Y', strtotime( $event_archived_at ) ) ); ?>.
+                        <?php endif; ?>
+                    </p>
+                <?php elseif ( 'past' === $event_lifecycle ) : ?>
+                    <p class="text-sm text-gray-700">This event has already taken place. The page remains available for reference.</p>
+                <?php elseif ( $has_rsvp_workflow && ! $rsvp_open ) : ?>
+                    <p class="text-sm text-gray-700">
+                        RSVP is closed for this event.
+                        <?php if ( ! empty( $rsvp_cutoff_date ) ) : ?>
+                            The cutoff date was <?php echo esc_html( date_i18n( 'F j, Y', strtotime( $rsvp_cutoff_date ) ) ); ?>.
+                        <?php endif; ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
         
         <!-- Custom Type Blocks -->
         <?php if ($event_type === 'wedding') : 
@@ -418,7 +477,7 @@ while ( have_posts() ) : the_post();
                     </span>
                 </div>
                 <p class="text-sm text-gray-600 mb-4">
-                    Upcoming occurrences are highlighted. <?php echo ( $rsvp_enabled && ! $uses_chrono_booking ) ? 'Click date(s) to include them in RSVP.' : 'Direct booking is enabled for this event.'; ?>
+                    Upcoming occurrences are highlighted. <?php echo $can_show_rsvp ? 'Click date(s) to include them in RSVP.' : 'Direct booking or contact details are shown below instead of RSVP.'; ?>
                 </p>
                 <div class="wingate-cal-toolbar">
                     <button type="button" id="wingate-calendar-prev" class="wingate-cal-nav" aria-label="Previous month">&larr;</button>
@@ -431,7 +490,7 @@ while ( have_posts() ) : the_post();
                 </div>
                 <div id="wingate-calendar-grid" class="grid grid-cols-7 gap-2 text-center text-sm"></div>
                 <div id="wingate-calendar-selected" class="mt-4 text-sm text-brand-blue font-semibold"></div>
-                <?php if ( $rsvp_enabled && ! $uses_chrono_booking ) : ?>
+                <?php if ( $can_show_rsvp ) : ?>
                     <div id="wingate-rsvp-mode-wrap">
                         <button type="button" id="wingate-rsvp-mode-indicator">
                             <span class="mode-dot"></span>
@@ -455,13 +514,26 @@ while ( have_posts() ) : the_post();
 
         <div class="mt-16 text-center border-t border-gray-100 pt-12 animate-on-scroll">
             <h3 class="font-cinzel text-2xl text-brand-blue mb-6">Interested in this event?</h3>
-            <?php if ( $rsvp_enabled && ! $uses_chrono_booking ) : ?>
+            <?php if ( $can_show_rsvp ) : ?>
                 <button id="wingate-rsvp-trigger" class="inline-block rounded-sm bg-brand-yellow px-10 py-4 !text-brand-blue font-cinzel font-bold uppercase tracking-widest !no-underline border border-brand-yellow transition-all duration-300 hover:bg-white hover:!text-brand-blue shadow-lg hover:shadow-xl hover:-translate-y-1">
                     RSVP
                 </button>
                 <?php if ( $is_private ) : ?>
                     <p class="mt-3 text-xs font-bold uppercase tracking-widest text-red-600">Invite-only event: RSVP submissions are reviewed before confirmation.</p>
                 <?php endif; ?>
+            <?php elseif ( $rsvp_enabled && ! $uses_chrono_booking ) : ?>
+                <div class="mx-auto max-w-2xl rounded-2xl border border-brand-blue/10 bg-brand-blue/[0.03] p-6 text-left">
+                    <p class="text-xs font-bold uppercase tracking-widest text-brand-blue/60 mb-2">RSVP Status</p>
+                    <p class="text-sm text-gray-700">
+                        <?php if ( ! $rsvp_open ) : ?>
+                            RSVP is closed for this event<?php echo $rsvp_cutoff_date ? ' as of ' . esc_html( date_i18n( 'F j, Y', strtotime( $rsvp_cutoff_date ) ) ) : ''; ?>.
+                        <?php elseif ( 'archived' === $event_effective_visibility || 'past' === $event_lifecycle ) : ?>
+                            This event is no longer accepting RSVPs because it has already finished or has been archived.
+                        <?php else : ?>
+                            RSVP is currently unavailable for this event.
+                        <?php endif; ?>
+                    </p>
+                </div>
             <?php elseif ( $uses_chrono_booking ) : ?>
                 <div class="mx-auto max-w-2xl rounded-2xl border border-brand-blue/10 bg-brand-blue/[0.03] p-6 text-left">
                     <p class="text-xs font-bold uppercase tracking-widest text-brand-blue/60 mb-2">Tournament Booking</p>
@@ -491,7 +563,7 @@ while ( have_posts() ) : the_post();
 
 </div>
 
-<?php if ( $rsvp_enabled && ! $uses_chrono_booking ) : ?>
+<?php if ( $can_show_rsvp ) : ?>
     <div id="wingate-rsvp-modal" class="fixed inset-0 z-[999] hidden items-center justify-center bg-brand-blue/75 p-4">
         <div class="w-full max-w-xl rounded-2xl bg-white p-6 md:p-8 shadow-2xl border border-brand-blue/10">
             <div class="flex items-center justify-between mb-5">
@@ -519,6 +591,12 @@ while ( have_posts() ) : the_post();
                     <?php endif; ?>
                 </div>
                 <textarea name="message" rows="4" placeholder="Message (dietary notes, guests, etc.)" class="rounded-xl border border-gray-200 px-4 py-3"></textarea>
+                <div style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
+                    <label>
+                        Website
+                        <input type="text" name="website" tabindex="-1" autocomplete="off" />
+                    </label>
+                </div>
                 <input type="hidden" name="selected_dates" id="wingate-rsvp-selected-dates" value="" />
                 <div id="wingate-rsvp-feedback" class="hidden rounded-lg px-3 py-2 text-sm"></div>
                 <button type="submit" id="wingate-rsvp-submit" class="inline-flex items-center justify-center gap-2 rounded-sm bg-brand-blue px-5 py-3 text-xs font-bold uppercase tracking-widest text-white hover:bg-brand-yellow hover:text-brand-blue transition-colors disabled:opacity-70">
@@ -571,6 +649,7 @@ while ( have_posts() ) : the_post();
         const eventDate = '<?php echo esc_js( (string) $event_date ); ?>';
         const eventId = <?php echo (int) get_the_ID(); ?>;
         const recurringEnabled = <?php echo $recurring_enabled ? 'true' : 'false'; ?>;
+        const publicNonce = <?php echo wp_json_encode( wingate_get_public_rest_nonce() ); ?>;
         const recurringConfig = {
             frequency: '<?php echo esc_js( (string) $recurring_frequency ); ?>',
             interval: <?php echo (int) $recurring_interval; ?>,
@@ -889,6 +968,7 @@ while ( have_posts() ) : the_post();
                 guests: Number(formData.get('guests') || 1),
                 message: String(formData.get('message') || '').trim(),
                 selectedDates: String(formData.get('selected_dates') || '').split(',').map((d) => d.trim()).filter(Boolean),
+                website: String(formData.get('website') || '').trim(),
             };
             const allowDupes = duplicatesAllowed(payload.selectedDates);
             setSubmitting(true);
@@ -908,7 +988,10 @@ while ( have_posts() ) : the_post();
             try {
                 const response = await fetch('<?php echo esc_url_raw( rest_url( 'wingate-tools/v1/events/' . get_the_ID() . '/rsvp' ) ); ?>', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Wingate-Nonce': publicNonce,
+                    },
                     body: JSON.stringify(payload),
                 });
                 const data = await response.json();

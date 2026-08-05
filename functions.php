@@ -27,6 +27,131 @@ function wingate_setup_theme_features() {
 	add_theme_support( 'title-tag' );
 }
 
+function wingate_get_public_rest_nonce() {
+	return wp_create_nonce( 'wingate_public_rest' );
+}
+
+function wingate_get_public_rest_request_nonce( WP_REST_Request $request ) {
+	$header_nonce = $request->get_header( 'x-wingate-nonce' );
+	if ( is_string( $header_nonce ) && '' !== trim( $header_nonce ) ) {
+		return sanitize_text_field( $header_nonce );
+	}
+
+	$param_nonce = $request->get_param( 'wingate_nonce' );
+	return is_string( $param_nonce ) ? sanitize_text_field( $param_nonce ) : '';
+}
+
+function wingate_get_request_header_host( $header_value ) {
+	if ( ! is_string( $header_value ) || '' === trim( $header_value ) ) {
+		return '';
+	}
+
+	$parts = wp_parse_url( trim( $header_value ) );
+	if ( ! is_array( $parts ) || empty( $parts['host'] ) ) {
+		return '';
+	}
+
+	return strtolower( (string) $parts['host'] );
+}
+
+function wingate_is_same_origin_public_rest_request( WP_REST_Request $request ) {
+	$site_host = wp_parse_url( home_url(), PHP_URL_HOST );
+	$site_host = is_string( $site_host ) ? strtolower( $site_host ) : '';
+	if ( '' === $site_host ) {
+		return false;
+	}
+
+	$origin_host  = wingate_get_request_header_host( $request->get_header( 'origin' ) );
+	$referer_host = wingate_get_request_header_host( $request->get_header( 'referer' ) );
+
+	return $site_host === $origin_host || $site_host === $referer_host;
+}
+
+function wingate_get_request_client_ip() {
+	$candidates = array(
+		isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? (string) $_SERVER['HTTP_X_FORWARDED_FOR'] : '',
+		isset( $_SERVER['REMOTE_ADDR'] ) ? (string) $_SERVER['REMOTE_ADDR'] : '',
+	);
+
+	foreach ( $candidates as $candidate ) {
+		if ( '' === $candidate ) {
+			continue;
+		}
+
+		$parts = array_map( 'trim', explode( ',', $candidate ) );
+		foreach ( $parts as $part ) {
+			if ( filter_var( $part, FILTER_VALIDATE_IP ) ) {
+				return $part;
+			}
+		}
+	}
+
+	return 'unknown';
+}
+
+function wingate_check_public_rest_rate_limit( $bucket, $limit, $window_seconds ) {
+	$ip  = wingate_get_request_client_ip();
+	$key = 'wingate_rl_' . md5( sanitize_key( (string) $bucket ) . '|' . $ip );
+	$hit = get_transient( $key );
+	$hit = is_array( $hit ) ? $hit : array( 'count' => 0 );
+
+	if ( (int) $hit['count'] >= (int) $limit ) {
+		return new WP_Error(
+			'rate_limited',
+			__( 'Too many requests. Please wait a few minutes and try again.', 'wingate' ),
+			array( 'status' => 429 )
+		);
+	}
+
+	$hit['count'] = (int) $hit['count'] + 1;
+	set_transient( $key, $hit, max( 60, (int) $window_seconds ) );
+	return true;
+}
+
+function wingate_verify_public_rest_request( WP_REST_Request $request, $bucket, $limit = 5, $window_seconds = 600 ) {
+	$honeypot = $request->get_param( 'website' );
+	if ( is_string( $honeypot ) && '' !== trim( $honeypot ) ) {
+		return new WP_Error(
+			'spam_detected',
+			__( 'Spam protection triggered.', 'wingate' ),
+			array( 'status' => 400 )
+		);
+	}
+
+	$nonce = wingate_get_public_rest_request_nonce( $request );
+	if ( '' !== $nonce && wp_verify_nonce( $nonce, 'wingate_public_rest' ) ) {
+		return wingate_check_public_rest_rate_limit( $bucket, $limit, $window_seconds );
+	}
+
+	if ( ! wingate_is_same_origin_public_rest_request( $request ) ) {
+		return new WP_Error(
+			'invalid_nonce',
+			__( 'Security check failed. Refresh the page and try again.', 'wingate' ),
+			array( 'status' => 403 )
+		);
+	}
+
+	return wingate_check_public_rest_rate_limit( $bucket, $limit, $window_seconds );
+}
+
+add_action( 'init', 'wingate_register_page_subtitle_meta' );
+function wingate_register_page_subtitle_meta() {
+	register_post_meta(
+		'page',
+		'_wingate_page_subtitle',
+		array(
+			'type'              => 'string',
+			'single'            => true,
+			'show_in_rest'      => true,
+			'sanitize_callback' => 'sanitize_text_field',
+			'auth_callback'     => function() {
+				return current_user_can( 'edit_pages' );
+			},
+			'default'           => '',
+		)
+	);
+}
+
 /**
  * Ensure template-driven pages always have a sensible browser title.
  *
@@ -100,6 +225,82 @@ add_filter( 'document_title_parts', 'wingate_document_title_fallbacks', 20 );
 
 add_action( 'wp_enqueue_scripts', 'wingate_enqueue_assets' );
 add_action( 'wp_enqueue_scripts', 'wingate_ensure_interactivity_import_map', 2 );
+add_action( 'enqueue_block_editor_assets', 'wingate_enqueue_page_subtitle_editor_assets' );
+
+function wingate_enqueue_page_subtitle_editor_assets() {
+	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+	if ( ! $screen || 'page' !== $screen->post_type || 'post' !== $screen->base ) {
+		return;
+	}
+
+	wp_register_script(
+		'wingate-page-subtitle-editor',
+		'',
+		array( 'wp-plugins', 'wp-edit-post', 'wp-element', 'wp-components', 'wp-data' ),
+		(string) wp_get_theme()->get( 'Version' ),
+		true
+	);
+	wp_enqueue_script( 'wingate-page-subtitle-editor' );
+
+	$script = <<<'JS'
+( function( wp ) {
+	if ( ! wp || ! wp.plugins || ! wp.editPost || ! wp.element || ! wp.components || ! wp.data ) {
+		return;
+	}
+
+	const { registerPlugin } = wp.plugins;
+	const { PluginDocumentSettingPanel } = wp.editPost;
+	const { createElement: el } = wp.element;
+	const { TextareaControl } = wp.components;
+	const { useSelect, useDispatch } = wp.data;
+
+	function WingatePageSubtitlePanel() {
+		const postType = useSelect( function( select ) {
+			return select( 'core/editor' ).getCurrentPostType();
+		}, [] );
+
+		const meta = useSelect( function( select ) {
+			return select( 'core/editor' ).getEditedPostAttribute( 'meta' ) || {};
+		}, [] );
+
+		const editPost = useDispatch( 'core/editor' ).editPost;
+
+		if ( postType !== 'page' ) {
+			return null;
+		}
+
+		return el(
+			PluginDocumentSettingPanel,
+			{
+				name: 'wingate-page-subtitle-panel',
+				title: 'Wingate Page Header',
+				className: 'wingate-page-subtitle-panel',
+			},
+			el( TextareaControl, {
+				label: 'Subtitle',
+				help: 'Shown in the hero area of the Wingate Styled Page template.',
+				rows: 3,
+				value: meta._wingate_page_subtitle || '',
+				onChange: function( value ) {
+					editPost( {
+						meta: Object.assign( {}, meta, {
+							_wingate_page_subtitle: value,
+						} ),
+					} );
+				},
+			} )
+		);
+	}
+
+	registerPlugin( 'wingate-page-subtitle-panel', {
+		render: WingatePageSubtitlePanel,
+		icon: null,
+	} );
+} )( window.wp );
+JS;
+
+	wp_add_inline_script( 'wingate-page-subtitle-editor', $script );
+}
 
 function wingate_ensure_interactivity_import_map() {
 	if ( ! function_exists( 'wp_register_script_module' ) || ! function_exists( 'wp_enqueue_script_module' ) ) {
@@ -149,6 +350,8 @@ function wingate_enqueue_assets() {
 			'wingate-react-bundle',
 			'wingateThemeData',
 			array(
+				'root'           => esc_url_raw( rest_url() ),
+				'publicRestNonce'=> wingate_get_public_rest_nonce(),
 				'contactDetails' => wingate_get_contact_details(),
 			)
 		);
@@ -211,16 +414,43 @@ function wingate_force_module_script_tag( $tag, $handle, $src ) {
 
 
 
+function wingate_get_theme_site_icon_uri( $filename = 'site-icon.png' ) {
+	$path = get_stylesheet_directory() . '/assets/icons/' . $filename;
+	if ( ! file_exists( $path ) ) {
+		return '';
+	}
+
+	return get_stylesheet_directory_uri() . '/assets/icons/' . rawurlencode( $filename );
+}
+
 add_action( 'wp_head', 'wingate_add_favicon_fallback', 1 );
+add_action( 'admin_head', 'wingate_add_favicon_fallback', 1 );
+add_action( 'login_head', 'wingate_add_favicon_fallback', 1 );
 function wingate_add_favicon_fallback() {
 	if ( has_site_icon() ) {
 		return;
 	}
 
-	$svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="8" fill="#0e1b3d"/><text x="50%" y="56%" text-anchor="middle" font-size="34" font-family="Arial, sans-serif" fill="#ffcc00">W</text></svg>';
-	$data_uri = 'data:image/svg+xml,' . rawurlencode( $svg );
+	$site_icon_uri  = wingate_get_theme_site_icon_uri( 'site-icon.png' );
+	$favicon_32_uri = wingate_get_theme_site_icon_uri( 'favicon-32x32.png' );
+	$apple_icon_uri = wingate_get_theme_site_icon_uri( 'apple-touch-icon.png' );
 
-	echo '<link rel="icon" href="' . esc_url( $data_uri ) . '" type="image/svg+xml">';
+	if ( '' === $site_icon_uri && '' === $favicon_32_uri && '' === $apple_icon_uri ) {
+		return;
+	}
+
+	if ( '' !== $site_icon_uri ) {
+		echo '<link rel="icon" href="' . esc_url( $site_icon_uri ) . '" sizes="512x512" type="image/png">' . "\n";
+		echo '<link rel="shortcut icon" href="' . esc_url( $site_icon_uri ) . '" type="image/png">' . "\n";
+	}
+
+	if ( '' !== $favicon_32_uri ) {
+		echo '<link rel="icon" href="' . esc_url( $favicon_32_uri ) . '" sizes="32x32" type="image/png">' . "\n";
+	}
+
+	if ( '' !== $apple_icon_uri ) {
+		echo '<link rel="apple-touch-icon" href="' . esc_url( $apple_icon_uri ) . '" sizes="180x180">' . "\n";
+	}
 }
 
 add_action( 'wp_head', 'wingate_add_open_graph_meta', 2 );
@@ -701,6 +931,7 @@ function wingate_contact_details_defaults() {
 	return array(
 		'email'      => '#',
 		'phone'      => '#',
+		'phoneType'  => 'tel',
 		'facebook'   => '#',
 		'instagram'  => '#',
 		'address'    => '73JG+RJ2, Alpes Rd, Harare, Zimbabwe',
@@ -719,12 +950,174 @@ function wingate_get_contact_details() {
 	return array(
 		'email'     => isset( $details['email'] ) ? (string) $details['email'] : '#',
 		'phone'     => isset( $details['phone'] ) ? (string) $details['phone'] : '#',
+		'phoneType' => isset( $details['phoneType'] ) && 'whatsapp' === $details['phoneType'] ? 'whatsapp' : 'tel',
 		'facebook'  => isset( $details['facebook'] ) ? (string) $details['facebook'] : '#',
 		'instagram' => isset( $details['instagram'] ) ? (string) $details['instagram'] : '#',
 		'address'   => isset( $details['address'] ) ? (string) $details['address'] : '',
 		'hours'     => isset( $details['hours'] ) ? (string) $details['hours'] : '',
 	);
 }
+
+function wingate_get_contact_phone_href( $details = null ) {
+	$details = is_array( $details ) ? $details : wingate_get_contact_details();
+	$phone   = isset( $details['phone'] ) ? trim( (string) $details['phone'] ) : '#';
+
+	if ( '' === $phone || '#' === $phone ) {
+		return '#';
+	}
+
+	$digits = preg_replace( '/[^\d+]/', '', $phone );
+
+	if ( isset( $details['phoneType'] ) && 'whatsapp' === $details['phoneType'] ) {
+		if ( 0 === strpos( $digits, '+' ) ) {
+			$digits = substr( $digits, 1 );
+		} elseif ( 0 === strpos( $digits, '0' ) ) {
+			$digits = '263' . substr( $digits, 1 );
+		}
+
+		$digits = preg_replace( '/\D/', '', $digits );
+		return '' !== $digits ? 'https://wa.me/' . $digits : '#';
+	}
+
+	return 'tel:' . $digits;
+}
+
+function wingate_filter_contact_phone_template_markup( $block_content, $block ) {
+	if ( 'core/group' !== ( $block['blockName'] ?? '' ) ) {
+		return $block_content;
+	}
+
+	$attrs      = isset( $block['attrs'] ) && is_array( $block['attrs'] ) ? $block['attrs'] : array();
+	$anchor     = isset( $attrs['anchor'] ) ? (string) $attrs['anchor'] : '';
+	$class_name = isset( $attrs['className'] ) ? (string) $attrs['className'] : '';
+	$is_header  = 'header-root' === $anchor || false !== strpos( $block_content, 'wingate-top-phone' );
+	$is_footer  = false !== strpos( $class_name, 'wingate-footer' ) || false !== strpos( $block_content, 'wingate-footer' );
+
+	if ( ! $is_header && ! $is_footer ) {
+		return $block_content;
+	}
+
+	$details      = wingate_get_contact_details();
+	$phone_label  = isset( $details['phone'] ) ? (string) $details['phone'] : '';
+	$phone_href   = wingate_get_contact_phone_href( $details );
+	$is_whatsapp  = isset( $details['phoneType'] ) && 'whatsapp' === $details['phoneType'];
+	$target_attrs = $is_whatsapp ? ' target="_blank" rel="noreferrer"' : '';
+
+	if ( '' === $phone_label || '#' === $phone_label || '#' === $phone_href ) {
+		return $block_content;
+	}
+
+	$block_content = preg_replace_callback(
+		'/<p\b([^>]*\bclass=(["\'])(?=[^"\']*\bwingate-top-phone\b)([^"\']*)\2[^>]*)>\s*<a\b([^>]*)>.*?<\/a>\s*<\/p>/is',
+		function ( $matches ) use ( $phone_href, $phone_label, $is_whatsapp, $target_attrs ) {
+			$p_attrs = $matches[1];
+			if ( $is_whatsapp && false === strpos( $p_attrs, 'wingate-phone-is-whatsapp' ) ) {
+				$p_attrs = preg_replace( '/class=(["\'])([^"\']*)\1/i', 'class=$1$2 wingate-phone-is-whatsapp$1', $p_attrs, 1 );
+			}
+
+			$a_attrs = preg_replace( '/\s*href=(["\']).*?\1/i', '', $matches[4] );
+			$a_attrs = preg_replace( '/\s*target=(["\']).*?\1/i', '', $a_attrs );
+			$a_attrs = preg_replace( '/\s*rel=(["\']).*?\1/i', '', $a_attrs );
+
+			return '<p' . $p_attrs . '><a href="' . esc_url( $phone_href ) . '"' . $target_attrs . $a_attrs . '>' . esc_html( $phone_label ) . '</a></p>';
+		},
+		$block_content
+	);
+
+	$block_content = preg_replace_callback(
+		'/<a\b([^>]*\bclass=(["\'])(?=[^"\']*\bis-call\b)([^"\']*)\2[^>]*)>.*?<\/a>/is',
+		function ( $matches ) use ( $phone_href, $is_whatsapp, $target_attrs ) {
+			$a_attrs = preg_replace( '/\s*href=(["\']).*?\1/i', '', $matches[1] );
+			$a_attrs = preg_replace( '/\s*target=(["\']).*?\1/i', '', $a_attrs );
+			$a_attrs = preg_replace( '/\s*rel=(["\']).*?\1/i', '', $a_attrs );
+			$label   = $is_whatsapp ? 'WhatsApp Pro Shop' : 'Call Pro Shop';
+
+			return '<a href="' . esc_url( $phone_href ) . '"' . $target_attrs . $a_attrs . '>' . esc_html( $label ) . '</a>';
+		},
+		$block_content
+	);
+
+	if ( $is_footer ) {
+		$block_content = preg_replace_callback(
+			'/<a\b([^>]*href=(["\'])tel:[^"\']+\2[^>]*)>.*?<\/a>/is',
+			function ( $matches ) use ( $phone_href, $phone_label, $target_attrs ) {
+				$a_attrs = preg_replace( '/\s*href=(["\']).*?\1/i', '', $matches[1] );
+				$a_attrs = preg_replace( '/\s*target=(["\']).*?\1/i', '', $a_attrs );
+				$a_attrs = preg_replace( '/\s*rel=(["\']).*?\1/i', '', $a_attrs );
+
+				return '<a href="' . esc_url( $phone_href ) . '"' . $target_attrs . $a_attrs . '>' . esc_html( $phone_label ) . '</a>';
+			},
+			$block_content
+		);
+	}
+
+	return $block_content;
+}
+add_filter( 'render_block', 'wingate_filter_contact_phone_template_markup', 18, 2 );
+
+function wingate_get_social_link( $service ) {
+	$details = wingate_get_contact_details();
+	$link    = isset( $details[ $service ] ) ? trim( (string) $details[ $service ] ) : '#';
+
+	if ( '' === $link || '#' === $link ) {
+		return '';
+	}
+
+	return $link;
+}
+
+function wingate_filter_social_link_block_urls( $block_content, $block ) {
+	if ( 'core/social-link' !== ( $block['blockName'] ?? '' ) ) {
+		return $block_content;
+	}
+
+	$service = isset( $block['attrs']['service'] ) ? (string) $block['attrs']['service'] : '';
+	if ( '' === $service ) {
+		return $block_content;
+	}
+
+	$link = wingate_get_social_link( $service );
+	if ( '' === $link ) {
+		return $block_content;
+	}
+
+	return preg_replace(
+		'/href=(["\'])#\1/i',
+		'href="' . esc_url( $link ) . '"',
+		$block_content,
+		1
+	);
+}
+add_filter( 'render_block', 'wingate_filter_social_link_block_urls', 10, 2 );
+
+function wingate_filter_mobile_social_markup( $block_content, $block ) {
+	if ( 'core/group' !== ( $block['blockName'] ?? '' ) ) {
+		return $block_content;
+	}
+
+	$anchor = isset( $block['attrs']['anchor'] ) ? (string) $block['attrs']['anchor'] : '';
+	if ( 'header-root' !== $anchor ) {
+		return $block_content;
+	}
+
+	$social_links = array(
+		'Facebook'  => wingate_get_social_link( 'facebook' ),
+		'Instagram' => wingate_get_social_link( 'instagram' ),
+	);
+
+	foreach ( $social_links as $label => $link ) {
+		if ( '' === $link ) {
+			continue;
+		}
+
+		$pattern = '/(<a\b[^>]*?)href=(["\'])#\2([^>]*\baria-label=(["\'])' . preg_quote( $label, '/' ) . '\4[^>]*>)/i';
+		$replacement = '$1href="' . esc_url( $link ) . '"$3';
+		$block_content = preg_replace( $pattern, $replacement, $block_content, 1 );
+	}
+
+	return $block_content;
+}
+add_filter( 'render_block', 'wingate_filter_mobile_social_markup', 20, 2 );
 
 function wingate_sanitize_contact_details( $input ) {
 	$defaults = wingate_contact_details_defaults();
@@ -747,6 +1140,8 @@ function wingate_sanitize_contact_details( $input ) {
 	} else {
 		$phone = sanitize_text_field( $phone );
 	}
+
+	$phone_type = isset( $input['phoneType'] ) && 'whatsapp' === $input['phoneType'] ? 'whatsapp' : 'tel';
 
 	$facebook = isset( $input['facebook'] ) ? trim( (string) $input['facebook'] ) : '#';
 	if ( '#' !== $facebook && '' !== $facebook ) {
@@ -774,11 +1169,157 @@ function wingate_sanitize_contact_details( $input ) {
 	return array(
 		'email'     => $email,
 		'phone'     => $phone,
+		'phoneType' => $phone_type,
 		'facebook'  => $facebook,
 		'instagram' => $instagram,
 		'address'   => $address,
 		'hours'     => $hours,
 	);
+}
+
+function wingate_comment_post_type_defaults() {
+	return array(
+		'post'             => false,
+		'page'             => false,
+		'wingate_event'    => false,
+		'wingate_handicap' => false,
+		'wingate_gallery'  => false,
+	);
+}
+
+function wingate_get_comment_post_type_choices() {
+	$defaults = wingate_comment_post_type_defaults();
+	$choices  = array();
+
+	foreach ( array_keys( $defaults ) as $post_type ) {
+		$obj = get_post_type_object( $post_type );
+		if ( ! $obj ) {
+			continue;
+		}
+
+		$choices[ $post_type ] = array(
+			'label'       => isset( $obj->labels->name ) ? (string) $obj->labels->name : $post_type,
+			'description' => sprintf( 'Allow native WordPress comments on %s.', isset( $obj->labels->name ) ? (string) $obj->labels->name : $post_type ),
+		);
+	}
+
+	return $choices;
+}
+
+function wingate_sanitize_comment_settings( $input ) {
+	$defaults = wingate_comment_post_type_defaults();
+	$choices  = wingate_get_comment_post_type_choices();
+
+	if ( ! is_array( $input ) ) {
+		return $defaults;
+	}
+
+	$sanitized = $defaults;
+	foreach ( array_keys( $choices ) as $post_type ) {
+		$sanitized[ $post_type ] = ! empty( $input[ $post_type ] );
+	}
+
+	return $sanitized;
+}
+
+function wingate_get_comment_settings() {
+	$stored = get_option( 'wingate_comment_settings', array() );
+	if ( ! is_array( $stored ) ) {
+		$stored = array();
+	}
+
+	return wp_parse_args( $stored, wingate_comment_post_type_defaults() );
+}
+
+function wingate_comments_enabled_for_post_type( $post_type ) {
+	$settings = wingate_get_comment_settings();
+	return ! empty( $settings[ $post_type ] );
+}
+
+function wingate_comments_enabled_for_post( $post ) {
+	$post = get_post( $post );
+	if ( ! $post ) {
+		return false;
+	}
+
+	return wingate_comments_enabled_for_post_type( $post->post_type );
+}
+
+function wingate_any_comments_enabled() {
+	foreach ( wingate_get_comment_settings() as $enabled ) {
+		if ( ! empty( $enabled ) ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+add_action( 'init', 'wingate_apply_comment_settings', 100 );
+function wingate_apply_comment_settings() {
+	foreach ( wingate_comment_post_type_defaults() as $post_type => $default_enabled ) {
+		if ( wingate_comments_enabled_for_post_type( $post_type ) ) {
+			add_post_type_support( $post_type, 'comments' );
+			continue;
+		}
+
+		remove_post_type_support( $post_type, 'comments' );
+		remove_post_type_support( $post_type, 'trackbacks' );
+	}
+}
+
+add_filter( 'comments_open', 'wingate_filter_comments_open', 20, 2 );
+function wingate_filter_comments_open( $open, $post_id ) {
+	return wingate_comments_enabled_for_post( $post_id ) ? $open : false;
+}
+
+add_filter( 'pings_open', 'wingate_filter_pings_open', 20, 2 );
+function wingate_filter_pings_open( $open, $post_id ) {
+	return wingate_comments_enabled_for_post( $post_id ) ? $open : false;
+}
+
+add_filter( 'preprocess_comment', 'wingate_block_disabled_comment_submissions' );
+function wingate_block_disabled_comment_submissions( $commentdata ) {
+	$post_id = isset( $commentdata['comment_post_ID'] ) ? (int) $commentdata['comment_post_ID'] : 0;
+	if ( $post_id > 0 && ! wingate_comments_enabled_for_post( $post_id ) ) {
+		wp_die(
+			esc_html__( 'Comments are disabled for this content type.', 'wingate' ),
+			esc_html__( 'Comments Disabled', 'wingate' ),
+			array( 'response' => 403 )
+		);
+	}
+
+	return $commentdata;
+}
+
+add_filter( 'rest_endpoints', 'wingate_filter_comment_rest_endpoints' );
+function wingate_filter_comment_rest_endpoints( $endpoints ) {
+	if ( wingate_any_comments_enabled() ) {
+		return $endpoints;
+	}
+
+	unset( $endpoints['/wp/v2/comments'] );
+	unset( $endpoints['/wp/v2/comments/(?P<id>[\\d]+)'] );
+
+	return $endpoints;
+}
+
+add_action( 'admin_menu', 'wingate_maybe_hide_comments_menu', 999 );
+function wingate_maybe_hide_comments_menu() {
+	if ( wingate_any_comments_enabled() ) {
+		return;
+	}
+
+	remove_menu_page( 'edit-comments.php' );
+}
+
+add_action( 'admin_bar_menu', 'wingate_maybe_hide_comments_admin_bar', 999 );
+function wingate_maybe_hide_comments_admin_bar( $wp_admin_bar ) {
+	if ( wingate_any_comments_enabled() ) {
+		return;
+	}
+
+	$wp_admin_bar->remove_node( 'comments' );
 }
 
 add_action( 'admin_menu', 'wingate_register_admin_menu' );
@@ -1062,6 +1603,16 @@ function wingate_register_contact_settings() {
 			'default'           => wingate_contact_details_defaults(),
 		)
 	);
+
+	register_setting(
+		'wingate_contact_settings_group',
+		'wingate_comment_settings',
+		array(
+			'type'              => 'array',
+			'sanitize_callback' => 'wingate_sanitize_comment_settings',
+			'default'           => wingate_comment_post_type_defaults(),
+		)
+	);
 }
 
 add_action( 'admin_enqueue_scripts', 'wingate_enqueue_admin_assets' );
@@ -1135,8 +1686,34 @@ function wingate_render_contact_input( $field, $label, $type, $value, $placehold
 	);
 }
 
+function wingate_render_contact_phone_type_input( $value ) {
+	$value = 'whatsapp' === $value ? 'whatsapp' : 'tel';
+	?>
+	<label class="wingate-admin-field" for="wingate-contact-phoneType">
+		<span class="wingate-admin-field-label">Phone Link Type</span>
+		<select id="wingate-contact-phoneType" name="wingate_contact_details[phoneType]" class="wingate-admin-input">
+			<option value="tel" <?php selected( $value, 'tel' ); ?>>Telephone call</option>
+			<option value="whatsapp" <?php selected( $value, 'whatsapp' ); ?>>WhatsApp only</option>
+		</select>
+		<small class="wingate-admin-field-help">Controls the header icon and whether the number links to a call or WhatsApp chat.</small>
+	</label>
+	<?php
+}
+
+function wingate_render_comment_toggle_input( $post_type, $label, $checked, $help_text ) {
+	printf(
+		'<label class="wingate-admin-field" for="wingate-comments-%2$s"><span class="wingate-admin-field-label">%1$s</span><input id="wingate-comments-%2$s" type="checkbox" name="wingate_comment_settings[%2$s]" value="1" %3$s class="wingate-admin-checkbox" /><small class="wingate-admin-field-help">%4$s</small></label>',
+		esc_html( $label ),
+		esc_attr( $post_type ),
+		checked( $checked, true, false ),
+		esc_html( $help_text )
+	);
+}
+
 function wingate_render_contact_settings_page() {
 	$details = wingate_get_contact_details();
+	$comment_settings = wingate_get_comment_settings();
+	$comment_choices  = wingate_get_comment_post_type_choices();
 	?>
 	<div class="wrap wingate-admin-wrap">
 		<div class="wingate-admin-shell">
@@ -1171,8 +1748,9 @@ function wingate_render_contact_settings_page() {
 								'text',
 								$details['phone'],
 								'+1 555 123 4567 or #',
-								'Used for tap-to-call links across the site.'
+								'Used for telephone or WhatsApp links across the site.'
 							);
+							wingate_render_contact_phone_type_input( $details['phoneType'] );
 							wingate_render_contact_input(
 								'address',
 								'Address',
@@ -1207,8 +1785,22 @@ function wingate_render_contact_settings_page() {
 							);
 							?>
 						</div>
+						<h2 style="margin-top:2rem;">Comments</h2>
+						<p class="wingate-admin-card-subtitle">Comments are blocked everywhere by default. Only enable them for content types that truly need native WordPress comments.</p>
+						<div class="wingate-admin-fields">
+							<?php
+							foreach ( $comment_choices as $post_type => $choice ) {
+								wingate_render_comment_toggle_input(
+									$post_type,
+									$choice['label'],
+									! empty( $comment_settings[ $post_type ] ),
+									$choice['description']
+								);
+							}
+							?>
+						</div>
 						<div class="wingate-admin-actions">
-							<?php submit_button( 'Save Contact Details', 'primary wingate-admin-save', 'submit', false ); ?>
+							<?php submit_button( 'Save Settings', 'primary wingate-admin-save', 'submit', false ); ?>
 						</div>
 					</form>
 				</section>
@@ -1219,10 +1811,12 @@ function wingate_render_contact_settings_page() {
 					<ul>
 						<li><span>Email</span><strong><?php echo esc_html( $details['email'] ); ?></strong></li>
 						<li><span>Phone</span><strong><?php echo esc_html( $details['phone'] ); ?></strong></li>
+						<li><span>Phone Link Type</span><strong><?php echo 'whatsapp' === $details['phoneType'] ? 'WhatsApp only' : 'Telephone call'; ?></strong></li>
 						<li><span>Address</span><strong><?php echo esc_html( $details['address'] ); ?></strong></li>
 						<li><span>Hours</span><strong><?php echo esc_html( $details['hours'] ); ?></strong></li>
 						<li><span>Facebook</span><strong><?php echo esc_html( $details['facebook'] ); ?></strong></li>
 						<li><span>Instagram</span><strong><?php echo esc_html( $details['instagram'] ); ?></strong></li>
+						<li><span>Comments Enabled</span><strong><?php echo esc_html( implode( ', ', array_map( function ( $post_type ) use ( $comment_choices ) { return isset( $comment_choices[ $post_type ]['label'] ) ? $comment_choices[ $post_type ]['label'] : $post_type; }, array_keys( array_filter( $comment_settings ) ) ) ) ?: 'None' ); ?></strong></li>
 					</ul>
 				</aside>
 			</div>
@@ -1490,10 +2084,15 @@ function wingate_maybe_flush_event_rewrite_rules() {
 add_action('pre_get_posts', 'wingate_filter_events_by_type');
 function wingate_filter_events_by_type($query) {
     if (!is_admin() && $query->is_main_query() && is_post_type_archive('wingate_event')) {
+        $display_mode = isset( $_GET['event_display'] ) ? sanitize_key( wp_unslash( $_GET['event_display'] ) ) : 'active';
+        if ( ! in_array( $display_mode, array( 'active', 'past' ), true ) ) {
+            $display_mode = 'active';
+        }
+
         // Order by event date (custom meta)
         $query->set('meta_key', 'event_date');
         $query->set('orderby', 'meta_value');
-        $query->set('order', 'ASC');
+        $query->set('order', 'past' === $display_mode ? 'DESC' : 'ASC');
 
         // Filter by type from pretty permalink query var (with legacy query string fallback).
         $type = $query->get( 'wingate_event_type' );
@@ -1519,6 +2118,57 @@ function wingate_filter_events_by_type($query) {
                 ),
             );
             $query->set('meta_query', $meta_query);
+        }
+
+        if ( function_exists( 'wingate_tools_get_event_effective_visibility' ) && function_exists( 'wingate_tools_get_event_lifecycle' ) ) {
+            $candidate_query = array(
+                'post_type'              => 'wingate_event',
+                'post_status'            => 'publish',
+                'posts_per_page'         => -1,
+                'fields'                 => 'ids',
+                'orderby'                => 'meta_value',
+                'order'                  => 'past' === $display_mode ? 'DESC' : 'ASC',
+                'meta_key'               => 'event_date',
+                'ignore_sticky_posts'    => true,
+                'no_found_rows'          => true,
+                'update_post_meta_cache' => false,
+                'update_post_term_cache' => false,
+            );
+
+            if ( ! empty( $type ) && in_array( $type, $allowed_types, true ) ) {
+                $candidate_query['meta_query'] = array(
+                    array(
+                        'key'     => 'event_type',
+                        'value'   => $type,
+                        'compare' => '=',
+                    ),
+                );
+            }
+
+            $candidate_ids = get_posts( $candidate_query );
+            $matched_ids = array();
+
+            foreach ( $candidate_ids as $event_id ) {
+                $effective_visibility = wingate_tools_get_event_effective_visibility( $event_id );
+                $lifecycle = wingate_tools_get_event_lifecycle( $event_id );
+
+                if ( 'active' === $display_mode ) {
+                    if ( 'public' === $effective_visibility && 'past' !== $lifecycle ) {
+                        $matched_ids[] = (int) $event_id;
+                    }
+                    continue;
+                }
+
+                if ( 'hidden' === $effective_visibility ) {
+                    continue;
+                }
+
+                if ( 'archived' === $effective_visibility || 'past' === $lifecycle ) {
+                    $matched_ids[] = (int) $event_id;
+                }
+            }
+
+            $query->set( 'post__in', ! empty( $matched_ids ) ? $matched_ids : array( 0 ) );
         }
     }
 }
@@ -1568,15 +2218,80 @@ function wingate_force_classic_templates($template) {
         if ($custom) return $custom;
     }
 
-    // Default pages without a more specific page template.
-    if ( is_page() ) {
-        $custom = locate_template( 'page.php' );
+    if ( is_page() && wingate_page_uses_styled_template( get_queried_object_id() ) ) {
+        $custom = locate_template( 'page-styled-default.php' );
         if ( $custom ) {
             return $custom;
         }
     }
 
     return $template;
+}
+
+function wingate_page_uses_styled_template( $post_id ) {
+	$post_id = (int) $post_id;
+	if ( $post_id <= 0 ) {
+		return false;
+	}
+
+	$template_slug = (string) get_page_template_slug( $post_id );
+	if ( 'page-styled-default.php' === $template_slug ) {
+		return true;
+	}
+
+	return '1' === (string) get_post_meta( $post_id, '_wingate_use_styled_page_template', true );
+}
+
+add_action( 'add_meta_boxes_page', 'wingate_add_styled_page_meta_box' );
+function wingate_add_styled_page_meta_box() {
+	add_meta_box(
+		'wingate-styled-page-template',
+		__( 'Wingate Page Layout', 'wingate' ),
+		'wingate_render_styled_page_meta_box',
+		'page',
+		'side',
+		'default'
+	);
+}
+
+function wingate_render_styled_page_meta_box( $post ) {
+	wp_nonce_field( 'wingate_save_styled_page_meta', 'wingate_styled_page_meta_nonce' );
+	$enabled = '1' === (string) get_post_meta( $post->ID, '_wingate_use_styled_page_template', true );
+	?>
+	<p>
+		<label for="wingate-use-styled-page-template" style="display:flex; gap:8px; align-items:flex-start;">
+			<input
+				type="checkbox"
+				name="wingate_use_styled_page_template"
+				id="wingate-use-styled-page-template"
+				value="1"
+				<?php checked( $enabled ); ?>
+			/>
+			<span><?php esc_html_e( 'Use the Wingate styled page template for this page.', 'wingate' ); ?></span>
+		</label>
+	</p>
+	<p style="margin:0; color:#646970;">
+		<?php esc_html_e( 'Opt-in only. Existing pages are unaffected unless this is enabled or the styled template is selected in Page Attributes.', 'wingate' ); ?>
+	</p>
+	<?php
+}
+
+add_action( 'save_post_page', 'wingate_save_styled_page_meta' );
+function wingate_save_styled_page_meta( $post_id ) {
+	if ( ! isset( $_POST['wingate_styled_page_meta_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['wingate_styled_page_meta_nonce'] ) ), 'wingate_save_styled_page_meta' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_page', $post_id ) ) {
+		return;
+	}
+
+	$enabled = isset( $_POST['wingate_use_styled_page_template'] ) ? '1' : '0';
+	update_post_meta( $post_id, '_wingate_use_styled_page_template', $enabled );
 }
 
 require_once __DIR__ . '/inc/events-cpt.php';
@@ -1742,3 +2457,143 @@ function wingate_mobile_menu_script() {
 	</script>
 	<?php
 }
+
+/**
+ * Clean and extract a parseable start time from freeform user input.
+ * E.g., "08:00 - 12:00" -> "08:00", "8am" -> "08:00", "14h30" -> "14:30"
+ */
+function wingate_extract_start_time( $time_str ) {
+    $time_str = trim( strtolower( $time_str ) );
+    if ( empty( $time_str ) ) {
+        return '';
+    }
+    
+    // Normalise "h" separator to ":" (e.g., 14h30 -> 14:30)
+    $time_str = preg_replace( '/(\d{1,2})h(\d{2})/', '$1:$2', $time_str );
+    
+    // Pattern 1: HH:MM or H:MM (with optional am/pm)
+    if ( preg_match( '/\b(\d{1,2}:\d{2}\s*(?:am|pm)?)/', $time_str, $matches ) ) {
+        return trim( $matches[1] );
+    }
+    
+    // Pattern 2: Single hour digit followed by am/pm (e.g. 8am, 12pm, 8 am)
+    if ( preg_match( '/\b(\d{1,2}\s*(?:am|pm))\b/', $time_str, $matches ) ) {
+        return trim( $matches[1] );
+    }
+    
+    return '';
+}
+
+/**
+ * Format date & time into ISO 8601 or YYYY-MM-DD relative to Africa/Harare.
+ */
+function wingate_format_event_schema_date( $date_str, $time_str = '' ) {
+    if ( empty( $date_str ) || ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date_str ) ) {
+        return '';
+    }
+    
+    $timezone = new DateTimeZone( 'Africa/Harare' );
+    
+    try {
+        $clean_time = wingate_extract_start_time( $time_str );
+        if ( ! empty( $clean_time ) ) {
+            $dt = new DateTime( $date_str . ' ' . $clean_time, $timezone );
+            return $dt->format( 'c' ); // ISO 8601
+        }
+        
+        $dt = new DateTime( $date_str, $timezone );
+        return $dt->format( 'Y-m-d' );
+    } catch ( Exception $e ) {
+        return '';
+    }
+}
+
+/**
+ * Generate JSON-LD Schema array for a wingate_event.
+ */
+function wingate_get_event_schema( $post_id ) {
+    $event_date     = get_post_meta( $post_id, 'event_date', true );
+    $event_end_date = get_post_meta( $post_id, 'event_end_date', true );
+    $tee_off_time   = get_post_meta( $post_id, 'tee_off_time', true );
+    $event_type     = get_post_meta( $post_id, 'event_type', true ); // e.g. tournament, social
+    
+    if ( empty( $event_end_date ) ) {
+        $event_end_date = $event_date;
+    }
+    
+    $start_date_formatted = wingate_format_event_schema_date( $event_date, $tee_off_time );
+    $end_date_formatted   = wingate_format_event_schema_date( $event_end_date );
+    
+    if ( empty( $start_date_formatted ) ) {
+        return []; // Protect against generating invalid schemas
+    }
+    
+    // Status Resolution
+    $timezone = new DateTimeZone( 'Africa/Harare' );
+    $now      = new DateTime( 'now', $timezone );
+    $compare_date = ! empty( $event_end_date ) ? $event_end_date : $event_date;
+    $event_dt = new DateTime( $compare_date . ' 23:59:59', $timezone );
+    
+    $status = ( $now > $event_dt ) 
+        ? 'https://schema.org/EventCompleted' 
+        : 'https://schema.org/EventScheduled';
+        
+    // Dynamic schema type mapping
+    $schema_type = ( $event_type === 'tournament' ) ? 'SportsEvent' : 'Event';
+    
+    // Handle description cleanly
+    $excerpt = has_excerpt( $post_id ) ? get_the_excerpt( $post_id ) : get_the_content( null, false, $post_id );
+    $excerpt = wp_strip_all_tags( strip_shortcodes( $excerpt ) );
+    $excerpt = mb_strimwidth( $excerpt, 0, 150, '...' );
+    
+    $schema = [
+        '@context'            => 'https://schema.org',
+        '@type'               => $schema_type,
+        'name'                => get_the_title( $post_id ),
+        'description'         => $excerpt,
+        'startDate'           => $start_date_formatted,
+        'endDate'             => $end_date_formatted,
+        'eventStatus'         => $status,
+        'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
+        'url'                 => get_permalink( $post_id ),
+        'location'            => [
+            '@type'   => 'Place',
+            'name'    => 'Wingate Golf Club',
+            'address' => [
+                '@type'           => 'PostalAddress',
+                'streetAddress'   => 'Alpes Rd',
+                'addressLocality' => 'Harare',
+                'addressCountry'  => 'ZW'
+            ]
+        ],
+        'organizer'           => [
+            '@type' => 'Organization',
+            'name'  => 'Wingate Golf Club',
+            'url'   => home_url( '/' )
+        ]
+    ];
+    
+    if ( has_post_thumbnail( $post_id ) ) {
+        $schema['image'] = get_the_post_thumbnail_url( $post_id, 'full' );
+    } else {
+        $schema['image'] = home_url( '/wp-content/uploads/2026/08/wingate_ineverse.webp' );
+    }
+    
+    return $schema;
+}
+
+/**
+ * Output the JSON-LD script tag in the page header.
+ */
+function wingate_output_event_schema() {
+    if ( is_singular( 'wingate_event' ) ) {
+        $schema = wingate_get_event_schema( get_the_ID() );
+        if ( ! empty( $schema ) ) {
+            echo "\n<!-- Wingate Event Schema -->\n";
+            echo '<script type="application/ld+json">';
+            echo wp_json_encode( $schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
+            echo "</script>\n";
+        }
+    }
+}
+add_action( 'wp_head', 'wingate_output_event_schema' );

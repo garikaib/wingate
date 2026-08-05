@@ -8,6 +8,22 @@ const SECTION_COPY_CLASS = 'text-sm text-gray-500 font-montserrat mt-2';
 const FIELD_LABEL_CLASS = 'block text-[11px] font-bold tracking-[0.16em] uppercase text-gray-600 mb-2';
 const INPUT_CLASS = 'w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50/70 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition';
 
+const phoneHrefFromLabel = (phoneLabel, phoneType = 'tel') => {
+    const digits = String(phoneLabel || '').replace(/[^\d+]/g, '');
+
+    if (phoneType === 'whatsapp') {
+        const whatsappNumber = digits.startsWith('+')
+            ? digits.slice(1).replace(/\D/g, '')
+            : digits.startsWith('0')
+                ? `263${digits.slice(1).replace(/\D/g, '')}`
+                : digits.replace(/\D/g, '');
+
+        return whatsappNumber ? `https://wa.me/${whatsappNumber}` : '';
+    }
+
+    return digits ? `tel:${digits}` : 'tel:';
+};
+
 const defaultSettings = {
     hero: {
         title: 'CONTACT US',
@@ -38,6 +54,7 @@ const defaultSettings = {
             title: 'Club Manager',
             phoneLabel: '0714681041',
             phoneHref: 'tel:0714681041',
+            phoneType: 'tel',
             email: 'daryl@wingate.co.zw',
         },
         {
@@ -45,6 +62,7 @@ const defaultSettings = {
             title: 'Office Assistant Manager',
             phoneLabel: '0719339670',
             phoneHref: 'tel:0719339670',
+            phoneType: 'tel',
             email: 'functions@wingate.co.zw',
         },
         {
@@ -52,6 +70,7 @@ const defaultSettings = {
             title: 'Office Assistant Manager',
             phoneLabel: '0772339670',
             phoneHref: 'tel:0772339670',
+            phoneType: 'tel',
             email: 'reception@wingate.co.zw',
         },
     ],
@@ -65,7 +84,12 @@ const mergeSettings = (incoming) => ({
     cards: { ...defaultSettings.cards, ...(incoming?.cards || {}) },
     location: { ...defaultSettings.location, ...(incoming?.location || {}) },
     teamSection: { ...defaultSettings.teamSection, ...(incoming?.teamSection || {}) },
-    team: Array.isArray(incoming?.team) ? incoming.team : defaultSettings.team,
+    team: Array.isArray(incoming?.team)
+        ? incoming.team.map((member) => ({
+            ...member,
+            phoneType: member?.phoneType === 'whatsapp' ? 'whatsapp' : 'tel',
+        }))
+        : defaultSettings.team,
 });
 
 const ContactPageSettingsAdmin = () => {
@@ -109,7 +133,16 @@ const ContactPageSettingsAdmin = () => {
     const updateTeam = (index, field, value) => {
         setSettings((prev) => {
             const next = [...prev.team];
-            next[index] = { ...next[index], [field]: value };
+            const current = { ...next[index], [field]: value };
+
+            if (field === 'phoneLabel' || field === 'phoneType') {
+                current.phoneHref = phoneHrefFromLabel(
+                    field === 'phoneLabel' ? value : current.phoneLabel,
+                    field === 'phoneType' ? value : current.phoneType
+                );
+            }
+
+            next[index] = current;
             return { ...prev, team: next };
         });
     };
@@ -124,6 +157,7 @@ const ContactPageSettingsAdmin = () => {
                     title: '',
                     phoneLabel: '',
                     phoneHref: 'tel:',
+                    phoneType: 'tel',
                     email: '',
                 },
             ],
@@ -313,8 +347,15 @@ const ContactPageSettingsAdmin = () => {
                                         <input className={INPUT_CLASS} type="text" value={member.phoneLabel || ''} onChange={(e) => updateTeam(index, 'phoneLabel', e.target.value)} />
                                     </div>
                                     <div>
-                                        <label className={FIELD_LABEL_CLASS}>Phone Href</label>
-                                        <input className={INPUT_CLASS} type="text" value={member.phoneHref || ''} onChange={(e) => updateTeam(index, 'phoneHref', e.target.value)} />
+                                        <label className={FIELD_LABEL_CLASS}>Phone Link Type</label>
+                                        <select className={INPUT_CLASS} value={member.phoneType === 'whatsapp' ? 'whatsapp' : 'tel'} onChange={(e) => updateTeam(index, 'phoneType', e.target.value)}>
+                                            <option value="tel">Telephone call</option>
+                                            <option value="whatsapp">WhatsApp only</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className={FIELD_LABEL_CLASS}>Generated Link</label>
+                                        <input className={INPUT_CLASS} type="text" value={member.phoneHref || phoneHrefFromLabel(member.phoneLabel, member.phoneType)} onChange={(e) => updateTeam(index, 'phoneHref', e.target.value)} />
                                     </div>
                                     <div className="md:col-span-2">
                                         <label className={FIELD_LABEL_CLASS}>Email</label>

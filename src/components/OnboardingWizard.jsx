@@ -127,10 +127,18 @@ const OnboardingWizard = () => {
     const submitForm = async () => {
         setLoading(true);
         try {
-            const response = await fetch('/wp-json/wingate/v1/generate-form', {
+            const apiRoot = window.wingateThemeData?.root || '/wp-json/';
+            const publicRestNonce = window.wingateThemeData?.publicRestNonce || '';
+            const response = await fetch(`${apiRoot}wingate/v1/generate-form`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Wingate-Nonce': publicRestNonce,
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    website: '',
+                })
             });
             const data = await response.json();
             if (data.success) {
