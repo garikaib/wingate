@@ -948,7 +948,7 @@ function wingate_get_contact_details() {
 	$details = wp_parse_args( $stored, wingate_contact_details_defaults() );
 
 	return array(
-		'email'     => isset( $details['email'] ) ? (string) $details['email'] : '#',
+		'email'     => isset( $details['email'] ) ? strtolower( (string) $details['email'] ) : '#',
 		'phone'     => isset( $details['phone'] ) ? (string) $details['phone'] : '#',
 		'phoneType' => isset( $details['phoneType'] ) && 'whatsapp' === $details['phoneType'] ? 'whatsapp' : 'tel',
 		'facebook'  => isset( $details['facebook'] ) ? (string) $details['facebook'] : '#',
@@ -1119,6 +1119,47 @@ function wingate_filter_mobile_social_markup( $block_content, $block ) {
 }
 add_filter( 'render_block', 'wingate_filter_mobile_social_markup', 20, 2 );
 
+add_filter( 'render_block', 'wingate_dynamic_header_contact_details', 10, 2 );
+function wingate_dynamic_header_contact_details( $block_content, $block ) {
+	if ( 'core/paragraph' !== $block['blockName'] ) {
+		return $block_content;
+	}
+
+	$classes = isset( $block['attrs']['className'] ) ? $block['attrs']['className'] : '';
+
+	if ( strpos( $classes, 'wingate-top-email' ) !== false ) {
+		$details = wingate_get_contact_details();
+		$email   = ! empty( $details['email'] ) && '#' !== $details['email'] ? strtolower( $details['email'] ) : '';
+		if ( ! empty( $email ) ) {
+			$block_content = preg_replace(
+				'/<a\b[^>]*>(.*?)<\/a>/is',
+				'<a href="mailto:' . esc_attr( $email ) . '">' . esc_html( $email ) . '</a>',
+				$block_content
+			);
+		}
+	}
+
+	if ( strpos( $classes, 'wingate-top-phone' ) !== false ) {
+		$details = wingate_get_contact_details();
+		$phone   = ! empty( $details['phone'] ) && '#' !== $details['phone'] ? trim( $details['phone'] ) : '';
+		if ( ! empty( $phone ) ) {
+			$href   = wingate_get_contact_phone_href( $details );
+			$label  = esc_html( $phone );
+			if ( 'whatsapp' === $details['phoneType'] ) {
+				$label .= ' WhatsApp Only';
+				$block_content = str_replace( 'class="wingate-top-phone', 'class="wingate-top-phone wingate-phone-is-whatsapp', $block_content );
+			}
+			$block_content = preg_replace(
+				'/<a\b[^>]*>(.*?)<\/a>/is',
+				'<a href="' . esc_url( $href ) . '"' . ( 'whatsapp' === $details['phoneType'] ? ' target="_blank" rel="noreferrer"' : '' ) . '>' . $label . '</a>',
+				$block_content
+			);
+		}
+	}
+
+	return $block_content;
+}
+
 function wingate_sanitize_contact_details( $input ) {
 	$defaults = wingate_contact_details_defaults();
 
@@ -1128,7 +1169,7 @@ function wingate_sanitize_contact_details( $input ) {
 
 	$email = isset( $input['email'] ) ? trim( (string) $input['email'] ) : '#';
 	if ( '#' !== $email && '' !== $email ) {
-		$email = sanitize_email( $email );
+		$email = strtolower( sanitize_email( $email ) );
 		if ( '' === $email ) {
 			$email = '#';
 		}

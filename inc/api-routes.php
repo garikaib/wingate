@@ -192,7 +192,7 @@ function wingate_sanitize_settings_value( $value, $key = '' ) {
     $lower_key = strtolower( (string) $key );
 
     if ( false !== strpos( $lower_key, 'email' ) ) {
-        return sanitize_email( $value );
+        return strtolower( sanitize_email( $value ) );
     }
 
     if (
