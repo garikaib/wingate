@@ -205,7 +205,7 @@ t((() => {
 										href: n.location.mapUrl,
 										target: "_blank",
 										rel: "noreferrer",
-										className: "group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card",
+										className: "group block rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card h-full",
 										children: [
 											/* @__PURE__ */ (0, y.jsx)(C, { className: `${S} text-brand-blue` }),
 											/* @__PURE__ */ (0, y.jsx)("h3", {
@@ -224,7 +224,7 @@ t((() => {
 									}),
 									/* @__PURE__ */ (0, y.jsxs)("a", {
 										href: g(e.email),
-										className: "group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card",
+										className: "group block rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card h-full",
 										children: [
 											/* @__PURE__ */ (0, y.jsx)(w, { className: `${S} text-brand-blue` }),
 											/* @__PURE__ */ (0, y.jsx)("h3", {
@@ -237,56 +237,19 @@ t((() => {
 											})
 										]
 									}),
-									e.phoneType === "both" ? /* @__PURE__ */ (0, y.jsxs)("div", {
-										className: "group rounded-sm bg-white p-9 text-center shadow-sm anim-contact-card",
-										children: [
-											/* @__PURE__ */ (0, y.jsxs)("div", {
-												className: "flex justify-center space-x-3 mb-4",
-												children: [/* @__PURE__ */ (0, y.jsx)(T, { className: `${S} text-brand-blue` }), /* @__PURE__ */ (0, y.jsx)(E, { className: `${S} text-brand-blue` })]
-											}),
-											/* @__PURE__ */ (0, y.jsx)("h3", {
-												className: "mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue",
-												children: n.cards.phoneTitle
-											}),
-											/* @__PURE__ */ (0, y.jsx)("p", {
-												className: "font-montserrat text-base text-slate-700 mb-6",
-												children: e.phone
-											}),
-											/* @__PURE__ */ (0, y.jsxs)("div", {
-												className: "flex flex-col sm:flex-row gap-3 justify-center",
-												children: [/* @__PURE__ */ (0, y.jsxs)("a", {
-													href: f(e.phone, "tel"),
-													className: "inline-flex items-center justify-center gap-2 rounded-sm bg-brand-blue px-4 py-2 text-xs font-bold uppercase tracking-wider text-white hover:bg-brand-yellow hover:text-brand-blue transition-all duration-300",
-													children: [/* @__PURE__ */ (0, y.jsx)(T, { className: "w-3.5 h-3.5" }), " Call Us"]
-												}), /* @__PURE__ */ (0, y.jsxs)("a", {
-													href: f(e.phone, "whatsapp"),
-													target: "_blank",
-													rel: "noreferrer",
-													className: "inline-flex items-center justify-center gap-2 rounded-sm bg-emerald-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white hover:bg-brand-yellow hover:text-brand-blue transition-all duration-300",
-													children: [/* @__PURE__ */ (0, y.jsx)(E, { className: "w-3.5 h-3.5" }), " WhatsApp"]
-												})]
-											})
-										]
-									}) : /* @__PURE__ */ (0, y.jsxs)("a", {
-										href: f(e.phone, e.phoneType),
-										...h(e.phoneType),
-										className: "group flex flex-col items-center justify-center rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card",
+									/* @__PURE__ */ (0, y.jsxs)("a", {
+										href: f(e.phone, e.phoneType === "both" ? "tel" : e.phoneType),
+										...h(e.phoneType === "both" ? "tel" : e.phoneType),
+										className: "group block rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card h-full",
 										children: [
 											e.phoneType === "whatsapp" ? /* @__PURE__ */ (0, y.jsx)(E, { className: `${S} text-brand-blue` }) : /* @__PURE__ */ (0, y.jsx)(T, { className: `${S} text-brand-blue` }),
 											/* @__PURE__ */ (0, y.jsx)("h3", {
 												className: "mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow",
-												children: n.cards.phoneTitle
+												children: e.phoneType === "whatsapp" ? "WHATSAPP ONLY" : e.phoneType === "both" ? "CALL / WHATSAPP" : n.cards.phoneTitle
 											}),
 											/* @__PURE__ */ (0, y.jsx)("p", {
 												className: "font-montserrat text-base text-slate-700 transition-colors duration-300 group-hover:text-brand-yellow",
 												children: e.phone
-											}),
-											e.phoneType === "whatsapp" ? /* @__PURE__ */ (0, y.jsx)("span", {
-												className: "mt-4 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700 border border-emerald-200 transition-colors duration-300 group-hover:bg-brand-yellow group-hover:text-brand-blue group-hover:border-transparent",
-												children: "WhatsApp Only"
-											}) : /* @__PURE__ */ (0, y.jsx)("span", {
-												className: "mt-4 inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700 border border-blue-200 transition-colors duration-300 group-hover:bg-brand-yellow group-hover:text-brand-blue group-hover:border-transparent",
-												children: "Calls Only"
 											})
 										]
 									})
@@ -297,7 +260,7 @@ t((() => {
 								children: [/* @__PURE__ */ (0, y.jsxs)("a", {
 									href: e.facebook,
 									...p(e.facebook),
-									className: "group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card",
+									className: "group block rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card h-full",
 									children: [/* @__PURE__ */ (0, y.jsx)(D, { className: `${S} text-brand-blue` }), /* @__PURE__ */ (0, y.jsx)("h3", {
 										className: "font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow",
 										children: n.cards.socialTitle
@@ -305,7 +268,7 @@ t((() => {
 								}), /* @__PURE__ */ (0, y.jsxs)("a", {
 									href: e.instagram,
 									...p(e.instagram),
-									className: "group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card",
+									className: "group block rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card h-full",
 									children: [/* @__PURE__ */ (0, y.jsx)(O, { className: `${S} text-brand-blue` }), /* @__PURE__ */ (0, y.jsx)("h3", {
 										className: "font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow",
 										children: n.cards.socialTitle

@@ -210,7 +210,7 @@ const Contact = () => {
                             href={pageSettings.location.mapUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
+                            className="group block rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card h-full"
                         >
                             <HouseSolidIcon className={`${iconClassName} text-brand-blue`} />
                             <h3 className="mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">{pageSettings.cards.findUsTitle}</h3>
@@ -220,69 +220,39 @@ const Contact = () => {
 
                         <a
                             href={toEmailHref(contactDetails.email)}
-                            className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
+                            className="group block rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card h-full"
                         >
                             <MailSolidIcon className={`${iconClassName} text-brand-blue`} />
                             <h3 className="mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">{pageSettings.cards.emailTitle}</h3>
                             <p className="font-montserrat text-base text-slate-700 transition-colors duration-300 group-hover:text-brand-yellow">{contactDetails.email}</p>
                         </a>
 
-                        {contactDetails.phoneType === 'both' ? (
-                            <div className="group rounded-sm bg-white p-9 text-center shadow-sm anim-contact-card">
-                                <div className="flex justify-center space-x-3 mb-4">
-                                    <PhoneSolidIcon className={`${iconClassName} text-brand-blue`} />
-                                    <WhatsAppSolidIcon className={`${iconClassName} text-brand-blue`} />
-                                </div>
-                                <h3 className="mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue">{pageSettings.cards.phoneTitle}</h3>
-                                <p className="font-montserrat text-base text-slate-700 mb-6">{contactDetails.phone}</p>
-                                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                                    <a
-                                        href={toPhoneHref(contactDetails.phone, 'tel')}
-                                        className="inline-flex items-center justify-center gap-2 rounded-sm bg-brand-blue px-4 py-2 text-xs font-bold uppercase tracking-wider text-white hover:bg-brand-yellow hover:text-brand-blue transition-all duration-300"
-                                    >
-                                        <PhoneSolidIcon className="w-3.5 h-3.5" /> Call Us
-                                    </a>
-                                    <a
-                                        href={toPhoneHref(contactDetails.phone, 'whatsapp')}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="inline-flex items-center justify-center gap-2 rounded-sm bg-emerald-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white hover:bg-brand-yellow hover:text-brand-blue transition-all duration-300"
-                                    >
-                                        <WhatsAppSolidIcon className="w-3.5 h-3.5" /> WhatsApp
-                                    </a>
-                                </div>
-                            </div>
-                        ) : (
-                            <a
-                                href={toPhoneHref(contactDetails.phone, contactDetails.phoneType)}
-                                {...toPhoneLinkProps(contactDetails.phoneType)}
-                                className="group flex flex-col items-center justify-center rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
-                            >
+                        <a
+                            href={toPhoneHref(contactDetails.phone, contactDetails.phoneType === 'both' ? 'tel' : contactDetails.phoneType)}
+                            {...toPhoneLinkProps(contactDetails.phoneType === 'both' ? 'tel' : contactDetails.phoneType)}
+                            className="group block rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card h-full"
+                        >
+                            {contactDetails.phoneType === 'whatsapp'
+                                ? <WhatsAppSolidIcon className={`${iconClassName} text-brand-blue`} />
+                                : <PhoneSolidIcon className={`${iconClassName} text-brand-blue`} />}
+                            <h3 className="mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">
                                 {contactDetails.phoneType === 'whatsapp'
-                                    ? <WhatsAppSolidIcon className={`${iconClassName} text-brand-blue`} />
-                                    : <PhoneSolidIcon className={`${iconClassName} text-brand-blue`} />}
-                                <h3 className="mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">{pageSettings.cards.phoneTitle}</h3>
-                                <p className="font-montserrat text-base text-slate-700 transition-colors duration-300 group-hover:text-brand-yellow">
-                                    {contactDetails.phone}
-                                </p>
-                                {contactDetails.phoneType === 'whatsapp' ? (
-                                    <span className="mt-4 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700 border border-emerald-200 transition-colors duration-300 group-hover:bg-brand-yellow group-hover:text-brand-blue group-hover:border-transparent">
-                                        WhatsApp Only
-                                    </span>
-                                ) : (
-                                    <span className="mt-4 inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700 border border-blue-200 transition-colors duration-300 group-hover:bg-brand-yellow group-hover:text-brand-blue group-hover:border-transparent">
-                                        Calls Only
-                                    </span>
-                                )}
-                            </a>
-                        )}
+                                    ? 'WHATSAPP ONLY'
+                                    : contactDetails.phoneType === 'both'
+                                        ? 'CALL / WHATSAPP'
+                                        : pageSettings.cards.phoneTitle}
+                            </h3>
+                            <p className="font-montserrat text-base text-slate-700 transition-colors duration-300 group-hover:text-brand-yellow">
+                                {contactDetails.phone}
+                            </p>
+                        </a>
                     </div>
 
                     <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
                         <a
                             href={contactDetails.facebook}
                             {...toExternalLinkProps(contactDetails.facebook)}
-                            className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
+                            className="group block rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card h-full"
                         >
                             <FacebookSolidIcon className={`${iconClassName} text-brand-blue`} />
                             <h3 className="font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">{pageSettings.cards.socialTitle}</h3>
@@ -291,7 +261,7 @@ const Contact = () => {
                         <a
                             href={contactDetails.instagram}
                             {...toExternalLinkProps(contactDetails.instagram)}
-                            className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
+                            className="group block rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card h-full"
                         >
                             <InstagramSolidIcon className={`${iconClassName} text-brand-blue`} />
                             <h3 className="font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">{pageSettings.cards.socialTitle}</h3>
