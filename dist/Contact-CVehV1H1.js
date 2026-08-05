@@ -237,7 +237,37 @@ t((() => {
 											})
 										]
 									}),
-									/* @__PURE__ */ (0, y.jsxs)("a", {
+									e.phoneType === "both" ? /* @__PURE__ */ (0, y.jsxs)("div", {
+										className: "group rounded-sm bg-white p-9 text-center shadow-sm anim-contact-card",
+										children: [
+											/* @__PURE__ */ (0, y.jsxs)("div", {
+												className: "flex justify-center space-x-3 mb-4",
+												children: [/* @__PURE__ */ (0, y.jsx)(T, { className: `${S} text-brand-blue` }), /* @__PURE__ */ (0, y.jsx)(E, { className: `${S} text-brand-blue` })]
+											}),
+											/* @__PURE__ */ (0, y.jsx)("h3", {
+												className: "mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue",
+												children: n.cards.phoneTitle
+											}),
+											/* @__PURE__ */ (0, y.jsx)("p", {
+												className: "font-montserrat text-base text-slate-700 mb-6",
+												children: e.phone
+											}),
+											/* @__PURE__ */ (0, y.jsxs)("div", {
+												className: "flex flex-col sm:flex-row gap-3 justify-center",
+												children: [/* @__PURE__ */ (0, y.jsxs)("a", {
+													href: f(e.phone, "tel"),
+													className: "inline-flex items-center justify-center gap-2 rounded-sm bg-brand-blue px-4 py-2 text-xs font-bold uppercase tracking-wider text-white hover:bg-brand-yellow hover:text-brand-blue transition-all duration-300",
+													children: [/* @__PURE__ */ (0, y.jsx)(T, { className: "w-3.5 h-3.5" }), " Call Us"]
+												}), /* @__PURE__ */ (0, y.jsxs)("a", {
+													href: f(e.phone, "whatsapp"),
+													target: "_blank",
+													rel: "noreferrer",
+													className: "inline-flex items-center justify-center gap-2 rounded-sm bg-emerald-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white hover:bg-brand-yellow hover:text-brand-blue transition-all duration-300",
+													children: [/* @__PURE__ */ (0, y.jsx)(E, { className: "w-3.5 h-3.5" }), " WhatsApp"]
+												})]
+											})
+										]
+									}) : /* @__PURE__ */ (0, y.jsxs)("a", {
 										href: f(e.phone, e.phoneType),
 										...h(e.phoneType),
 										className: "group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card",
@@ -247,9 +277,13 @@ t((() => {
 												className: "mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow",
 												children: n.cards.phoneTitle
 											}),
-											/* @__PURE__ */ (0, y.jsx)("p", {
+											/* @__PURE__ */ (0, y.jsxs)("p", {
 												className: "font-montserrat text-base text-slate-700 transition-colors duration-300 group-hover:text-brand-yellow",
-												children: e.phone
+												children: [
+													e.phone,
+													" ",
+													e.phoneType === "whatsapp" ? "WhatsApp Only" : ""
+												]
 											})
 										]
 									})
@@ -332,11 +366,15 @@ t((() => {
 										}),
 										/* @__PURE__ */ (0, y.jsxs)("div", {
 											className: "space-y-2 font-montserrat text-base",
-											children: [/* @__PURE__ */ (0, y.jsx)("p", { children: /* @__PURE__ */ (0, y.jsx)("a", {
+											children: [/* @__PURE__ */ (0, y.jsx)("p", { children: /* @__PURE__ */ (0, y.jsxs)("a", {
 												href: e.phoneType === "whatsapp" ? f(e.phoneLabel, "whatsapp") : e.phoneHref || f(e.phoneLabel, "tel"),
-												...h(e.phoneType),
+												...h(e.phoneType === "whatsapp" ? "whatsapp" : "tel"),
 												className: "font-semibold text-slate-700 decoration-brand-yellow decoration-2 underline-offset-4 transition-colors hover:text-brand-blue",
-												children: e.phoneLabel
+												children: [
+													e.phoneLabel,
+													" ",
+													e.phoneType === "whatsapp" ? "(WhatsApp Only)" : e.phoneType === "both" ? "(Calls & WhatsApp)" : "(Calls Only)"
+												]
 											}) }), /* @__PURE__ */ (0, y.jsx)("p", { children: /* @__PURE__ */ (0, y.jsx)("a", {
 												href: `mailto:${e.email}`,
 												className: "text-slate-700 decoration-brand-yellow decoration-2 underline-offset-4 transition-colors hover:text-brand-blue",

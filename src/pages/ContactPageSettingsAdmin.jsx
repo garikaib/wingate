@@ -87,7 +87,7 @@ const mergeSettings = (incoming) => ({
     team: Array.isArray(incoming?.team)
         ? incoming.team.map((member) => ({
             ...member,
-            phoneType: member?.phoneType === 'whatsapp' ? 'whatsapp' : 'tel',
+            phoneType: ['whatsapp', 'both', 'tel'].includes(member?.phoneType) ? member.phoneType : 'tel',
         }))
         : defaultSettings.team,
 });
@@ -348,9 +348,10 @@ const ContactPageSettingsAdmin = () => {
                                     </div>
                                     <div>
                                         <label className={FIELD_LABEL_CLASS}>Phone Link Type</label>
-                                        <select className={INPUT_CLASS} value={member.phoneType === 'whatsapp' ? 'whatsapp' : 'tel'} onChange={(e) => updateTeam(index, 'phoneType', e.target.value)}>
-                                            <option value="tel">Telephone call</option>
+                                        <select className={INPUT_CLASS} value={['whatsapp', 'both', 'tel'].includes(member.phoneType) ? member.phoneType : 'tel'} onChange={(e) => updateTeam(index, 'phoneType', e.target.value)}>
+                                            <option value="tel">Telephone call only</option>
                                             <option value="whatsapp">WhatsApp only</option>
+                                            <option value="both">Both Calls & WhatsApp</option>
                                         </select>
                                     </div>
                                     <div>

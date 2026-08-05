@@ -1182,7 +1182,7 @@ function wingate_sanitize_contact_details( $input ) {
 		$phone = sanitize_text_field( $phone );
 	}
 
-	$phone_type = isset( $input['phoneType'] ) && 'whatsapp' === $input['phoneType'] ? 'whatsapp' : 'tel';
+	$phone_type = isset( $input['phoneType'] ) && in_array( $input['phoneType'], array( 'tel', 'whatsapp', 'both' ), true ) ? $input['phoneType'] : 'tel';
 
 	$facebook = isset( $input['facebook'] ) ? trim( (string) $input['facebook'] ) : '#';
 	if ( '#' !== $facebook && '' !== $facebook ) {
@@ -1728,15 +1728,16 @@ function wingate_render_contact_input( $field, $label, $type, $value, $placehold
 }
 
 function wingate_render_contact_phone_type_input( $value ) {
-	$value = 'whatsapp' === $value ? 'whatsapp' : 'tel';
+	$value = in_array( $value, array( 'tel', 'whatsapp', 'both' ), true ) ? $value : 'tel';
 	?>
 	<label class="wingate-admin-field" for="wingate-contact-phoneType">
 		<span class="wingate-admin-field-label">Phone Link Type</span>
 		<select id="wingate-contact-phoneType" name="wingate_contact_details[phoneType]" class="wingate-admin-input">
-			<option value="tel" <?php selected( $value, 'tel' ); ?>>Telephone call</option>
+			<option value="tel" <?php selected( $value, 'tel' ); ?>>Telephone call only</option>
 			<option value="whatsapp" <?php selected( $value, 'whatsapp' ); ?>>WhatsApp only</option>
+			<option value="both" <?php selected( $value, 'both' ); ?>>Both Calls & WhatsApp</option>
 		</select>
-		<small class="wingate-admin-field-help">Controls the header icon and whether the number links to a call or WhatsApp chat.</small>
+		<small class="wingate-admin-field-help">Controls the header icon and whether the number links to a call, WhatsApp chat, or both.</small>
 	</label>
 	<?php
 }

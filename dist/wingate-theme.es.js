@@ -7649,7 +7649,7 @@ var u = /* @__PURE__ */ r(((e) => {
 	m(), h();
 	var a = i(), o = [
 		["home-root", () => import("./Home-BTzsbUO4.js")],
-		["contact-root", () => import("./Contact-DWdpEZV8.js")],
+		["contact-root", () => import("./Contact-CVehV1H1.js")],
 		["membership-root", () => import("./Membership-hq0zmuF2.js")],
 		["rates-root", () => import("./Rates-Bu9knIWQ.js")],
 		["course-root", () => import("./Course-DpCoDPjY.js")],
@@ -7658,7 +7658,7 @@ var u = /* @__PURE__ */ r(((e) => {
 		["green-fees-root", () => import("./GreenFees-Dtgufn8b.js")],
 		["events-admin-root", () => import("./EventsAdmin-8-Vx5Jyb.js")],
 		["home-settings-admin-root", () => import("./HomeSettingsAdmin-BReU153B.js")],
-		["contact-page-settings-admin-root", () => import("./ContactPageSettingsAdmin-B06HDst-.js")],
+		["contact-page-settings-admin-root", () => import("./ContactPageSettingsAdmin-DiikhDe3.js")],
 		["course-settings-admin-root", () => import("./CourseSettingsAdmin-DJeKaPCM.js")],
 		["hole-by-hole-admin-root", () => import("./HoleByHoleAdmin-BL9JUajB.js")],
 		["green-fees-settings-admin-root", () => import("./GreenFeesSettingsAdmin-t--z-ajf.js")],

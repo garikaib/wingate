@@ -82,7 +82,11 @@ t((() => {
 		},
 		team: Array.isArray(e?.team) ? e.team.map((e) => ({
 			...e,
-			phoneType: e?.phoneType === "whatsapp" ? "whatsapp" : "tel"
+			phoneType: [
+				"whatsapp",
+				"both",
+				"tel"
+			].includes(e?.phoneType) ? e.phoneType : "tel"
 		})) : h.team
 	}), _ = () => {
 		let [e, t] = (0, o.useState)(h), [n, r] = (0, o.useState)(!0), [i, _] = (0, o.useState)(!1), [v, y] = (0, o.useState)({
@@ -428,15 +432,26 @@ t((() => {
 													children: "Phone Link Type"
 												}), /* @__PURE__ */ (0, s.jsxs)("select", {
 													className: p,
-													value: e.phoneType === "whatsapp" ? "whatsapp" : "tel",
+													value: [
+														"whatsapp",
+														"both",
+														"tel"
+													].includes(e.phoneType) ? e.phoneType : "tel",
 													onChange: (e) => w(t, "phoneType", e.target.value),
-													children: [/* @__PURE__ */ (0, s.jsx)("option", {
-														value: "tel",
-														children: "Telephone call"
-													}), /* @__PURE__ */ (0, s.jsx)("option", {
-														value: "whatsapp",
-														children: "WhatsApp only"
-													})]
+													children: [
+														/* @__PURE__ */ (0, s.jsx)("option", {
+															value: "tel",
+															children: "Telephone call only"
+														}),
+														/* @__PURE__ */ (0, s.jsx)("option", {
+															value: "whatsapp",
+															children: "WhatsApp only"
+														}),
+														/* @__PURE__ */ (0, s.jsx)("option", {
+															value: "both",
+															children: "Both Calls & WhatsApp"
+														})
+													]
 												})] }),
 												/* @__PURE__ */ (0, s.jsxs)("div", { children: [/* @__PURE__ */ (0, s.jsx)("label", {
 													className: f,
