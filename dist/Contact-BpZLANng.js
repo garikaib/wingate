@@ -270,7 +270,7 @@ t((() => {
 									}) : /* @__PURE__ */ (0, y.jsxs)("a", {
 										href: f(e.phone, e.phoneType),
 										...h(e.phoneType),
-										className: "group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card",
+										className: "group flex flex-col items-center justify-center rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card",
 										children: [
 											e.phoneType === "whatsapp" ? /* @__PURE__ */ (0, y.jsx)(E, { className: `${S} text-brand-blue` }) : /* @__PURE__ */ (0, y.jsx)(T, { className: `${S} text-brand-blue` }),
 											/* @__PURE__ */ (0, y.jsx)("h3", {
@@ -280,6 +280,13 @@ t((() => {
 											/* @__PURE__ */ (0, y.jsx)("p", {
 												className: "font-montserrat text-base text-slate-700 transition-colors duration-300 group-hover:text-brand-yellow",
 												children: e.phone
+											}),
+											e.phoneType === "whatsapp" ? /* @__PURE__ */ (0, y.jsx)("span", {
+												className: "mt-4 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700 border border-emerald-200 transition-colors duration-300 group-hover:bg-brand-yellow group-hover:text-brand-blue group-hover:border-transparent",
+												children: "WhatsApp Only"
+											}) : /* @__PURE__ */ (0, y.jsx)("span", {
+												className: "mt-4 inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700 border border-blue-200 transition-colors duration-300 group-hover:bg-brand-yellow group-hover:text-brand-blue group-hover:border-transparent",
+												children: "Calls Only"
 											})
 										]
 									})

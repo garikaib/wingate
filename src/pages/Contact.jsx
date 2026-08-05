@@ -256,7 +256,7 @@ const Contact = () => {
                             <a
                                 href={toPhoneHref(contactDetails.phone, contactDetails.phoneType)}
                                 {...toPhoneLinkProps(contactDetails.phoneType)}
-                                className="group rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
+                                className="group flex flex-col items-center justify-center rounded-sm bg-white p-9 text-center shadow-sm transition-transform hover:-translate-y-1 anim-contact-card"
                             >
                                 {contactDetails.phoneType === 'whatsapp'
                                     ? <WhatsAppSolidIcon className={`${iconClassName} text-brand-blue`} />
@@ -265,6 +265,15 @@ const Contact = () => {
                                 <p className="font-montserrat text-base text-slate-700 transition-colors duration-300 group-hover:text-brand-yellow">
                                     {contactDetails.phone}
                                 </p>
+                                {contactDetails.phoneType === 'whatsapp' ? (
+                                    <span className="mt-4 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700 border border-emerald-200 transition-colors duration-300 group-hover:bg-brand-yellow group-hover:text-brand-blue group-hover:border-transparent">
+                                        WhatsApp Only
+                                    </span>
+                                ) : (
+                                    <span className="mt-4 inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700 border border-blue-200 transition-colors duration-300 group-hover:bg-brand-yellow group-hover:text-brand-blue group-hover:border-transparent">
+                                        Calls Only
+                                    </span>
+                                )}
                             </a>
                         )}
                     </div>

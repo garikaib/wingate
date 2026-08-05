@@ -7649,7 +7649,7 @@ var u = /* @__PURE__ */ r(((e) => {
 	m(), h();
 	var a = i(), o = [
 		["home-root", () => import("./Home-BTzsbUO4.js")],
-		["contact-root", () => import("./Contact-CRrfjINf.js")],
+		["contact-root", () => import("./Contact-BpZLANng.js")],
 		["membership-root", () => import("./Membership-hq0zmuF2.js")],
 		["rates-root", () => import("./Rates-Bu9knIWQ.js")],
 		["course-root", () => import("./Course-DpCoDPjY.js")],
