@@ -277,13 +277,9 @@ t((() => {
 												className: "mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow",
 												children: n.cards.phoneTitle
 											}),
-											/* @__PURE__ */ (0, y.jsxs)("p", {
+											/* @__PURE__ */ (0, y.jsx)("p", {
 												className: "font-montserrat text-base text-slate-700 transition-colors duration-300 group-hover:text-brand-yellow",
-												children: [
-													e.phone,
-													" ",
-													e.phoneType === "whatsapp" ? "WhatsApp Only" : ""
-												]
+												children: e.phone
 											})
 										]
 									})
@@ -369,12 +365,11 @@ t((() => {
 											children: [/* @__PURE__ */ (0, y.jsx)("p", { children: /* @__PURE__ */ (0, y.jsxs)("a", {
 												href: e.phoneType === "whatsapp" ? f(e.phoneLabel, "whatsapp") : e.phoneHref || f(e.phoneLabel, "tel"),
 												...h(e.phoneType === "whatsapp" ? "whatsapp" : "tel"),
-												className: "font-semibold text-slate-700 decoration-brand-yellow decoration-2 underline-offset-4 transition-colors hover:text-brand-blue",
-												children: [
-													e.phoneLabel,
-													" ",
-													e.phoneType === "whatsapp" ? "(WhatsApp Only)" : e.phoneType === "both" ? "(Calls & WhatsApp)" : "(Calls Only)"
-												]
+												className: "inline-flex items-center justify-center gap-1.5 font-semibold text-slate-700 decoration-brand-yellow decoration-2 underline-offset-4 transition-colors hover:text-brand-blue",
+												children: [e.phoneType === "whatsapp" ? /* @__PURE__ */ (0, y.jsx)(E, { className: "w-4 h-4 text-emerald-600 inline" }) : e.phoneType === "both" ? /* @__PURE__ */ (0, y.jsxs)("span", {
+													className: "flex items-center gap-0.5",
+													children: [/* @__PURE__ */ (0, y.jsx)(T, { className: "w-3.5 h-3.5 text-slate-500 inline" }), /* @__PURE__ */ (0, y.jsx)(E, { className: "w-3.5 h-3.5 text-emerald-600 inline" })]
+												}) : /* @__PURE__ */ (0, y.jsx)(T, { className: "w-3.5 h-3.5 text-slate-500 inline" }), e.phoneLabel]
 											}) }), /* @__PURE__ */ (0, y.jsx)("p", { children: /* @__PURE__ */ (0, y.jsx)("a", {
 												href: `mailto:${e.email}`,
 												className: "text-slate-700 decoration-brand-yellow decoration-2 underline-offset-4 transition-colors hover:text-brand-blue",

@@ -263,7 +263,7 @@ const Contact = () => {
                                     : <PhoneSolidIcon className={`${iconClassName} text-brand-blue`} />}
                                 <h3 className="mb-3 font-cinzel text-2xl font-bold uppercase tracking-wide text-brand-blue transition-colors duration-300 group-hover:text-brand-yellow">{pageSettings.cards.phoneTitle}</h3>
                                 <p className="font-montserrat text-base text-slate-700 transition-colors duration-300 group-hover:text-brand-yellow">
-                                    {contactDetails.phone} {contactDetails.phoneType === 'whatsapp' ? 'WhatsApp Only' : ''}
+                                    {contactDetails.phone}
                                 </p>
                             </a>
                         )}
@@ -343,9 +343,19 @@ const Contact = () => {
                                         <a
                                             href={person.phoneType === 'whatsapp' ? toPhoneHref(person.phoneLabel, 'whatsapp') : (person.phoneHref || toPhoneHref(person.phoneLabel, 'tel'))}
                                             {...toPhoneLinkProps(person.phoneType === 'whatsapp' ? 'whatsapp' : 'tel')}
-                                            className="font-semibold text-slate-700 decoration-brand-yellow decoration-2 underline-offset-4 transition-colors hover:text-brand-blue"
+                                            className="inline-flex items-center justify-center gap-1.5 font-semibold text-slate-700 decoration-brand-yellow decoration-2 underline-offset-4 transition-colors hover:text-brand-blue"
                                         >
-                                            {person.phoneLabel} {person.phoneType === 'whatsapp' ? '(WhatsApp Only)' : (person.phoneType === 'both' ? '(Calls & WhatsApp)' : '(Calls Only)')}
+                                            {person.phoneType === 'whatsapp' ? (
+                                                <WhatsAppSolidIcon className="w-4 h-4 text-emerald-600 inline" />
+                                            ) : person.phoneType === 'both' ? (
+                                                <span className="flex items-center gap-0.5">
+                                                    <PhoneSolidIcon className="w-3.5 h-3.5 text-slate-500 inline" />
+                                                    <WhatsAppSolidIcon className="w-3.5 h-3.5 text-emerald-600 inline" />
+                                                </span>
+                                            ) : (
+                                                <PhoneSolidIcon className="w-3.5 h-3.5 text-slate-500 inline" />
+                                            )}
+                                            {person.phoneLabel}
                                         </a>
                                     </p>
                                     <p>
