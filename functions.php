@@ -468,9 +468,22 @@ function wingate_generate_meta_summary( $raw_text, $fallback = '', $max_words = 
 }
 
 function wingate_get_social_defaults_for_current_page() {
+	$home_hero_image = home_url( '/wp-content/uploads/2026/02/20260131_124600-scaled.jpg' );
+	$home_settings   = get_option( 'wingate_home_settings', array() );
+	if ( is_array( $home_settings ) && ! empty( $home_settings['hero']['backgroundImage'] ) ) {
+		$configured_bg = trim( (string) $home_settings['hero']['backgroundImage'] );
+		if ( '' !== $configured_bg ) {
+			if ( 0 === strpos( $configured_bg, 'http://' ) || 0 === strpos( $configured_bg, 'https://' ) ) {
+				$home_hero_image = $configured_bg;
+			} else {
+				$home_hero_image = home_url( '/' . ltrim( $configured_bg, '/' ) );
+			}
+		}
+	}
+
 	$defaults = array(
 		'summary' => 'Discover championship golf, events, and membership at Wingate Park Golf Club in Harare.',
-		'image'   => home_url( '/wp-content/uploads/2026/02/20260131_124600-scaled.jpg' ),
+		'image'   => $home_hero_image,
 	);
 
 	if ( is_page_template( 'page-membership.php' ) ) {
@@ -494,19 +507,19 @@ function wingate_get_social_defaults_for_current_page() {
 	if ( is_page_template( 'page-mens-handicap.php' ) ) {
 		return array(
 			'summary' => "View the latest men's handicap boards, season trends, and event-level leaderboard updates.",
-			'image'   => home_url( '/wp-content/uploads/2026/02/20260131_124600-scaled.jpg' ),
+			'image'   => $home_hero_image,
 		);
 	}
 	if ( is_page_template( 'page-ladies-handicap.php' ) ) {
 		return array(
 			'summary' => 'View the latest ladies handicap boards, season trends, and event-level leaderboard updates.',
-			'image'   => home_url( '/wp-content/uploads/2026/02/20260131_124600-scaled.jpg' ),
+			'image'   => $home_hero_image,
 		);
 	}
 	if ( is_page_template( 'page-handicaps.php' ) ) {
 		return array(
 			'summary' => 'Compare Wingate handicap leaderboards across men and ladies divisions.',
-			'image'   => home_url( '/wp-content/uploads/2026/02/20260131_124600-scaled.jpg' ),
+			'image'   => $home_hero_image,
 		);
 	}
 	if ( is_page_template( 'page-course.php' ) || is_page_template( 'page-hole-by-hole.php' ) || is_page_template( 'page-course-layout.php' ) ) {
@@ -562,6 +575,14 @@ function wingate_resolve_social_image( $post_id, $fallback_image ) {
 			if ( is_array( $items ) && ! empty( $items[0]['src'] ) ) {
 				$image = (string) $items[0]['src'];
 			}
+		}
+	}
+
+	// If no featured image or post-specific image, attempt to extract the main image from post_content.
+	if ( '' === $image && $post_id > 0 ) {
+		$content = (string) get_post_field( 'post_content', $post_id );
+		if ( '' !== $content && preg_match( '/<img[^>]+src=["\']([^"\']+)["\']/i', $content, $matches ) ) {
+			$image = $matches[1];
 		}
 	}
 
@@ -1702,13 +1723,13 @@ function wingate_enqueue_admin_assets( $hook ) {
 	);
 	wp_enqueue_style(
 		'wingate-admin-contact-details',
-		get_stylesheet_directory_uri() . '/src/admin/contact-details-admin.css',
+		get_stylesheet_directory_uri() . '/assets/admin/contact-details-admin.css',
 		array(),
 		$version
 	);
 	wp_enqueue_script(
 		'wingate-admin-contact-details',
-		get_stylesheet_directory_uri() . '/src/admin/contact-details-admin.js',
+		get_stylesheet_directory_uri() . '/assets/admin/contact-details-admin.js',
 		array(),
 		$version,
 		true
@@ -1966,7 +1987,7 @@ function wingate_enqueue_maintenance_assets( $hook ) {
 
 	wp_enqueue_style(
 		'wingate-admin-maintenance',
-		get_stylesheet_directory_uri() . '/src/admin/maintenance-admin.css',
+		get_stylesheet_directory_uri() . '/assets/admin/maintenance-admin.css',
 		array(),
 		$version
 	);
