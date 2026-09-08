@@ -875,10 +875,25 @@ function wingate_global_animations() {
             }
 
             #header-root.wingate-header-compact .wingate-absolute-logo {
-                opacity: 0 !important;
-                pointer-events: none !important;
-                transform: translateY(-62%) scale(0.88) !important;
-                transition: transform 0.22s ease, opacity 0.22s ease;
+                opacity: 1 !important;
+                pointer-events: auto !important;
+                top: 50% !important;
+                transform: translateY(-50%) !important;
+                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08)) !important;
+                transition: transform 0.24s ease, opacity 0.24s ease, filter 0.24s ease;
+            }
+
+            #header-root.wingate-header-compact .wingate-absolute-logo a {
+                display: inline-flex;
+                align-items: center;
+                line-height: 0;
+            }
+
+            #header-root.wingate-header-compact .wingate-absolute-logo img {
+                height: 2.25rem !important;
+                max-height: 2.25rem !important;
+                width: auto !important;
+                transition: height 0.24s ease, max-height 0.24s ease;
             }
 
             #header-root.wingate-header-compact .wingate-main-header {
@@ -887,8 +902,21 @@ function wingate_global_animations() {
                 transition: padding 0.24s ease;
             }
 
-            #header-root.wingate-header-compact nav.wp-block-navigation {
-                padding-left: 1rem !important;
+            #header-root.wingate-header-compact nav.wp-block-navigation,
+            #header-root.wingate-header-compact .wingate-builder-main-nav {
+                padding-left: 3.5rem !important;
+                transition: padding-left 0.24s ease;
+            }
+
+            #header-root.wingate-header-compact .wingate-builder-main-list,
+            #header-root.wingate-header-compact nav.wp-block-navigation > ul {
+                column-gap: clamp(0.75rem, 1.2vw, 1.35rem) !important;
+                flex-wrap: nowrap !important;
+            }
+
+            #header-root.wingate-header-compact .wingate-builder-main-item,
+            #header-root.wingate-header-compact .wp-block-navigation-item {
+                flex-shrink: 0;
             }
         }
 
