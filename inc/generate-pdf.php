@@ -18,6 +18,10 @@ class WingatePDF extends FPDF {
         $candidates = [];
 
         if (defined('ABSPATH')) {
+            // Theme-bundled copy first: always present regardless of what's been
+            // uploaded to this environment's media library.
+            $candidates[] = ABSPATH . 'wp-content/themes/wingate/assets/images/wingate-crest.webp';
+            $candidates[] = ABSPATH . 'wp-content/uploads/2026/09/wingate-crest.webp';
             $candidates[] = ABSPATH . 'wp-content/uploads/2026/02/logo_compressed.png';
             $candidates[] = ABSPATH . 'docs/assets/images/wingate_logo.webp';
         }

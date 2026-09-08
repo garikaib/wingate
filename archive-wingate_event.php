@@ -132,7 +132,7 @@ $display_links = array(
 	        ?>
 	            <div class="mb-16" id="<?php echo esc_attr(sanitize_title($month)); ?>">
 	                <div class="mb-8">
-	                    <h2 class="text-3xl font-cinzel text-brand-blue font-bold sticky top-0 bg-white/95 backdrop-blur py-2 px-2 md:px-0 z-10 w-full border-b border-brand-yellow/30">
+	                    <h2 class="text-3xl font-cinzel text-brand-blue font-bold sticky top-0 bg-white/95 dark:bg-dark-canvas backdrop-blur py-2 px-2 md:px-0 z-10 w-full border-b border-brand-yellow/30">
 	                        <?php echo esc_html($month); ?>
 	                    </h2>
 	                </div>

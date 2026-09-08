@@ -343,6 +343,23 @@ function wingate_enqueue_assets() {
 		wp_enqueue_style( 'wingate-react-style', get_stylesheet_directory_uri() . '/dist/new-wingate.css', array(), $style_version );
 	}
 
+	// The dark-mode toggle button is rendered in the header on every front-end
+	// page, but theme-toggle.js used to only ship inside the React bundle below —
+	// which is itself only enqueued on a curated allowlist of pages. Anywhere off
+	// that list (blog posts, events, handicap boards, generic pages, etc.) the
+	// button rendered but nothing was listening for clicks on it. It has no
+	// dependencies of its own, so it's enqueued here unconditionally instead.
+	if ( file_exists( get_stylesheet_directory() . '/src/theme-toggle.js' ) ) {
+		wp_enqueue_script(
+			'wingate-theme-toggle',
+			get_stylesheet_directory_uri() . '/src/theme-toggle.js',
+			array(),
+			wingate_asset_version( 'src/theme-toggle.js' ),
+			true
+		);
+		wp_script_add_data( 'wingate-theme-toggle', 'type', 'module' );
+	}
+
 	if ( wingate_should_enqueue_react_bundle() ) {
 		wp_enqueue_script( 'wingate-react-bundle', get_stylesheet_directory_uri() . '/dist/wingate-theme.es.js', array(), $bundle_version, true );
 		wp_script_add_data( 'wingate-react-bundle', 'type', 'module' );
@@ -421,6 +438,43 @@ function wingate_get_theme_site_icon_uri( $filename = 'site-icon.png' ) {
 	}
 
 	return get_stylesheet_directory_uri() . '/assets/icons/' . rawurlencode( $filename );
+}
+
+/**
+ * Apply the stored/OS color-scheme preference before first paint.
+ *
+ * Hooked on wp_head (not embedded in header.php) so it fires on every
+ * front-end request — including pages that fall through to the parent
+ * theme's block "page" template (no page.php override in this child
+ * theme), which never calls get_header() and would otherwise never set
+ * the `.dark` class at all.
+ */
+add_action( 'wp_head', 'wingate_dark_mode_init_script', 0 );
+function wingate_dark_mode_init_script() {
+	if ( is_admin() ) {
+		return;
+	}
+	?>
+	<meta name="color-scheme" content="light dark">
+	<script>
+	(function() {
+		try {
+			var scheme = localStorage.getItem('color-scheme');
+			var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			var isDark = scheme === 'dark' || (!scheme && prefersDark);
+			if (isDark) {
+				document.documentElement.classList.add('dark');
+				var meta = document.querySelector('meta[name="color-scheme"]');
+				if (meta) meta.content = 'dark';
+			} else {
+				document.documentElement.classList.remove('dark');
+				var meta = document.querySelector('meta[name="color-scheme"]');
+				if (meta) meta.content = 'light';
+			}
+		} catch (e) {}
+	})();
+	</script>
+	<?php
 }
 
 add_action( 'wp_head', 'wingate_add_favicon_fallback', 1 );
@@ -798,10 +852,15 @@ function wingate_global_animations() {
                 right: 0;
                 width: 100%;
                 z-index: 120;
-                background: #ffffff;
+                background: var(--color-header-bg, #ffffff);
                 border-bottom: 1px solid rgba(14, 27, 61, 0.08);
                 box-shadow: 0 14px 28px -20px rgba(14, 27, 61, 0.55);
                 animation: wingateHeaderSlideIn 0.32s ease;
+            }
+
+            .dark #header-root.wingate-header-compact {
+                border-bottom: 1px solid var(--color-dark-border-frost);
+                box-shadow: 0 14px 28px -20px rgba(0, 0, 0, 0.75);
             }
 
             #header-root.wingate-header-compact .wingate-top-bar {
@@ -855,6 +914,28 @@ function wingate_global_animations() {
         let ticking = false;
         let compactMode = false;
 
+        // Hysteresis: enabling/disabling at the same 8px threshold let a single
+        // scroll-anchoring nudge (from the header's own height change) flip the
+        // state back and forth every frame, which read as the header "vibrating."
+        // A gap between the two thresholds absorbs that jitter.
+        const COMPACT_ENABLE_AT = 48;
+        const COMPACT_DISABLE_AT = 12;
+
+        const measureCompactHeight = () => {
+            if (!mainHeader) {
+                return 74;
+            }
+            // getBoundingClientRect() right after toggling the class would race the
+            // CSS padding transition and read a stale in-between height. Snap the
+            // transition off for one synchronous measurement, then hand it back.
+            const previousTransition = mainHeader.style.transition;
+            mainHeader.style.transition = 'none';
+            const height = Math.ceil(mainHeader.getBoundingClientRect().height);
+            void mainHeader.offsetHeight; // force reflow before restoring the transition
+            mainHeader.style.transition = previousTransition;
+            return height;
+        };
+
         const setCompactMode = (enabled) => {
             if (!headerRoot || !desktopMedia.matches) {
                 if (headerRoot) {
@@ -873,8 +954,7 @@ function wingate_global_animations() {
             headerRoot.classList.toggle('wingate-header-compact', enabled);
 
             if (enabled) {
-                const compactHeight = mainHeader ? Math.ceil(mainHeader.getBoundingClientRect().height) : 74;
-                document.body.style.paddingTop = compactHeight + 'px';
+                document.body.style.paddingTop = measureCompactHeight() + 'px';
             } else {
                 document.body.style.paddingTop = '';
             }
@@ -889,12 +969,11 @@ function wingate_global_animations() {
                 return;
             }
 
-            if (y <= 8) {
+            if (compactMode && y < COMPACT_DISABLE_AT) {
                 setCompactMode(false);
-                return;
+            } else if (!compactMode && y > COMPACT_ENABLE_AT) {
+                setCompactMode(true);
             }
-
-            setCompactMode(true);
         };
 
         // Animation on scroll
@@ -2639,7 +2718,7 @@ function wingate_get_event_schema( $post_id ) {
     if ( has_post_thumbnail( $post_id ) ) {
         $schema['image'] = get_the_post_thumbnail_url( $post_id, 'full' );
     } else {
-        $schema['image'] = home_url( '/wp-content/uploads/2026/08/wingate_ineverse.webp' );
+        $schema['image'] = get_stylesheet_directory_uri() . '/assets/images/wingate-crest.webp';
     }
     
     return $schema;

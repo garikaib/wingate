@@ -270,7 +270,7 @@ const Contact = () => {
                 </div>
             </section>
 
-            <section className="bg-slate-100 py-16 anim-map-container">
+            <section className="bg-slate-100 dark:bg-dark-surface py-16 anim-map-container">
                 <div className="mx-auto max-w-6xl px-6 lg:px-10">
                     <h2 className="mb-8 text-center font-cinzel text-4xl font-bold uppercase tracking-wide text-brand-blue">
                         {pageSettings.location.mapSectionTitle}
@@ -291,7 +291,7 @@ const Contact = () => {
                 </div>
             </section>
 
-            <section className="relative overflow-hidden bg-gradient-to-b from-white via-[#f8f8f3] to-[#f2f1ea] px-6 py-20 lg:px-10 lg:py-24">
+            <section className="relative overflow-hidden bg-gradient-to-b from-white via-[#f8f8f3] to-[#f2f1ea] dark:from-dark-canvas dark:via-dark-surface dark:to-dark-surface px-6 py-20 lg:px-10 lg:py-24">
                 <div className="pointer-events-none absolute -left-20 top-6 h-64 w-64 rounded-full bg-brand-yellow/15 blur-3xl"></div>
                 <div className="pointer-events-none absolute -right-24 bottom-4 h-72 w-72 rounded-full bg-brand-blue/10 blur-3xl"></div>
                 <div className="mx-auto max-w-6xl">
@@ -306,7 +306,7 @@ const Contact = () => {
                         {pageSettings.team.map((person, index) => (
                             <article
                                 key={person.email || index}
-                                className="group rounded-2xl border border-brand-blue/10 bg-white/90 px-7 py-9 text-center shadow-[0_18px_30px_rgba(14,27,61,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_36px_rgba(14,27,61,0.16)] anim-team-member"
+                                className="group rounded-2xl border border-brand-blue/10 bg-white/90 dark:bg-dark-card px-7 py-9 text-center shadow-[0_18px_30px_rgba(14,27,61,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_36px_rgba(14,27,61,0.16)] anim-team-member"
                             >
                                 <h3 className="relative mb-6 inline-block font-cinzel text-[2rem] font-bold uppercase leading-tight tracking-wide text-brand-blue">
                                     {person.name}

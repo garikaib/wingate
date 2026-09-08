@@ -66,15 +66,15 @@ get_header();
         
         <!-- Quick Info Cards (Glassmorphism) -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-24 max-w-6xl mx-auto">
-            <div class="bg-white/90 backdrop-blur-xl border border-white/40 shadow-xl rounded-xl p-6 text-center transform hover:-translate-y-1 transition-all duration-300">
+            <div class="bg-white/90 dark:bg-dark-card backdrop-blur-xl border border-white/40 dark:border-dark-border shadow-xl rounded-xl p-6 text-center transform hover:-translate-y-1 transition-all duration-300">
                 <p class="text-brand-blue/60 font-cinzel text-xs uppercase tracking-widest mb-2"><?php echo esc_html( isset( $quick_info[0]['label'] ) ? $quick_info[0]['label'] : 'Open Daily' ); ?></p>
                 <p class="text-brand-blue font-cinzel text-xl font-bold"><?php echo esc_html( isset( $quick_info[0]['value'] ) ? $quick_info[0]['value'] : '7:00 AM - 6:00 PM' ); ?></p>
             </div>
-            <div class="bg-white/90 backdrop-blur-xl border border-white/40 shadow-xl rounded-xl p-6 text-center transform hover:-translate-y-1 transition-all duration-300">
+            <div class="bg-white/90 dark:bg-dark-card backdrop-blur-xl border border-white/40 dark:border-dark-border shadow-xl rounded-xl p-6 text-center transform hover:-translate-y-1 transition-all duration-300">
                 <p class="text-brand-blue/60 font-cinzel text-xs uppercase tracking-widest mb-2"><?php echo esc_html( isset( $quick_info[1]['label'] ) ? $quick_info[1]['label'] : 'Course Type' ); ?></p>
                 <p class="text-brand-blue font-cinzel text-xl font-bold"><?php echo esc_html( isset( $quick_info[1]['value'] ) ? $quick_info[1]['value'] : 'Championship 18' ); ?></p>
             </div>
-            <div class="bg-white/90 backdrop-blur-xl border border-white/40 shadow-xl rounded-xl p-6 text-center transform hover:-translate-y-1 transition-all duration-300">
+            <div class="bg-white/90 dark:bg-dark-card backdrop-blur-xl border border-white/40 dark:border-dark-border shadow-xl rounded-xl p-6 text-center transform hover:-translate-y-1 transition-all duration-300">
                 <p class="text-brand-blue/60 font-cinzel text-xs uppercase tracking-widest mb-2"><?php echo esc_html( isset( $quick_info[2]['label'] ) ? $quick_info[2]['label'] : 'Questions?' ); ?></p>
                 <a href="<?php echo esc_url( $contact_url ); ?>" class="text-brand-blue font-cinzel text-xl font-bold hover:text-brand-yellow transition-colors !no-underline hover:!no-underline" style="text-decoration: none !important;"><?php echo esc_html( isset( $quick_info[2]['value'] ) ? $quick_info[2]['value'] : 'Contact Us' ); ?></a>
             </div>

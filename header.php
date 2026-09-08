@@ -17,6 +17,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="profile" href="https://gmpg.org/xfn/11">
 
+	<?php // Dark-mode meta + init script now hooked on wp_head() so it also
+	// applies on pages rendered via the parent theme's block templates. ?>
 	<?php wp_head(); ?>
 </head>
 

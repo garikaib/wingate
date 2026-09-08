@@ -104,7 +104,7 @@ t((() => {
 		}, v = ({ title: e, rates: t, columns: n, icon: r }) => /* @__PURE__ */ (0, m.jsxs)("div", {
 			className: "glass-card mb-20 relative",
 			children: [/* @__PURE__ */ (0, m.jsx)("div", { className: "absolute -top-10 -left-6 w-20 h-20 bg-brand-yellow/10 rounded-full blur-2xl -z-10" }), /* @__PURE__ */ (0, m.jsxs)("div", {
-				className: "bg-white/90 backdrop-blur-xl border border-white/40 shadow-2xl rounded-2xl overflow-hidden p-8",
+				className: "bg-white/90 dark:bg-dark-card backdrop-blur-xl border border-white/40 dark:border-dark-border shadow-2xl rounded-2xl overflow-hidden p-8",
 				children: [/* @__PURE__ */ (0, m.jsx)("div", {
 					className: "flex items-center justify-between mb-8 border-b border-brand-blue/10 pb-6",
 					children: /* @__PURE__ */ (0, m.jsxs)("div", {
@@ -219,7 +219,7 @@ t((() => {
 							}
 						}),
 						/* @__PURE__ */ (0, m.jsx)("div", { className: "absolute inset-0 bg-brand-blue/30" }),
-						/* @__PURE__ */ (0, m.jsx)("div", { className: "absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-white to-transparent" }),
+						/* @__PURE__ */ (0, m.jsx)("div", { className: "absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-white to-transparent dark:from-dark-canvas" }),
 						/* @__PURE__ */ (0, m.jsx)("div", { className: "absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/40 to-transparent" }),
 						/* @__PURE__ */ (0, m.jsxs)("div", {
 							className: "relative z-10 text-center px-4 max-w-5xl mx-auto",

@@ -250,7 +250,7 @@ t((() => {
 							}
 						}),
 						/* @__PURE__ */ (0, h.jsx)("div", { className: "absolute inset-0 bg-brand-blue/30 mix-blend-multiply" }),
-						/* @__PURE__ */ (0, h.jsx)("div", { className: "absolute inset-x-0 bottom-0 h-1 bg-gradient-to-t from-white to-transparent" }),
+						/* @__PURE__ */ (0, h.jsx)("div", { className: "absolute inset-x-0 bottom-0 h-1 bg-gradient-to-t from-white to-transparent dark:from-dark-canvas" }),
 						/* @__PURE__ */ (0, h.jsx)("div", { className: "absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/40 to-transparent" }),
 						/* @__PURE__ */ (0, h.jsxs)("div", {
 							className: "relative z-10 text-center px-4 max-w-5xl mx-auto",
@@ -336,7 +336,7 @@ t((() => {
 								className: "absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-105",
 								style: { backgroundImage: `url('${g.image}')` }
 							}), /* @__PURE__ */ (0, h.jsxs)("div", {
-								className: "absolute bottom-8 left-8 right-8 bg-white/95 backdrop-blur-xl p-8 rounded-xl border-l-4 border-brand-yellow shadow-lg",
+								className: "absolute bottom-8 left-8 right-8 bg-white/95 dark:bg-dark-card backdrop-blur-xl p-8 rounded-xl border-l-4 border-brand-yellow shadow-lg",
 								children: [/* @__PURE__ */ (0, h.jsx)("h3", {
 									className: "font-cinzel text-xl text-brand-blue mb-2",
 									children: "Designed for Strategy"

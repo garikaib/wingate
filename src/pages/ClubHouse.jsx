@@ -11,7 +11,7 @@ const ClubHouse = () => {
         <div className={`w-full transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
             {/* Hero Section */}
             <section className="relative h-[80vh] w-full flex items-center justify-center overflow-hidden bg-brand-blue">
-                <div className="absolute inset-0 bg-[url('https://new-wingate.ddev.site/wp-content/uploads/2026/02/20260112_120717-scaled.jpg')] bg-cover bg-center opacity-40"></div>
+                <div className="absolute inset-0 bg-[url('/wp-content/uploads/2026/02/20260112_120717-scaled.jpg')] bg-cover bg-center opacity-40"></div>
                 <div className="absolute inset-0 bg-gradient-to-b from-brand-blue/80 via-transparent to-brand-blue/90"></div>
 
                 <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">

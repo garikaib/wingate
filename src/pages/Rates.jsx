@@ -137,7 +137,7 @@ const Rates = () => {
     const RateTable = ({ title, rates, columns, icon: Icon }) => (
         <div className="glass-card mb-20 relative">
             <div className="absolute -top-10 -left-6 w-20 h-20 bg-brand-yellow/10 rounded-full blur-2xl -z-10"></div>
-            <div className="bg-white/90 backdrop-blur-xl border border-white/40 shadow-2xl rounded-2xl overflow-hidden p-8">
+            <div className="bg-white/90 dark:bg-dark-card backdrop-blur-xl border border-white/40 dark:border-dark-border shadow-2xl rounded-2xl overflow-hidden p-8">
                 <div className="flex items-center justify-between mb-8 border-b border-brand-blue/10 pb-6">
                     <div className="flex items-center">
                         <div className="bg-brand-blue/5 p-3 rounded-xl mr-5">
@@ -216,7 +216,7 @@ const Rates = () => {
 
                 {/* Refined Gradient Mask: Blue for depth, blending to White for the page */}
                 <div className="absolute inset-0 bg-brand-blue/30"></div>
-                <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-white to-transparent"></div>
+                <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-white to-transparent dark:from-dark-canvas"></div>
                 <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/40 to-transparent"></div>
 
                 <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">

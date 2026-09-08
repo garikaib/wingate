@@ -113,9 +113,9 @@ $encoded_email_body    = rawurlencode( $post_title . "\n\n" . $post_url );
 			</button>
 		</div>
 
-		<article class="bg-white/90 backdrop-blur-xl rounded-2xl border border-white/40 shadow-2xl mb-16 overflow-hidden animate-on-scroll relative z-20">
+		<article class="bg-white/90 dark:bg-dark-card backdrop-blur-xl rounded-2xl border border-white/40 dark:border-dark-border shadow-2xl mb-16 overflow-hidden animate-on-scroll relative z-20">
 			<div class="px-7 md:px-16 lg:px-24 py-12 md:py-16">
-				<div class="prose prose-lg xl:prose-xl prose-headings:font-cinzel prose-headings:text-brand-blue prose-p:font-opensans prose-p:text-gray-700 prose-p:leading-relaxed prose-li:font-opensans prose-img:rounded-sm prose-img:shadow-xl prose-a:text-brand-yellow prose-a:no-underline hover:prose-a:underline max-w-none">
+				<div class="wingate-prose">
 					<?php the_content(); ?>
 				</div>
 			</div>
@@ -123,7 +123,7 @@ $encoded_email_body    = rawurlencode( $post_title . "\n\n" . $post_url );
 
 		<section class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-on-scroll" style="transition-delay: 120ms;">
 			<?php if ( $prev_post ) : ?>
-				<a href="<?php echo esc_url( get_permalink( $prev_post->ID ) ); ?>" class="group block p-8 bg-white/90 backdrop-blur-sm border border-brand-blue/10 rounded-xl shadow-sm hover:shadow-xl hover:border-brand-yellow/40 transition-all no-underline hover:no-underline">
+				<a href="<?php echo esc_url( get_permalink( $prev_post->ID ) ); ?>" class="group block p-8 bg-white/90 dark:bg-dark-card backdrop-blur-sm border border-brand-blue/10 rounded-xl shadow-sm hover:shadow-xl hover:border-brand-yellow/40 transition-all no-underline hover:no-underline">
 					<span class="mb-3 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-500 group-hover:text-brand-yellow transition-colors">
 						<?php echo wingate_lucide_icon( 'arrow-left', 'h-3.5 w-3.5' ); ?>
 						Previous Article
@@ -137,7 +137,7 @@ $encoded_email_body    = rawurlencode( $post_title . "\n\n" . $post_url );
 			<?php endif; ?>
 
 			<?php if ( $next_post ) : ?>
-				<a href="<?php echo esc_url( get_permalink( $next_post->ID ) ); ?>" class="group block p-8 bg-white/90 backdrop-blur-sm border border-brand-blue/10 rounded-xl shadow-sm hover:shadow-xl hover:border-brand-yellow/40 transition-all text-right no-underline hover:no-underline">
+				<a href="<?php echo esc_url( get_permalink( $next_post->ID ) ); ?>" class="group block p-8 bg-white/90 dark:bg-dark-card backdrop-blur-sm border border-brand-blue/10 rounded-xl shadow-sm hover:shadow-xl hover:border-brand-yellow/40 transition-all text-right no-underline hover:no-underline">
 					<span class="mb-3 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-500 group-hover:text-brand-yellow transition-colors">
 						Next Article
 						<?php echo wingate_lucide_icon( 'arrow-right', 'h-3.5 w-3.5' ); ?>
@@ -168,7 +168,7 @@ $encoded_email_body    = rawurlencode( $post_title . "\n\n" . $post_url );
 <?php endwhile; ?>
 
 <div id="wingate-reading-progress" class="fixed top-0 left-0 z-[120] h-1 bg-brand-yellow shadow-[0_2px_10px_rgba(14,27,61,0.25)] transition-[width] duration-150 ease-out" style="width: 0%;"></div>
-<div id="wingate-reading-indicator" class="fixed right-5 bottom-24 z-[120] rounded-sm border border-brand-blue/15 bg-white/95 px-4 py-3 shadow-[0_14px_28px_rgba(14,27,61,0.16)] backdrop-blur transition-all duration-300 opacity-0 translate-y-3 pointer-events-none">
+<div id="wingate-reading-indicator" class="fixed right-5 bottom-24 z-[120] rounded-sm border border-brand-blue/15 bg-white/95 dark:bg-dark-elevated px-4 py-3 shadow-[0_14px_28px_rgba(14,27,61,0.16)] backdrop-blur transition-all duration-300 opacity-0 translate-y-3 pointer-events-none">
 	<div class="font-montserrat text-[10px] font-bold uppercase tracking-[0.18em] text-brand-blue/70">Read Progress</div>
 	<div class="mt-1 font-cinzel text-2xl text-brand-blue leading-none">
 		<span id="wingate-reading-percent">0%</span>
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	const progressBar = document.getElementById('wingate-reading-progress');
 	const progressIndicator = document.getElementById('wingate-reading-indicator');
 	const progressLabel = document.getElementById('wingate-reading-percent');
-	const articleContent = document.querySelector('article .prose');
+	const articleContent = document.querySelector('article .wingate-prose');
 
 	if (progressBar && progressIndicator && progressLabel && articleContent) {
 		const updateReadingProgress = function () {

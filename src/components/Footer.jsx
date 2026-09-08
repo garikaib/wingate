@@ -30,8 +30,8 @@ const Footer = () => {
                 {/* Top Section: Logo */}
                 <div className="flex justify-center mb-12">
                     <img
-                        src="/wp-content/uploads/2026/08/wingate_ineverse.webp"
-                        alt="Wingate Golf Club"
+                        src="/wp-content/themes/wingate/assets/images/wingate-crest.webp"
+                        alt="Wingate Park Club"
                         className="h-36 w-auto opacity-90 filter drop-shadow-lg" // Increased size and adjusted filters
                     />
                 </div>

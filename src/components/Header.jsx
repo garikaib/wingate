@@ -112,8 +112,8 @@ const Header = () => {
                     <div className="flex-shrink-0">
                         <a href="#">
                             <img
-                                src="/wp-content/uploads/2026/02/logo_compressed.png"
-                                alt="Wingate Golf Club"
+                                src="/wp-content/themes/wingate/assets/images/wingate-crest.webp"
+                                alt="Wingate Park Club"
                                 className="h-24 w-auto absolute top-2 z-50 filter drop-shadow-md" // Made logo larger and overlapping
                             />
                         </a>

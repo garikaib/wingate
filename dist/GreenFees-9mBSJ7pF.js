@@ -252,7 +252,7 @@ t((() => {
 								className: "text-3xl font-cinzel text-brand-blue mb-6 border-l-4 border-brand-yellow pl-4",
 								children: "Green Fees (USD)"
 							}), /* @__PURE__ */ (0, h.jsx)("div", {
-								className: "fees-table-card bg-white/95 backdrop-blur-sm rounded-sm shadow-xl overflow-hidden border border-brand-yellow/20 border-t-4 border-brand-blue",
+								className: "fees-table-card bg-white/95 dark:bg-dark-card backdrop-blur-sm rounded-sm shadow-xl overflow-hidden border border-brand-yellow/20 border-t-4 border-brand-blue",
 								children: /* @__PURE__ */ (0, h.jsxs)("table", {
 									className: "w-full",
 									children: [/* @__PURE__ */ (0, h.jsx)("thead", {
@@ -301,7 +301,7 @@ t((() => {
 									children: "Cart Hire (USD)"
 								}),
 								/* @__PURE__ */ (0, h.jsx)("div", {
-									className: "fees-table-card bg-white/95 backdrop-blur-sm rounded-sm shadow-xl overflow-hidden border border-brand-yellow/20 border-t-4 border-brand-blue mb-12",
+									className: "fees-table-card bg-white/95 dark:bg-dark-card backdrop-blur-sm rounded-sm shadow-xl overflow-hidden border border-brand-yellow/20 border-t-4 border-brand-blue mb-12",
 									children: /* @__PURE__ */ (0, h.jsxs)("table", {
 										className: "w-full",
 										children: [/* @__PURE__ */ (0, h.jsx)("thead", {

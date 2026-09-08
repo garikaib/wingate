@@ -234,7 +234,7 @@ var h, g, _, v = t((() => {
 			value: n,
 			onChange: r,
 			placeholder: a,
-			className: "w-full bg-white/50 border border-brand-yellow/30 rounded-none px-4 py-3 text-brand-blue placeholder-brand-blue/40 focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition-all font-montserrat"
+			className: "w-full bg-white/50 dark:bg-dark-surface border border-brand-yellow/30 dark:border-dark-border rounded-none px-4 py-3 text-brand-blue placeholder-brand-blue/40 dark:placeholder-dark-text-muted focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition-all font-montserrat"
 		})]
 	}), C = ({ label: e, name: t, value: n, onChange: r, options: i, placeholder: a = "Select...", width: o = "w-full" }) => /* @__PURE__ */ (0, b.jsxs)("div", {
 		className: `mb-4 ${o} field-anim`,
@@ -245,7 +245,7 @@ var h, g, _, v = t((() => {
 			name: t,
 			value: n,
 			onChange: r,
-			className: "w-full bg-white/50 border border-brand-yellow/30 rounded-none px-4 py-3 text-brand-blue focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition-all font-montserrat",
+			className: "w-full bg-white/50 dark:bg-dark-surface border border-brand-yellow/30 dark:border-dark-border rounded-none px-4 py-3 text-brand-blue focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition-all font-montserrat",
 			children: [/* @__PURE__ */ (0, b.jsx)("option", {
 				value: "",
 				disabled: !0,
@@ -622,7 +622,7 @@ var h, g, _, v = t((() => {
 			]
 		}), M = e === A.length - 1, N = e === A.length;
 		return /* @__PURE__ */ (0, b.jsxs)("div", {
-			className: "w-full max-w-4xl mx-auto bg-white/95 backdrop-blur-sm border border-brand-yellow/20 shadow-2xl p-8 md:p-12 relative overflow-hidden",
+			className: "w-full max-w-4xl mx-auto bg-white/95 dark:bg-dark-card backdrop-blur-sm border border-brand-yellow/20 dark:border-dark-border shadow-2xl p-8 md:p-12 relative overflow-hidden",
 			ref: p,
 			children: [
 				/* @__PURE__ */ (0, b.jsx)("div", {
@@ -645,7 +645,7 @@ var h, g, _, v = t((() => {
 							})]
 						}, t))
 					}), /* @__PURE__ */ (0, b.jsx)("div", {
-						className: "h-1 bg-brand-blue/10 w-full rounded-full overflow-hidden",
+						className: "h-1 bg-brand-blue/10 dark:bg-white/10 w-full rounded-full overflow-hidden",
 						children: /* @__PURE__ */ (0, b.jsx)("div", {
 							className: "h-full bg-gradient-to-r from-brand-yellow to-brand-yellow transition-all duration-700 ease-out rounded-full",
 							style: { width: `${(e + 1) / A.length * 100}%` }

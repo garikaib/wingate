@@ -9,7 +9,7 @@ get_header();
 
 $hero_image = home_url( '/wp-content/uploads/2026/02/20260131_124600-scaled.jpg' );
 $fallback_featured = home_url( '/wp-content/uploads/2026/02/20260131_124600-scaled.jpg' );
-$fallback_thumb = home_url( '/wp-content/uploads/2026/02/logo_compressed.png' );
+$fallback_thumb = get_stylesheet_directory_uri() . '/assets/images/wingate-crest.webp';
 $layout_settings = function_exists( 'wingate_get_news_layout_settings_data' ) ? wingate_get_news_layout_settings_data() : array( 'layout' => 'current' );
 $layout = isset( $layout_settings['layout'] ) ? $layout_settings['layout'] : 'current';
 

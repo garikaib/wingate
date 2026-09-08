@@ -28,24 +28,24 @@
 </div></div>
 <!-- /wp:cover -->
 
-<!-- wp:group {"align":"full","style":{"color":{"background":"#ffffff"},"spacing":{"padding":{"top":"6rem","bottom":"6rem","left":"1.5rem","right":"1.5rem"}}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group alignfull has-background" style="background-color:#ffffff;padding-top:6rem;padding-right:1.5rem;padding-bottom:6rem;padding-left:1.5rem">
+<!-- wp:group {"align":"full","className":"wingate-clubhouse-intro","style":{"color":{"background":"#ffffff"},"spacing":{"padding":{"top":"6rem","bottom":"6rem","left":"1.5rem","right":"1.5rem"}}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group alignfull wingate-clubhouse-intro has-background" style="background-color:var(--color-canvas-bg,#ffffff);padding-top:6rem;padding-right:1.5rem;padding-bottom:6rem;padding-left:1.5rem">
 	<!-- wp:group {"layout":{"type":"constrained","contentSize":"900px"}} -->
 	<div class="wp-block-group">
 		<!-- wp:heading {"textAlign":"center","level":2,"style":{"color":{"text":"#0e1b3d"},"typography":{"textTransform":"uppercase","letterSpacing":"0.06em","fontSize":"32px"}}} -->
-		<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:#0e1b3d;font-size:32px;letter-spacing:0.06em;text-transform:uppercase">A Tradition of Hospitality</h2>
+		<h2 class="wp-block-heading has-text-align-center has-text-color" style="color:var(--color-text-heading,#0e1b3d);font-size:32px;letter-spacing:0.06em;text-transform:uppercase">A Tradition of Hospitality</h2>
 		<!-- /wp:heading -->
 
 		<!-- wp:paragraph {"align":"center","style":{"typography":{"lineHeight":"1.8","fontSize":"18px"},"color":{"text":"#333a4d"}}} -->
-		<p class="has-text-align-center has-text-color" style="color:#333a4d;font-size:18px;line-height:1.8">Nestled within the tranquil Pomona area of Harare, the Loyal &amp; Ancient bar stands as a testament to the enduring spirit of camaraderie and tradition at Wingate Park Golf Club. Founded in 1997, this cherished establishment has become more than just a watering hole; it is the beating heart of our community.</p>
+		<p class="has-text-align-center has-text-color" style="color:var(--color-text-body,#333a4d);font-size:18px;line-height:1.8">Nestled within the tranquil Pomona area of Harare, the Loyal &amp; Ancient bar stands as a testament to the enduring spirit of camaraderie and tradition at Wingate Park Golf Club. Founded in 1997, this cherished establishment has become more than just a watering hole; it is the beating heart of our community.</p>
 		<!-- /wp:paragraph -->
 
 		<!-- wp:paragraph {"align":"center","style":{"typography":{"lineHeight":"1.8","fontSize":"18px"},"color":{"text":"#333a4d"}}} -->
-		<p class="has-text-align-center has-text-color" style="color:#333a4d;font-size:18px;line-height:1.8">Here, the clinking of glasses echoes the laughter of friends, both old and new. Whether you are recounting the triumphs of a round well-played or simply unwinding in the golden glow of the afternoon sun, the atmosphere remains effortlessly inviting.</p>
+		<p class="has-text-align-center has-text-color" style="color:var(--color-text-body,#333a4d);font-size:18px;line-height:1.8">Here, the clinking of glasses echoes the laughter of friends, both old and new. Whether you are recounting the triumphs of a round well-played or simply unwinding in the golden glow of the afternoon sun, the atmosphere remains effortlessly inviting.</p>
 		<!-- /wp:paragraph -->
 
 		<!-- wp:paragraph {"align":"center","style":{"typography":{"lineHeight":"1.8","fontSize":"18px"},"color":{"text":"#333a4d"}}} -->
-		<p class="has-text-align-center has-text-color" style="color:#333a4d;font-size:18px;line-height:1.8">Our in-house catering team takes pride in serving exquisite meals that complement the rustic elegance of our surroundings. From casual bites to elaborate banquets, every dish is prepared with passion and served with a smile. We invite you to step inside, relax, and become a part of our story.</p>
+		<p class="has-text-align-center has-text-color" style="color:var(--color-text-body,#333a4d);font-size:18px;line-height:1.8">Our in-house catering team takes pride in serving exquisite meals that complement the rustic elegance of our surroundings. From casual bites to elaborate banquets, every dish is prepared with passion and served with a smile. We invite you to step inside, relax, and become a part of our story.</p>
 		<!-- /wp:paragraph -->
 	</div>
 	<!-- /wp:group -->

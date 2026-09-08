@@ -1,7 +1,7 @@
 import { a as e, i as t, n, t as r } from "./jsx-runtime-sz-k696O.js";
 import { n as i, t as a } from "./gsap-BGWbMvE-.js";
 import { n as o, t as s } from "./ScrollTrigger-DMFg92O7.js";
-import { i as c, n as l, r as u, t as d } from "./ContactInfoStrip-Dyw1pIvD.js";
+import { i as c, n as l, r as u, t as d } from "./ContactInfoStrip-DPz1j-pR.js";
 import { a as f, i as p, n as m, o as h, r as g, t as _ } from "./contactDetails-CaGjL2ZL.js";
 //#region wp-content/themes/wingate/src/pages/Contact.jsx
 var v, y, b, x, S, C, w, T, E, D, O, k;
@@ -279,7 +279,7 @@ t((() => {
 					})
 				}),
 				/* @__PURE__ */ (0, y.jsxs)("section", {
-					className: "bg-slate-100 py-16 anim-map-container",
+					className: "bg-slate-100 dark:bg-dark-surface py-16 anim-map-container",
 					children: [/* @__PURE__ */ (0, y.jsx)("div", {
 						className: "mx-auto max-w-6xl px-6 lg:px-10",
 						children: /* @__PURE__ */ (0, y.jsx)("h2", {
@@ -305,7 +305,7 @@ t((() => {
 					})]
 				}),
 				/* @__PURE__ */ (0, y.jsxs)("section", {
-					className: "relative overflow-hidden bg-gradient-to-b from-white via-[#f8f8f3] to-[#f2f1ea] px-6 py-20 lg:px-10 lg:py-24",
+					className: "relative overflow-hidden bg-gradient-to-b from-white via-[#f8f8f3] to-[#f2f1ea] dark:from-dark-canvas dark:via-dark-surface dark:to-dark-surface px-6 py-20 lg:px-10 lg:py-24",
 					children: [
 						/* @__PURE__ */ (0, y.jsx)("div", { className: "pointer-events-none absolute -left-20 top-6 h-64 w-64 rounded-full bg-brand-yellow/15 blur-3xl" }),
 						/* @__PURE__ */ (0, y.jsx)("div", { className: "pointer-events-none absolute -right-24 bottom-4 h-72 w-72 rounded-full bg-brand-blue/10 blur-3xl" }),
@@ -320,7 +320,7 @@ t((() => {
 							}), /* @__PURE__ */ (0, y.jsx)("div", {
 								className: "grid grid-cols-1 gap-6 md:grid-cols-3 team-container",
 								children: n.team.map((e, t) => /* @__PURE__ */ (0, y.jsxs)("article", {
-									className: "group rounded-2xl border border-brand-blue/10 bg-white/90 px-7 py-9 text-center shadow-[0_18px_30px_rgba(14,27,61,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_36px_rgba(14,27,61,0.16)] anim-team-member",
+									className: "group rounded-2xl border border-brand-blue/10 bg-white/90 dark:bg-dark-card px-7 py-9 text-center shadow-[0_18px_30px_rgba(14,27,61,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_36px_rgba(14,27,61,0.16)] anim-team-member",
 									children: [
 										/* @__PURE__ */ (0, y.jsxs)("h3", {
 											className: "relative mb-6 inline-block font-cinzel text-[2rem] font-bold uppercase leading-tight tracking-wide text-brand-blue",

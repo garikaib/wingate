@@ -5,7 +5,7 @@ const ContactInfoStrip = () => {
     const contactDetails = getContactDetails();
 
     return (
-        <section className="bg-[#efeee8] px-6 py-14 lg:px-10 lg:py-16">
+        <section className="bg-[#efeee8] dark:bg-dark-surface px-6 py-14 lg:px-10 lg:py-16">
             <div className="mx-auto max-w-screen-2xl">
                 <div className="grid grid-cols-1 gap-10 text-center md:grid-cols-3 md:gap-8">
                     <div>
@@ -17,7 +17,7 @@ const ContactInfoStrip = () => {
                             Email:{' '}
                             <a
                                 href={toEmailHref(contactDetails.email)}
-                                className="text-[#a67c37] transition-colors hover:text-brand-blue"
+                                className="text-[#a67c37] transition-colors hover:text-brand-blue dark:hover:text-brand-yellow"
                             >
                                 {contactDetails.email}
                             </a>

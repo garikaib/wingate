@@ -128,7 +128,7 @@ const Course = () => {
                     }}
                 ></div>
                 <div className="absolute inset-0 bg-brand-blue/30 mix-blend-multiply"></div>
-                <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-t from-white to-transparent"></div>
+                <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-t from-white to-transparent dark:from-dark-canvas"></div>
                 <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/40 to-transparent"></div>
 
                 <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
@@ -190,7 +190,7 @@ const Course = () => {
                             style={{ backgroundImage: `url('${introSettings.image}')` }}
                         ></div>
                         {/* Overlay Card */}
-                        <div className="absolute bottom-8 left-8 right-8 bg-white/95 backdrop-blur-xl p-8 rounded-xl border-l-4 border-brand-yellow shadow-lg">
+                        <div className="absolute bottom-8 left-8 right-8 bg-white/95 dark:bg-dark-card backdrop-blur-xl p-8 rounded-xl border-l-4 border-brand-yellow shadow-lg">
                             <h3 className="font-cinzel text-xl text-brand-blue mb-2">Designed for Strategy</h3>
                             <p className="text-sm text-text-muted">Every hole offers a new challenge, rewarding precision and strategy over pure power.</p>
                         </div>

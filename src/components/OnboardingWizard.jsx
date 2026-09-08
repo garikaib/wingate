@@ -26,7 +26,7 @@ const TextField = ({ label, name, value, onChange, type = "text", placeholder = 
             value={value}
             onChange={onChange}
             placeholder={placeholder}
-            className="w-full bg-white/50 border border-brand-yellow/30 rounded-none px-4 py-3 text-brand-blue placeholder-brand-blue/40 focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition-all font-montserrat"
+            className="w-full bg-white/50 dark:bg-dark-surface border border-brand-yellow/30 dark:border-dark-border rounded-none px-4 py-3 text-brand-blue placeholder-brand-blue/40 dark:placeholder-dark-text-muted focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition-all font-montserrat"
         />
     </div>
 );
@@ -40,7 +40,7 @@ const SelectField = ({ label, name, value, onChange, options, placeholder = "Sel
             name={name}
             value={value}
             onChange={onChange}
-            className="w-full bg-white/50 border border-brand-yellow/30 rounded-none px-4 py-3 text-brand-blue focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition-all font-montserrat"
+            className="w-full bg-white/50 dark:bg-dark-surface border border-brand-yellow/30 dark:border-dark-border rounded-none px-4 py-3 text-brand-blue focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition-all font-montserrat"
         >
             <option value="" disabled>{placeholder}</option>
             {options.map((option) => (
@@ -290,7 +290,7 @@ const OnboardingWizard = () => {
     const isSuccess = step === steps.length;
 
     return (
-        <div className="w-full max-w-4xl mx-auto bg-white/95 backdrop-blur-sm border border-brand-yellow/20 shadow-2xl p-8 md:p-12 relative overflow-hidden" ref={containerRef}>
+        <div className="w-full max-w-4xl mx-auto bg-white/95 dark:bg-dark-card backdrop-blur-sm border border-brand-yellow/20 dark:border-dark-border shadow-2xl p-8 md:p-12 relative overflow-hidden" ref={containerRef}>
 
             {/* Floating golf ball for swing animation */}
             <div ref={ballRef} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 pointer-events-none opacity-0 z-30">
@@ -314,7 +314,7 @@ const OnboardingWizard = () => {
                             </div>
                         ))}
                     </div>
-                    <div className="h-1 bg-brand-blue/10 w-full rounded-full overflow-hidden">
+                    <div className="h-1 bg-brand-blue/10 dark:bg-white/10 w-full rounded-full overflow-hidden">
                         <div
                             className="h-full bg-gradient-to-r from-brand-yellow to-brand-yellow transition-all duration-700 ease-out rounded-full"
                             style={{ width: `${((step + 1) / steps.length) * 100}%` }}

@@ -5,7 +5,7 @@ const defaultWindowImage = '/wp-content/uploads/2026/02/20251127_102423-scaled.j
 const PeekWindowSection = ({ settings }) => {
     const imageUrl = settings?.image || defaultWindowImage;
     return (
-        <section className="bg-[#efeee8] py-12 md:py-16">
+        <section className="bg-[#efeee8] dark:bg-dark-surface py-12 md:py-16">
             <div className="relative mx-auto h-[220px] w-full overflow-hidden md:h-[260px]">
                 <div
                     className="absolute inset-0 bg-cover bg-center bg-fixed"

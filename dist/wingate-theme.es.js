@@ -7648,14 +7648,14 @@ var u = /* @__PURE__ */ r(((e) => {
 	var t = /* @__PURE__ */ e(n()), r = /* @__PURE__ */ e(p());
 	m(), h();
 	var a = i(), o = [
-		["home-root", () => import("./Home-BTzsbUO4.js")],
-		["contact-root", () => import("./Contact-CLc9q9OZ.js")],
-		["membership-root", () => import("./Membership-hq0zmuF2.js")],
-		["rates-root", () => import("./Rates-Bu9knIWQ.js")],
-		["course-root", () => import("./Course-DpCoDPjY.js")],
+		["home-root", () => import("./Home-BM5Fu9IN.js")],
+		["contact-root", () => import("./Contact-CgSWhdO2.js")],
+		["membership-root", () => import("./Membership-CavvpQib.js")],
+		["rates-root", () => import("./Rates-C-PqgcjT.js")],
+		["course-root", () => import("./Course-CJnQeQ6c.js")],
 		["not-found-root", () => import("./NotFound-CnvEbs55.js")],
 		["hole-by-hole-root", () => import("./HoleByHole-BuhAap-l.js")],
-		["green-fees-root", () => import("./GreenFees-Dtgufn8b.js")],
+		["green-fees-root", () => import("./GreenFees-9mBSJ7pF.js")],
 		["events-admin-root", () => import("./EventsAdmin-8-Vx5Jyb.js")],
 		["home-settings-admin-root", () => import("./HomeSettingsAdmin-BReU153B.js")],
 		["contact-page-settings-admin-root", () => import("./ContactPageSettingsAdmin-DiikhDe3.js")],

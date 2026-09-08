@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
     --font-cinzel: "Cinzel", serif;
@@ -16,11 +19,80 @@
     --color-golf-gold: #c5a059;
     --color-golf-brown: #4a3728;
     --color-golf-dark: #121914;
+
+    /* Revised, validated dark mode tokens */
+    --color-dark-canvas: #050915;
+    --color-dark-surface: #081023;
+    --color-dark-card: #0e1b3d;
+    --color-dark-elevated: #182d63;
+    --color-dark-text: #f8fafc;
+    --color-dark-text-body: #cbd5e1;
+    --color-dark-text-muted: #93a5c9;
+    --color-dark-border: rgba(255, 204, 0, 0.14);
+    --color-dark-border-frost: rgba(248, 250, 252, 0.08);
+}
+
+:root {
+    --color-canvas-bg: #ffffff;
+    --color-surface-bg: #f5f5f5;
+    --color-card-bg: #ffffff;
+    --color-elevated-bg: #ffffff;
+    --color-header-bg: #ffffff;
+    --color-header-text: #0e1b3d;
+    --color-text-heading: #0e1b3d;
+    --color-text-body: #1a1a1a;
+    --color-text-subtle: #666666;
+    --color-border: rgba(14, 27, 61, 0.1);
+    --color-border-accent: rgba(255, 204, 0, 0.25);
+    --wp--preset--color--white: #ffffff;
+    --wp--preset--color--brand-blue: #0e1b3d;
+    color-scheme: light;
+}
+
+.dark {
+    --color-canvas-bg: var(--color-dark-canvas);
+    --color-surface-bg: var(--color-dark-surface);
+    --color-card-bg: var(--color-dark-card);
+    --color-elevated-bg: var(--color-dark-elevated);
+    --color-header-bg: var(--color-dark-canvas);
+    --color-header-text: var(--color-dark-text);
+    --color-text-heading: var(--color-dark-text);
+    --color-text-body: var(--color-dark-text-body);
+    --color-text-subtle: var(--color-dark-text-muted);
+    --color-border: var(--color-dark-border-frost);
+    --color-border-accent: var(--color-dark-border);
+    --wp--preset--color--white: var(--color-dark-canvas);
+    --wp--preset--color--brand-blue: var(--color-dark-text);
+    color-scheme: dark;
+}
+
+html body {
+    background-color: var(--color-canvas-bg);
+    color: var(--color-text-body);
+}
+
+html.dark body {
+    background-color: var(--color-dark-canvas);
+    color: var(--color-dark-text-body);
+}
+
+#header-root {
+    background-color: var(--color-header-bg);
+}
+
+#header-root > * {
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 @layer base {
     body {
-        @apply font-opensans bg-white text-brand-blue;
+        @apply font-opensans;
+        background-color: var(--color-canvas-bg);
+        color: var(--color-text-body);
+        transition: background-color 0.2s ease, color 0.2s ease;
     }
 
 
@@ -30,7 +102,8 @@
     h4,
     h5,
     h6 {
-        @apply font-cinzel text-brand-blue;
+        @apply font-cinzel;
+        color: var(--color-text-heading);
     }
 
     /*
@@ -155,6 +228,52 @@
         /* pt-3 */
     }
 
+    /* Dark Mode Header Overrides */
+    .dark #header-root .wingate-top-bar {
+        background-color: var(--color-dark-canvas) !important;
+        color: var(--color-dark-text-body) !important;
+        border-bottom: 1px solid var(--color-dark-border-frost) !important;
+    }
+
+    .dark #header-root .wingate-main-header {
+        background-color: var(--color-dark-canvas) !important;
+        border-bottom: 1px solid var(--color-dark-border-frost) !important;
+    }
+
+    .dark #header-root .wingate-top-bar a,
+    .dark #header-root .wingate-top-phone a,
+    .dark #header-root .wingate-top-email a {
+        color: var(--color-dark-text-body) !important;
+    }
+
+    .dark #header-root .wingate-top-bar a:hover {
+        color: var(--color-brand-yellow) !important;
+    }
+
+    .dark #header-root .wingate-top-sep {
+        color: var(--color-dark-border-frost) !important;
+    }
+
+    .dark #header-root .wingate-top-phone a::before {
+        content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%23cbd5e1' stroke='%23cbd5e1' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'><path d='M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z'/></svg>");
+    }
+
+    .dark #header-root .wingate-top-phone.wingate-phone-is-whatsapp a::before {
+        content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 448 512' fill='%23cbd5e1'><path d='M380.9 97.1C339 55.1 283.2 32 223.9 32 101.5 32 1.9 131.6 1.9 254c0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.5-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2s-9.7 1.4-14.8 6.9c-5.1 5.5-19.4 19-19.4 46.3s19.9 53.7 22.6 57.4c2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z'/></svg>");
+    }
+
+    .dark #header-root .wingate-top-email a::before {
+        content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%23cbd5e1' stroke='%23cbd5e1' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'><rect width='20' height='16' x='2' y='4' rx='2'/><path d='m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7'/></svg>");
+    }
+
+    .dark #header-root .wp-block-social-links .wp-social-link-facebook a {
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='%23cbd5e1' stroke='%23cbd5e1' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'><path d='M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z'/></svg>");
+    }
+
+    .dark #header-root .wp-block-social-links .wp-social-link-instagram a {
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='%23cbd5e1' stroke='none' stroke-linecap='round' stroke-linejoin='round'><rect width='20' height='20' x='2' y='2' rx='5' ry='5'/><path d='M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z' fill='%23050915'/><line x1='17.5' x2='17.51' y1='6.5' y2='6.5' stroke='%23050915' stroke-width='2'/></svg>");
+    }
+
     /* Make the site logo overlap from the top of the ENTIRE header, not just the nav bar */
     #header-root .wingate-absolute-logo {
         position: absolute;
@@ -176,11 +295,100 @@
     }
 
     #header-root .wingate-absolute-logo img {
-        height: 6rem !important;
-        /* h-24 = 96px */
+        height: 5rem !important;
+        /* was h-24 (96px), sized down slightly */
         width: auto !important;
         max-height: none !important;
-        display: block;
+    }
+
+    #header-root .wingate-logo-light {
+        display: block !important;
+    }
+
+    #header-root .wingate-logo-dark {
+        display: none !important;
+    }
+
+    .dark #header-root .wingate-logo-light {
+        display: none !important;
+    }
+
+    .dark #header-root .wingate-logo-dark {
+        display: block !important;
+    }
+
+    /* ── Theme Toggle Button Styling ── */
+    .wingate-theme-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: transparent;
+        border: 1px solid rgba(14, 27, 61, 0.18);
+        border-radius: 9999px;
+        padding: 0.25rem 0.65rem;
+        font-family: var(--font-montserrat);
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--color-brand-blue);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        line-height: 1;
+        margin-left: 0.5rem;
+    }
+
+    .wingate-theme-toggle:hover {
+        border-color: var(--color-brand-yellow);
+        color: var(--color-brand-yellow);
+    }
+
+    .wingate-theme-toggle .wingate-theme-icon-sun {
+        display: none;
+    }
+
+    .wingate-theme-toggle .wingate-theme-icon-moon {
+        display: inline-block;
+    }
+
+    .dark .wingate-theme-toggle {
+        border-color: var(--color-dark-border-frost);
+        color: var(--color-dark-text-body);
+    }
+
+    .dark .wingate-theme-toggle:hover {
+        border-color: var(--color-brand-yellow);
+        color: var(--color-brand-yellow);
+    }
+
+    .dark .wingate-theme-toggle .wingate-theme-icon-sun {
+        display: inline-block;
+    }
+
+    .dark .wingate-theme-toggle .wingate-theme-icon-moon {
+        display: none;
+    }
+
+    .wingate-mobile-theme-toggle {
+        min-height: 46px;
+        min-width: 46px;
+        border-radius: 0.35rem;
+        justify-content: center;
+        padding: 0;
+        margin-left: 0;
+        border: 1px solid rgba(14, 27, 61, 0.15);
+        background: #fff;
+        color: var(--color-brand-blue);
+    }
+
+    .wingate-mobile-theme-toggle .wingate-theme-toggle-label {
+        display: none;
+    }
+
+    .dark .wingate-mobile-theme-toggle {
+        background: var(--color-dark-surface);
+        border-color: var(--color-dark-border-frost);
+        color: var(--color-dark-text);
     }
 
     /* Shift the navigation over to make room for the absolute logo and gap it */
@@ -374,6 +582,52 @@
         padding-left: 0.85rem;
         border-left: 1px solid rgba(14, 27, 61, 0.08);
     }
+
+    /* Dark Mode Main Nav Overrides */
+    .dark #header-root .wp-block-navigation-item__content,
+    .dark #header-root .wp-block-navigation-item a,
+    .dark #header-root .wingate-builder-main-link {
+        color: var(--color-dark-text) !important;
+    }
+
+    .dark #header-root .wp-block-navigation-item__content:hover,
+    .dark #header-root .wp-block-navigation-item a:hover,
+    .dark #header-root .wingate-builder-main-link:hover,
+    .dark #header-root .wingate-builder-main-link.is-current {
+        color: var(--color-brand-yellow) !important;
+    }
+
+    .dark #header-root .wp-block-navigation__submenu-container,
+    .dark #header-root .wingate-builder-main-submenu {
+        background-color: var(--color-dark-elevated) !important;
+        border: 1px solid var(--color-dark-border-frost) !important;
+        border-top: 3px solid var(--color-brand-yellow) !important;
+        box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    .dark #header-root .wp-block-navigation__submenu-container .wp-block-navigation-item__content,
+    .dark #header-root .wingate-builder-main-submenu-link {
+        color: var(--color-dark-text-body) !important;
+    }
+
+    .dark #header-root .wp-block-navigation__submenu-container .wp-block-navigation-item:hover .wp-block-navigation-item__label,
+    .dark #header-root .wingate-builder-main-submenu-link:hover,
+    .dark #header-root .wingate-builder-main-submenu-link.is-current {
+        background-color: var(--color-dark-card);
+        color: var(--color-brand-yellow) !important;
+    }
+
+    .dark #header-root .wp-block-navigation__submenu-icon::before {
+        content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23f8fafc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+    }
+
+    .dark #header-root .wingate-builder-main-caret::before {
+        background-color: var(--color-dark-text);
+    }
+
+    .dark #header-root .wingate-builder-main-subgroup-children {
+        border-left: 1px solid var(--color-dark-border-frost);
+    }
 }
 
 /* -------------- MOBILE MENU (LUCIDE ICONS) -------------- */
@@ -480,6 +734,24 @@ body.wingate-mobile-menu-open {
         color: var(--color-brand-blue);
         background: var(--color-brand-yellow);
         border-color: var(--color-brand-yellow);
+    }
+
+    .dark .wingate-mobile-bar {
+        background: var(--color-dark-canvas) !important;
+        border-top: 1px solid var(--color-dark-border-frost);
+        border-bottom: 1px solid var(--color-dark-border-frost);
+    }
+
+    .dark .wingate-mobile-menu-toggle {
+        color: var(--color-dark-text) !important;
+        background: var(--color-dark-surface) !important;
+        border-color: var(--color-dark-border-frost) !important;
+    }
+
+    .dark .wingate-mobile-primary-cta {
+        color: var(--color-brand-blue) !important;
+        background: var(--color-brand-yellow) !important;
+        border-color: var(--color-brand-yellow) !important;
     }
 
     .wingate-mobile-menu-toggle::before,
@@ -820,18 +1092,29 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 
 /* Date input styling */
 input[type="date"] {
-    color-scheme: light;
-    font-family: "Montserrat", sans-serif;
+    color-scheme: light dark;
+    font-family: var(--font-montserrat);
     letter-spacing: 0.05em;
     accent-color: #ffcc00 !important;
     /* Brand Yellow/Gold highlight */
     border-color: rgba(255, 204, 0, 0.4) !important;
 }
 
+.dark input[type="date"] {
+    color-scheme: dark;
+    background-color: var(--color-dark-surface) !important;
+    color: var(--color-dark-text) !important;
+    border-color: var(--color-dark-border) !important;
+}
+
 input[type="date"]::-webkit-datetime-edit {
     color: #0e1b3d !important;
     /* Brand Blue text */
     padding-left: 0.5rem;
+}
+
+.dark input[type="date"]::-webkit-datetime-edit {
+    color: var(--color-dark-text) !important;
 }
 
 input[type="date"]::-webkit-datetime-edit-fields-wrapper {
@@ -851,6 +1134,12 @@ input[type="date"]::-webkit-datetime-edit-year-field {
     color: #0e1b3d !important;
     text-transform: uppercase;
     transition: all 0.2s;
+}
+
+.dark input[type="date"]::-webkit-datetime-edit-day-field,
+.dark input[type="date"]::-webkit-datetime-edit-month-field,
+.dark input[type="date"]::-webkit-datetime-edit-year-field {
+    color: var(--color-dark-text) !important;
 }
 
 input[type="date"]::-webkit-datetime-edit-day-field:focus,
@@ -999,4 +1288,240 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     background-color: currentColor;
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z'/%3E%3C/svg%3E") center / contain no-repeat;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* ── Universal Dark Mode Surface, Elevation & Hairline Border System ── */
+/*
+   Design rule: adjacent navy tiers are ~1.2–1.5:1 apart.
+   Every surface boundary must carry a 1px hairline border (frost or gold),
+   rather than relying on background luminance alone.
+*/
+
+.dark .bg-white {
+    background-color: var(--color-dark-canvas) !important;
+}
+
+.dark .bg-brand-gray,
+.dark .bg-gray-50,
+.dark .bg-gray-100,
+.dark .bg-gray-200,
+.dark .bg-neutral-100 {
+    background-color: var(--color-dark-surface) !important;
+}
+
+.dark .text-brand-blue,
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-slate-800,
+.dark .text-black {
+    color: var(--color-dark-text) !important;
+}
+
+/* Opacity-variant utilities (text-brand-blue/60, border-brand-blue/10, etc.) are Tailwind's
+   ink/hairline scheme for content sitting on a light card or page background — the same
+   role as the exact-match rules above, just generated as distinct classes per alpha value. */
+.dark [class*="text-brand-blue/"] {
+    color: var(--color-dark-text-body) !important;
+}
+
+.dark [class*="border-brand-blue/"] {
+    border-color: var(--color-dark-border-frost) !important;
+}
+
+.dark .text-slate-700,
+.dark .text-gray-700,
+.dark .text-gray-600 {
+    color: var(--color-dark-text-body) !important;
+}
+
+.dark .text-gray-500,
+.dark .text-slate-500,
+.dark .text-gray-400,
+.dark .text-text-muted {
+    color: var(--color-dark-text-muted) !important;
+}
+
+.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
+    border-color: var(--color-dark-border-frost) !important;
+}
+
+.dark .border-gray-200,
+.dark .border-gray-100,
+.dark .border-gray-300 {
+    border-color: var(--color-dark-border-frost) !important;
+}
+
+/* Surface boundaries rule: 1px hairline border across major sections */
+.dark section {
+    border-bottom: 1px solid var(--color-dark-border-frost);
+}
+
+/* Card & container elevations */
+.dark .anim-card > div,
+.dark .wingate-card {
+    background-color: var(--color-dark-card);
+    border: 1px solid var(--color-dark-border) !important;
+}
+
+.dark .rounded-2xl,
+.dark .rounded-3xl {
+    border-color: var(--color-dark-border-frost);
+}
+
+/* Club House CTA button always sits on the brand-yellow chip, so its text
+   must stay navy even though has-brand-blue-color flips to a light ink in dark mode. */
+.wingate-cta-button .wp-block-button__link {
+    color: #0e1b3d !important;
+}
+
+/* Footer hairline border in dark mode */
+.dark .wingate-footer {
+    background-color: var(--color-dark-canvas) !important;
+    border-top: 1px solid var(--color-dark-border) !important;
+}
+
+/* Gutenberg prose styling in dark mode (page-styled-default, single posts, etc.) */
+.dark .prose {
+    --tw-prose-body: var(--color-dark-text-body);
+    --tw-prose-headings: var(--color-dark-text);
+    --tw-prose-lead: var(--color-dark-text-body);
+    --tw-prose-links: var(--color-brand-yellow);
+    --tw-prose-bold: var(--color-dark-text);
+    --tw-prose-counters: var(--color-dark-text-muted);
+    --tw-prose-bullets: var(--color-dark-text-muted);
+    --tw-prose-hr: var(--color-dark-border-frost);
+    --tw-prose-quotes: var(--color-dark-text);
+    --tw-prose-quote-borders: var(--color-brand-yellow);
+    --tw-prose-captions: var(--color-dark-text-muted);
+    --tw-prose-code: var(--color-brand-yellow);
+    --tw-prose-pre-code: var(--color-dark-text-body);
+    --tw-prose-pre-bg: var(--color-dark-surface);
+    --tw-prose-th-borders: var(--color-dark-border-frost);
+    --tw-prose-td-borders: var(--color-dark-border-frost);
+}
+
+/* ── Shared article typography ──────────────────────────────────────────
+   Used for any editor-authored body copy: page.php, page-styled-default.php
+   and single.php all share this one class instead of repeating the same
+   long prose-modifier utility string. */
+.wingate-prose {
+    @apply prose prose-lg xl:prose-xl max-w-none
+        prose-headings:font-cinzel
+        prose-p:font-opensans prose-p:leading-relaxed
+        prose-li:font-opensans
+        prose-img:rounded-sm prose-img:shadow-xl
+        prose-a:text-brand-yellow prose-a:no-underline hover:prose-a:underline
+        prose-blockquote:font-merriweather prose-blockquote:not-italic;
+    /* Route every color through the site's light/dark-aware semantic tokens
+       instead of static brand-blue/gray utilities, so this stays correct
+       under .dark without a parallel override block. */
+    --tw-prose-body: var(--color-text-body);
+    --tw-prose-headings: var(--color-text-heading);
+    --tw-prose-lead: var(--color-text-subtle);
+    --tw-prose-bold: var(--color-text-heading);
+    --tw-prose-quotes: var(--color-text-heading);
+    --tw-prose-quote-borders: var(--color-brand-yellow);
+    --tw-prose-bullets: var(--color-brand-yellow);
+    --tw-prose-counters: var(--color-brand-yellow);
+    --tw-prose-code: var(--color-text-heading);
+    --tw-prose-captions: var(--color-text-subtle);
+    --tw-prose-hr: var(--color-border);
+    --tw-prose-th-borders: var(--color-border);
+    --tw-prose-td-borders: var(--color-border);
+    --tw-prose-pre-bg: var(--color-surface-bg);
+    --tw-prose-pre-code: var(--color-text-body);
+}
+
+/* Branded table treatment for content tables (wp:table blocks in the_content()) */
+.wingate-prose .wp-block-table {
+    margin: 2rem 0;
+    overflow-x: auto;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 20px 40px -30px rgba(14, 27, 61, 0.35);
+}
+
+.wingate-prose table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    font-family: var(--font-opensans);
+}
+
+.wingate-prose thead {
+    background: var(--color-brand-blue);
+}
+
+.wingate-prose thead th {
+    color: #fff;
+    font-family: var(--font-montserrat);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 0.85rem 1.1rem;
+    border: none;
+}
+
+.wingate-prose tbody td,
+.wingate-prose tbody th {
+    padding: 0.75rem 1.1rem;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-body);
+}
+
+.wingate-prose tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.wingate-prose .wp-block-table:not(.is-style-stripes) tbody tr:nth-child(even) {
+    background: rgba(14, 27, 61, 0.025);
+}
+
+.wingate-prose tbody tr:hover {
+    background: rgba(255, 204, 0, 0.08);
+}
+
+.wingate-prose .wp-block-table figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.8rem;
+    color: var(--color-text-subtle);
+    text-align: center;
+}
+
+.dark .wingate-prose .wp-block-table {
+    border-color: var(--color-dark-border-frost);
+    box-shadow: 0 20px 40px -30px rgba(0, 0, 0, 0.6);
+}
+
+.dark .wingate-prose thead {
+    background: var(--color-dark-elevated);
+}
+
+.dark .wingate-prose thead th {
+    color: var(--color-brand-yellow);
+}
+
+.dark .wingate-prose tbody td,
+.dark .wingate-prose tbody th {
+    color: var(--color-dark-text-body);
+    border-bottom-color: var(--color-dark-border-frost);
+}
+
+.dark .wingate-prose .wp-block-table:not(.is-style-stripes) tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.dark .wingate-prose .wp-block-table.is-style-stripes tbody tr:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.dark .wingate-prose tbody tr:hover {
+    background: rgba(255, 204, 0, 0.06);
+}
+
+.dark .wingate-prose .wp-block-table figcaption {
+    color: var(--color-dark-text-muted);
 }

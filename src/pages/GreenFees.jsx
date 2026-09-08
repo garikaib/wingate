@@ -200,7 +200,7 @@ const GreenFees = () => {
                         <h2 className="text-3xl font-cinzel text-brand-blue mb-6 border-l-4 border-brand-yellow pl-4">
                             Green Fees (USD)
                         </h2>
-                        <div className="fees-table-card bg-white/95 backdrop-blur-sm rounded-sm shadow-xl overflow-hidden border border-brand-yellow/20 border-t-4 border-brand-blue">
+                        <div className="fees-table-card bg-white/95 dark:bg-dark-card backdrop-blur-sm rounded-sm shadow-xl overflow-hidden border border-brand-yellow/20 border-t-4 border-brand-blue">
                             <table className="w-full">
                                 <thead className="bg-brand-blue text-white">
                                     <tr>
@@ -227,7 +227,7 @@ const GreenFees = () => {
                         <h2 className="text-3xl font-cinzel text-brand-blue mb-6 border-l-4 border-brand-yellow pl-4">
                             Cart Hire (USD)
                         </h2>
-                        <div className="fees-table-card bg-white/95 backdrop-blur-sm rounded-sm shadow-xl overflow-hidden border border-brand-yellow/20 border-t-4 border-brand-blue mb-12">
+                        <div className="fees-table-card bg-white/95 dark:bg-dark-card backdrop-blur-sm rounded-sm shadow-xl overflow-hidden border border-brand-yellow/20 border-t-4 border-brand-blue mb-12">
                             <table className="w-full">
                                 <thead className="bg-brand-blue text-white">
                                     <tr>

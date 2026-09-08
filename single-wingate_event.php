@@ -468,6 +468,75 @@ while ( have_posts() ) : the_post();
                     background: #ffcc00;
                     color: #0e1b3d;
                 }
+
+                /* Dark mode overrides */
+                .dark #wingate-recurring-calendar .wingate-cal-nav,
+                .dark .wingate-cal-day,
+                .dark #wingate-rsvp-mode-indicator,
+                .dark #wingate-multiday-modal .wingate-btn-cancel {
+                    background: var(--color-dark-surface);
+                    border-color: var(--color-dark-border-frost);
+                    color: var(--color-dark-text);
+                }
+                .dark #wingate-recurring-calendar .wingate-cal-nav:hover {
+                    background: var(--color-dark-elevated);
+                    border-color: var(--color-brand-yellow);
+                    color: var(--color-brand-yellow);
+                }
+                .dark #wingate-recurring-calendar .wingate-cal-label,
+                .dark .wingate-multiday-title {
+                    color: var(--color-dark-text);
+                }
+                .dark .wingate-cal-weekday,
+                .dark #wingate-calendar-legend {
+                    color: var(--color-dark-text-muted);
+                }
+                .dark .wingate-cal-day {
+                    color: var(--color-dark-text-muted);
+                }
+                .dark .wingate-cal-day.is-selected {
+                    background: var(--color-dark-elevated);
+                    border-color: var(--color-brand-yellow);
+                    color: var(--color-brand-yellow);
+                    box-shadow: none;
+                }
+                .dark .wingate-cal-day.is-selected::after {
+                    background: var(--color-brand-yellow);
+                }
+                .dark .wingate-cal-day:focus-visible {
+                    outline-color: var(--color-brand-yellow);
+                }
+                .dark #wingate-calendar-selected {
+                    background: var(--color-dark-surface);
+                    border-color: var(--color-dark-border-frost);
+                    color: var(--color-dark-text);
+                }
+                .dark #wingate-rsvp-mode-indicator .mode-dot {
+                    background: var(--color-dark-text-muted);
+                }
+                .dark #wingate-rsvp-mode-indicator.is-multi {
+                    background: var(--color-dark-elevated);
+                    border-color: var(--color-brand-yellow);
+                    color: var(--color-brand-yellow);
+                }
+                .dark #wingate-rsvp-mode-indicator.is-multi .mode-dot {
+                    background: var(--color-brand-yellow);
+                }
+                .dark #wingate-calendar-legend .legend-selected {
+                    background: var(--color-dark-elevated);
+                    border-color: var(--color-brand-yellow);
+                }
+                .dark #wingate-multiday-modal .wingate-multiday-card {
+                    background: var(--color-dark-card);
+                    border-color: var(--color-dark-border-frost);
+                }
+                .dark #wingate-multiday-modal .wingate-multiday-copy {
+                    color: var(--color-dark-text-body);
+                }
+                .dark #wingate-multiday-modal .wingate-btn-cancel:hover {
+                    background: var(--color-dark-elevated);
+                    border-color: var(--color-dark-border-frost);
+                }
             </style>
             <section class="mt-12 rounded-2xl border border-brand-blue/10 bg-brand-blue/[0.03] p-6" id="wingate-recurring-calendar">
                 <div class="mb-4 flex items-center justify-between gap-3">

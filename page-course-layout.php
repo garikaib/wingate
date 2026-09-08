@@ -836,6 +836,104 @@ get_header();
 		width: 100%;
 	}
 }
+
+/* Dark mode: page chrome & panels (map pins/routes intentionally stay fixed —
+   they read as satellite-map cartography, not UI surface). */
+.dark .wingate-course-layout {
+	background: radial-gradient(1200px 600px at 10% -20%, rgba(255, 204, 0, 0.12), transparent), var(--color-dark-canvas);
+	color: var(--color-dark-text-body);
+}
+.dark .wingate-course-layout .kicker,
+.dark .wingate-course-layout .panel-head span,
+.dark .wingate-course-layout .map-toolbar p,
+.dark .wingate-course-layout .map-legend,
+.dark .wingate-hole-popup-kicker,
+.dark .wingate-course-layout .map-hole-selector-kicker,
+.dark .wingate-course-layout .map-active-hole-kicker {
+	color: var(--color-dark-text-muted);
+}
+.dark .wingate-course-layout .subtitle,
+.dark .wingate-hole-popup-copy,
+.dark .wingate-course-layout .map-active-hole-copy {
+	color: var(--color-dark-text-body);
+}
+.dark .wingate-course-layout .layout-panel,
+.dark .wingate-course-layout .layout-map-wrap {
+	background: var(--color-dark-card);
+	border-color: var(--color-dark-border-frost);
+}
+.dark .wingate-course-layout .panel-search input {
+	background: var(--color-dark-surface);
+	border-color: var(--color-dark-border-frost);
+	color: var(--color-dark-text);
+}
+.dark .wingate-course-layout .panel-search input:focus {
+	border-color: var(--color-brand-yellow);
+	box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.16);
+}
+.dark .wingate-course-layout .hole-row {
+	background: var(--color-dark-surface);
+	border-color: var(--color-dark-border-frost);
+	color: var(--color-dark-text-body);
+}
+.dark .wingate-course-layout .hole-row:hover {
+	border-color: var(--color-brand-yellow);
+	background: var(--color-dark-elevated);
+}
+.dark .wingate-course-layout .hole-row.active {
+	background: var(--color-dark-elevated);
+	border-color: var(--color-brand-yellow);
+	color: var(--color-dark-text);
+}
+.dark .wingate-hole-popup,
+.dark .wingate-course-layout .map-hole-selector-label,
+.dark .wingate-course-layout .map-active-hole-title,
+.dark .wingate-course-layout .map-hole-selector-select,
+.dark .wingate-course-layout .edit-hole-btn,
+.dark .wingate-hole-popup-pill strong,
+.dark .wingate-course-layout .map-active-hole-pill strong {
+	color: var(--color-dark-text);
+}
+.dark .leaflet-popup-content-wrapper,
+.dark .leaflet-popup-tip {
+	background: var(--color-dark-elevated);
+	color: var(--color-dark-text-body);
+}
+.dark .wingate-hole-popup-pill,
+.dark .wingate-course-layout .map-active-hole-pill {
+	background: var(--color-dark-surface);
+	border-color: var(--color-dark-border-frost);
+	color: var(--color-dark-text-muted);
+}
+.dark .wingate-course-layout .map-hole-selector {
+	background: linear-gradient(135deg, var(--color-dark-elevated), var(--color-dark-card));
+	border-color: var(--color-dark-border-frost);
+}
+.dark .wingate-course-layout .map-hole-selector-meta {
+	color: var(--color-dark-text-muted);
+}
+.dark .wingate-course-layout .map-hole-selector-select {
+	background: var(--color-dark-surface);
+	border-color: var(--color-dark-border-frost);
+}
+.dark .wingate-course-layout .map-hole-selector-select-wrap::after {
+	border-color: var(--color-dark-text);
+}
+.dark .wingate-course-layout .map-active-hole-card {
+	background: var(--color-dark-elevated);
+	border-color: var(--color-dark-border-frost);
+}
+.dark .wingate-course-layout .map-active-hole-card::after {
+	background: var(--color-dark-elevated);
+	border-color: var(--color-dark-border-frost);
+}
+.dark .wingate-course-layout.fullscreen-map .map-toolbar {
+	background: rgba(8, 16, 35, 0.9);
+}
+.dark .wingate-course-layout.fullscreen-map .map-expand-btn {
+	background: var(--color-dark-elevated);
+	color: var(--color-dark-text);
+}
 </style>
 
 <link

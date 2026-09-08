@@ -138,6 +138,14 @@ while ( have_posts() ) :
 						transform: translateY(0);
 					}
 				}
+
+				/* Dark mode */
+				.dark .wingate-handicap-table .handicap-row:hover td {
+					background-color: rgba(255, 255, 255, 0.04);
+				}
+				.dark .wingate-handicap-table .handicap-row:hover td:nth-child(2) {
+					color: var(--color-dark-text);
+				}
 			</style>
 			<div class="grid gap-5 md:grid-cols-2">
 				<div class="wingate-handicap-top-card rounded-2xl border border-brand-blue/12 bg-white p-6 shadow-sm animate-on-scroll">
